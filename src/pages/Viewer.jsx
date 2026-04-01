@@ -1,3 +1,4 @@
+import StepBar from '../components/StepBar'
 import { useNavigate } from 'react-router-dom'
 
 function Viewer() {
@@ -5,6 +6,8 @@ function Viewer() {
 
   return (
     <div className="px-16 py-12">
+
+        <StepBar currentStep={4} />
 
       <button
         onClick={() => navigate('/components')}

@@ -1,3 +1,4 @@
+import StepBar from '../components/StepBar'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +14,7 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center text-center px-10 pt-20 pb-16">
+        <StepBar currentStep={1} />
 
       <div className="bg-indigo-950 text-indigo-400 text-sm px-5 py-2 rounded-full border border-indigo-800 mb-6">
         AI Prototype Generator
