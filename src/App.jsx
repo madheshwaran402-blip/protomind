@@ -1,111 +1,57 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import Home from './pages/Home'
+import Components from './pages/Components'
+import Viewer from './pages/Viewer'
 
-function App() {
-  const [idea, setIdea] = useState('')
+function Navbar() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const links = [
+    { label: 'Home', path: '/' },
+    { label: 'Components', path: '/components' },
+    { label: '3D View', path: '/viewer' },
+  ]
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
-
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e] bg-[#0d0d1a]">
-        <div className="text-xl font-bold text-indigo-400 tracking-wider">
-          ⚡ ProtoMind
-        </div>
-        <div className="flex gap-10">
-          <span className="text-slate-400 cursor-pointer hover:text-white transition">Home</span>
-          <span className="text-slate-400 cursor-pointer hover:text-white transition">Components</span>
-          <span className="text-slate-400 cursor-pointer hover:text-white transition">3D View</span>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <div className="flex flex-col items-center text-center px-10 pt-20 pb-16">
-
-        <div className="bg-indigo-950 text-indigo-400 text-sm px-5 py-2 rounded-full border border-indigo-800 mb-6">
-          AI Prototype Generator
-        </div>
-
-        <h1 className="text-6xl font-extrabold leading-tight mb-5">
-          Turn Your Idea Into a<br />
-          <span className="text-indigo-400">Real Prototype</span>
-        </h1>
-
-        <p className="text-slate-400 text-lg max-w-xl leading-relaxed mb-10">
-          Describe your idea in one sentence. ProtoMind will suggest
-          components, show placement, and generate a 3D model.
-        </p>
-
-        {/* Input Area */}
-        <div className="w-full max-w-2xl flex flex-col gap-3">
-          <textarea
-            className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-5 py-4 text-white text-base resize-none outline-none focus:border-indigo-500 transition placeholder-slate-600"
-            placeholder="e.g. A smart water bottle that tracks temperature and hydration..."
-            value={idea}
-            onChange={(e) => setIdea(e.target.value)}
-            rows={3}
-          />
-          <button
-            disabled={idea.length === 0}
-            className={`w-full py-4 rounded-xl text-base font-semibold transition ${
-              idea.length > 0
-                ? 'bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white'
-                : 'bg-[#1e1e2e] text-slate-600 cursor-not-allowed'
+    <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e] bg-[#0d0d1a]">
+      <div
+        onClick={() => navigate('/')}
+        className="text-xl font-bold text-indigo-400 tracking-wider cursor-pointer"
+      >
+        ⚡ ProtoMind
+      </div>
+      <div className="flex gap-10">
+        {links.map((link) => (
+          <span
+            key={link.path}
+            onClick={() => navigate(link.path)}
+            className={`cursor-pointer transition text-sm font-medium ${
+              location.pathname === link.path
+                ? 'text-indigo-400'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
-            {idea.length > 0 ? '⚡ Generate Prototype' : 'Type your idea first...'}
-          </button>
-        </div>
-
-        {/* Example Chips */}
-        <div className="flex gap-3 mt-5 flex-wrap justify-center items-center">
-          <span className="text-slate-600 text-sm">Try:</span>
-          {[
-            ['Smart Helmet', 'A smart helmet with collision detection and SOS alert'],
-            ['Plant Watering', 'An automatic plant watering system with soil moisture sensor'],
-            ['Robotic Arm', 'A gesture controlled robotic arm'],
-          ].map(([label, value]) => (
-            <span
-              key={label}
-              onClick={() => setIdea(value)}
-              className="bg-[#13131f] border border-[#2e2e4e] text-slate-400 px-4 py-1.5 rounded-full text-sm cursor-pointer hover:border-indigo-500 hover:text-indigo-300 transition"
-            >
-              {label}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Feature Cards */}
-      <div className="flex justify-center gap-6 px-16 pb-20 flex-wrap">
-        {[
-          {
-            icon: '🧠',
-            title: 'AI Component Picker',
-            desc: 'AI suggests the best components for your idea with reasons why',
-          },
-          {
-            icon: '📐',
-            title: '2D Layout Preview',
-            desc: 'See how components connect before building anything physical',
-          },
-          {
-            icon: '🖨️',
-            title: '3D Print Ready',
-            desc: 'Export STL files directly to send to any 3D printing service',
-          },
-        ].map((card) => (
-          <div
-            key={card.title}
-            className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-8 w-64 text-center hover:border-indigo-800 transition"
-          >
-            <div className="text-4xl mb-4">{card.icon}</div>
-            <h3 className="text-base font-semibold mb-2">{card.title}</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">{card.desc}</p>
-          </div>
+            {link.label}
+          </span>
         ))}
       </div>
+    </nav>
+  )
+}
 
-    </div>
+function App() {
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-[#0a0a0f] text-white">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/components" element={<Components />} />
+          <Route path="/viewer" element={<Viewer />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 
