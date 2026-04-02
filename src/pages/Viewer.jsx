@@ -113,7 +113,7 @@ function Viewer() {
   }
 
   return (
-    <div className="min-h-screen">
+   <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
 
       <div className="px-16 pb-10">

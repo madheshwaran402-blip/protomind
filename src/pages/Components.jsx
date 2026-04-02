@@ -42,7 +42,7 @@ function Components() {
 }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-enter">
 
       <StepBar currentStep={2} />
 
@@ -63,12 +63,27 @@ function Components() {
 
         {/* Loading State */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-            <p className="text-slate-400 text-sm">AI is analysing your idea...</p>
-            <p className="text-slate-600 text-xs">This takes about 5 seconds</p>
-          </div>
-        )}
+  <div className="flex flex-col items-center justify-center py-24 gap-6">
+    <div className="relative w-20 h-20">
+      <div className="absolute inset-0 border-4 border-indigo-900 rounded-full" />
+      <div className="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <div className="absolute inset-3 border-4 border-indigo-700 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+    </div>
+    <div className="text-center">
+      <p className="text-white font-semibold mb-1">AI is analysing your idea...</p>
+      <p className="text-slate-500 text-sm">Selecting the best components for</p>
+      <p className="text-indigo-400 text-sm italic mt-1">"{idea}"</p>
+    </div>
+    <div className="flex gap-2">
+      {['Researching components', 'Checking compatibility', 'Finalising list'].map((step, i) => (
+        <div key={step} className="flex items-center gap-1.5 text-xs text-slate-600 bg-[#0d0d1a] px-3 py-1.5 rounded-full border border-[#1e1e2e]">
+          <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" style={{ animationDelay: i * 200 + 'ms' }} />
+          {step}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
         {/* Error State */}
         {error && (

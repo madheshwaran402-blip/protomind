@@ -149,7 +149,7 @@ function Layout() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-enter">
       <StepBar currentStep={3} />
 
       <div className="px-16 pb-10">

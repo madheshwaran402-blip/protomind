@@ -13,8 +13,9 @@ function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center text-center px-10 pt-20 pb-16">
-        <StepBar currentStep={1} />
+    <div className="flex flex-col items-center text-center px-10 pt-20 pb-16 page-enter">
+      
+      <StepBar currentStep={1} />
 
       <div className="bg-indigo-950 text-indigo-400 text-sm px-5 py-2 rounded-full border border-indigo-800 mb-6">
         AI Prototype Generator
@@ -51,6 +52,7 @@ function Home() {
         </button>
       </div>
 
+      {/* Suggestions */}
       <div className="flex gap-3 mt-5 flex-wrap justify-center items-center">
         <span className="text-slate-600 text-sm">Try:</span>
         {[
@@ -68,6 +70,7 @@ function Home() {
         ))}
       </div>
 
+      {/* Feature Cards */}
       <div className="flex justify-center gap-6 px-16 mt-16 flex-wrap">
         {[
           { icon: '🧠', title: 'AI Component Picker', desc: 'AI suggests the best components for your idea with reasons why' },
@@ -80,6 +83,28 @@ function Home() {
             <p className="text-slate-400 text-sm leading-relaxed">{card.desc}</p>
           </div>
         ))}
+      </div>
+
+      {/* How it works */}
+      <div className="w-full max-w-3xl mt-20 mb-8">
+        <h2 className="text-2xl font-bold text-center mb-10 text-slate-300">
+          How ProtoMind Works
+        </h2>
+
+        <div className="flex justify-between items-start gap-4">
+          {[
+            { step: '01', title: 'Describe Your Idea', desc: 'Type your prototype idea in plain English — one sentence is enough' },
+            { step: '02', title: 'AI Picks Components', desc: 'Local AI analyses your idea and suggests the perfect components' },
+            { step: '03', title: 'Arrange the Layout', desc: 'Drag components on a 2D canvas to design your circuit placement' },
+            { step: '04', title: 'Export & Print', desc: 'View in 3D and export an STL file to send to a 3D printing service' },
+          ].map((item) => (
+            <div key={item.step} className="flex-1 text-center">
+              <div className="text-3xl font-black text-indigo-900 mb-3">{item.step}</div>
+              <h3 className="text-sm font-semibold text-white mb-2">{item.title}</h3>
+              <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
     </div>

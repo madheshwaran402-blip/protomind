@@ -9,10 +9,11 @@ function Navbar() {
   const location = useLocation()
 
   const links = [
-    { label: 'Home', path: '/' },
-    { label: 'Components', path: '/components' },
-    { label: '3D View', path: '/viewer' },
-  ]
+  { label: 'Home', path: '/' },
+  { label: 'Components', path: '/components' },
+  { label: 'Layout', path: '/layout' },
+  { label: '3D View', path: '/viewer' },
+]
 
   return (
     <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e] bg-[#0d0d1a]">
