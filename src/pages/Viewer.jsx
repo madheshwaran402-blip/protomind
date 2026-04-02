@@ -1,3 +1,4 @@
+import { downloadSTL } from '../services/stlExport'
 import { Suspense, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
@@ -71,6 +72,7 @@ function Viewer() {
     },
   ])
   const [input, setInput] = useState('')
+  const [stlExported, setStlExported] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function sendMessage() {
@@ -130,11 +132,14 @@ function Viewer() {
               Start New
             </button>
             <button
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-              onClick={() => alert('STL Export coming in Day 9!')}
-            >
-              🖨️ Export STL
-            </button>
+  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
+  onClick={() => {
+    downloadSTL(selectedComponents, idea)
+    setStlExported(true)
+  }}
+>
+  🖨️ Export STL
+</button>
           </div>
         </div>
 
@@ -215,6 +220,24 @@ function Viewer() {
             </div>
           </div>
         </div>
+
+        {stlExported && (
+  <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
+    <span className="text-2xl">✅</span>
+    <div>
+      <p className="text-green-400 font-semibold text-sm">STL File Downloaded!</p>
+      <p className="text-green-700 text-xs mt-0.5">
+        Your file is ready to send to any 3D printing service like JLCPCB, Shapeways, or your local print shop.
+      </p>
+    </div>
+    <button
+      onClick={() => setStlExported(false)}
+      className="ml-auto text-green-700 hover:text-green-500 text-xs transition"
+    >
+      ✕
+    </button>
+  </div>
+)}
 
         {/* Component list */}
         <div className="mt-6 grid grid-cols-6 gap-3">
