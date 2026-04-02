@@ -37,9 +37,9 @@ function Components() {
   }
 
   function handleConfirm() {
-    const selectedComponents = components.filter((c) => selected.includes(c.id))
-    navigate('/viewer', { state: { idea, selectedComponents } })
-  }
+  const selectedComponents = components.filter((c) => selected.includes(c.id))
+  navigate('/layout', { state: { idea, selectedComponents } })
+}
 
   return (
     <div className="min-h-screen">

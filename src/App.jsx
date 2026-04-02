@@ -1,3 +1,4 @@
+import Layout from './pages/Layout'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Components from './pages/Components'
@@ -49,6 +50,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/components" element={<Components />} />
           <Route path="/viewer" element={<Viewer />} />
+          <Route path="/layout" element={<Layout />} />
         </Routes>
       </div>
     </BrowserRouter>
