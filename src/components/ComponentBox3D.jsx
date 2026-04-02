@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text, Box } from '@react-three/drei'
+import { Text, RoundedBox } from '@react-three/drei'
 
 const CATEGORY_COLORS = {
   Microcontroller: '#6366f1',
@@ -18,50 +18,72 @@ function ComponentBox3D({ comp, position }) {
   const [hovered, setHovered] = useState(false)
   const color = CATEGORY_COLORS[comp.category] || '#64748b'
 
-  useFrame(() => {
-    if (meshRef.current && hovered) {
-      meshRef.current.rotation.y += 0.01
+  useFrame((state) => {
+    if (meshRef.current) {
+      if (hovered) {
+        meshRef.current.rotation.y += 0.02
+      } else {
+        meshRef.current.rotation.y *= 0.95
+      }
+      meshRef.current.position.y =
+        position[1] + Math.sin(state.clock.elapsedTime + position[0]) * 0.05
     }
   })
 
+  const shortName = comp.name.length > 16
+    ? comp.name.slice(0, 16) + '...'
+    : comp.name
+
   return (
     <group position={position}>
-      <Box
+      <RoundedBox
         ref={meshRef}
-        args={[1.8, 0.6, 1.2]}
+        args={[2, 0.5, 1.2]}
+        radius={0.1}
+        smoothness={4}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
         <meshStandardMaterial
           color={color}
           emissive={color}
-          emissiveIntensity={hovered ? 0.4 : 0.1}
-          roughness={0.3}
-          metalness={0.6}
+          emissiveIntensity={hovered ? 0.5 : 0.15}
+          roughness={0.2}
+          metalness={0.7}
         />
-      </Box>
+      </RoundedBox>
 
-      {/* Component name below box */}
       <Text
-        position={[0, -0.7, 0]}
+        position={[0, 0.55, 0]}
+        fontSize={0.18}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+        renderOrder={1}
+      >
+        {comp.category}
+      </Text>
+
+      <Text
+        position={[0, -0.55, 0]}
         fontSize={0.2}
         color="white"
         anchorX="center"
         anchorY="middle"
-        maxWidth={2}
+        maxWidth={2.2}
+        renderOrder={1}
       >
-        {comp.name.length > 18 ? comp.name.slice(0, 18) + '...' : comp.name}
+        {shortName}
       </Text>
 
-      {/* Category label above box */}
       <Text
-        position={[0, 0.6, 0]}
-        fontSize={0.15}
-        color={color}
+        position={[0, 0, 0]}
+        fontSize={0.28}
         anchorX="center"
         anchorY="middle"
+        renderOrder={1}
       >
-        {comp.category}
+        {comp.icon}
       </Text>
     </group>
   )
