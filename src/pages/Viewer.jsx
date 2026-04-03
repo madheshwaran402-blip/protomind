@@ -1,3 +1,4 @@
+import { analyse3DPrintingNeed } from '../services/claude'
 import { downloadSTL } from '../services/stlExport'
 import { Suspense, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -74,46 +75,50 @@ function Viewer() {
   const [input, setInput] = useState('')
   const [stlExported, setStlExported] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [printAnalysis, setPrintAnalysis] = useState(null)
+  const [printLoading, setPrintLoading] = useState(false)
 
   async function sendMessage() {
     if (!input.trim()) return
-
     const userMsg = { role: 'user', content: input }
     setMessages(prev => [...prev, userMsg])
     setInput('')
     setLoading(true)
-
     try {
       const componentList = selectedComponents.map(c => c.name).join(', ')
-      const prompt = 'You are an expert electronics engineer reviewing a prototype. The prototype idea is: "' + idea + '". The selected components are: ' + componentList + '. The user asks: "' + input + '". Give a helpful, concise answer in 2-3 sentences. If asking about feasibility, be specific about why it works or doesnt work.'
-
+      const prompt = 'You are an expert electronics engineer reviewing a prototype. The prototype idea is: "' + idea + '". The selected components are: ' + componentList + '. The user asks: "' + input + '". Give a helpful, concise answer in 2-3 sentences.'
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'llama3.2',
-          prompt: prompt,
-          stream: false,
-        }),
+        body: JSON.stringify({ model: 'llama3.2', prompt: prompt, stream: false }),
       })
-
       const data = await response.json()
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: data.response,
-      }])
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
     } catch {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Make sure Ollama is running with: ollama serve',
-      }])
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Make sure Ollama is running with: ollama serve' }])
     } finally {
       setLoading(false)
     }
   }
 
+  async function analysePrinting() {
+    setPrintLoading(true)
+    try {
+      const result = await analyse3DPrintingNeed(idea, selectedComponents)
+      setPrintAnalysis(result)
+    } catch {
+      setPrintAnalysis({
+        needs3DPrinting: false,
+        reason: 'Could not analyse. Make sure Ollama is running.',
+        advice: 'Try again after checking Ollama.',
+      })
+    } finally {
+      setPrintLoading(false)
+    }
+  }
+
   return (
-   <div className="min-h-screen page-enter">
+    <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
 
       <div className="px-16 pb-10">
@@ -127,24 +132,37 @@ function Viewer() {
               Idea: <span className="text-indigo-400 italic">"{idea}"</span>
             </p>
           </div>
+
           <div className="flex gap-3 mt-6">
-            <button onClick={() => navigate('/')} className="px-6 py-3 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition">
+            <button
+              onClick={() => navigate('/')}
+              className="px-6 py-3 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition"
+            >
               Start New
             </button>
             <button
-  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-  onClick={() => {
-    downloadSTL(selectedComponents, idea)
-    setStlExported(true)
-  }}
->
-  🖨️ Export STL
-</button>
+              onClick={analysePrinting}
+              disabled={printLoading}
+              className="px-6 py-3 bg-violet-700 hover:bg-violet-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+            >
+              {printLoading ? '🔍 Analysing...' : '🔍 Check 3D Print Need'}
+            </button>
+            {printAnalysis?.needs3DPrinting && (
+              <button
+                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
+                onClick={() => {
+                  downloadSTL(selectedComponents, idea, printAnalysis)
+                  setStlExported(true)
+                }}
+              >
+                🖨️ Export Enclosure STL
+              </button>
+            )}
           </div>
         </div>
 
         <div className="flex gap-6">
-          {/* 3D Canvas - left side */}
+          {/* 3D Canvas */}
           <div className="flex-1">
             <div className="flex gap-4 mb-3 text-xs text-slate-600">
               <span>🖱️ Drag — Rotate</span>
@@ -166,11 +184,9 @@ function Viewer() {
             </div>
           </div>
 
-          {/* AI Chat - right side */}
+          {/* AI Chat */}
           <div className="w-80 flex flex-col">
             <h3 className="text-sm font-semibold text-slate-300 mb-3">🧠 Ask AI about your prototype</h3>
-
-            {/* Messages */}
             <div className="flex-1 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4 overflow-y-auto" style={{ height: '400px' }}>
               {messages.map((msg, i) => (
                 <ChatMessage key={i} msg={msg} />
@@ -187,8 +203,6 @@ function Viewer() {
                 </div>
               )}
             </div>
-
-            {/* Quick questions */}
             <div className="flex flex-wrap gap-2 my-3">
               {['Will this work?', 'What voltage?', 'Suggest improvements'].map(q => (
                 <button
@@ -200,8 +214,6 @@ function Viewer() {
                 </button>
               ))}
             </div>
-
-            {/* Input */}
             <div className="flex gap-2">
               <input
                 value={input}
@@ -221,23 +233,71 @@ function Viewer() {
           </div>
         </div>
 
+        {/* 3D Print Analysis Result */}
+        {printAnalysis && (
+          <div className={`mt-4 border rounded-xl px-6 py-5 ${
+            printAnalysis.needs3DPrinting
+              ? 'bg-indigo-950 border-indigo-800'
+              : 'bg-slate-900 border-slate-700'
+          }`}>
+            <div className="flex items-start gap-4">
+              <span className="text-3xl">
+                {printAnalysis.needs3DPrinting ? '🖨️' : '📦'}
+              </span>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="font-semibold text-white">
+                    {printAnalysis.needs3DPrinting
+                      ? '3D Printing Recommended'
+                      : '3D Printing Not Required'}
+                  </h3>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                    printAnalysis.needs3DPrinting
+                      ? 'bg-indigo-800 text-indigo-300'
+                      : 'bg-slate-700 text-slate-400'
+                  }`}>
+                    {printAnalysis.enclosureType || 'No enclosure'}
+                  </span>
+                </div>
+                <p className="text-slate-300 text-sm mb-2">{printAnalysis.reason}</p>
+                <p className="text-slate-500 text-xs">{printAnalysis.advice}</p>
+                {printAnalysis.needs3DPrinting && printAnalysis.dimensions && (
+                  <div className="flex gap-4 mt-3 flex-wrap">
+                    <div className="text-xs text-slate-500">
+                      Enclosure size:
+                      <span className="text-indigo-400 ml-1 font-mono">
+                        {printAnalysis.dimensions.width} × {printAnalysis.dimensions.height} × {printAnalysis.dimensions.depth} mm
+                      </span>
+                    </div>
+                    {printAnalysis.features && (
+                      <div className="flex gap-1 flex-wrap">
+                        {printAnalysis.features.map(f => (
+                          <span key={f} className="text-xs bg-indigo-900 text-indigo-400 px-2 py-0.5 rounded-full">
+                            {f.replace(/_/g, ' ')}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STL Downloaded Banner */}
         {stlExported && (
-  <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
-    <span className="text-2xl">✅</span>
-    <div>
-      <p className="text-green-400 font-semibold text-sm">STL File Downloaded!</p>
-      <p className="text-green-700 text-xs mt-0.5">
-        Your file is ready to send to any 3D printing service like JLCPCB, Shapeways, or your local print shop.
-      </p>
-    </div>
-    <button
-      onClick={() => setStlExported(false)}
-      className="ml-auto text-green-700 hover:text-green-500 text-xs transition"
-    >
-      ✕
-    </button>
-  </div>
-)}
+          <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
+            <span className="text-2xl">✅</span>
+            <div>
+              <p className="text-green-400 font-semibold text-sm">Enclosure STL Downloaded!</p>
+              <p className="text-green-700 text-xs mt-0.5">
+                Send this file to JLCPCB, Shapeways, or your local 3D print shop.
+              </p>
+            </div>
+            <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs transition">✕</button>
+          </div>
+        )}
 
         {/* Component list */}
         <div className="mt-6 grid grid-cols-6 gap-3">

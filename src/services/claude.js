@@ -23,3 +23,23 @@ export async function analyseIdea(idea) {
   
   return JSON.parse(jsonMatch[0])
 }
+
+export async function analyse3DPrintingNeed(idea, components) {
+  const componentList = components.map(c => c.name + ' (' + c.category + ')').join(', ')
+
+  const response = await fetch('http://localhost:11434/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'llama3.2',
+      prompt: 'You are an expert hardware engineer. A user wants to build: "' + idea + '". Components: ' + componentList + '.\n\nDecide if this prototype needs a 3D printed enclosure or structural parts.\n\nReply ONLY with this exact JSON, no explanation:\n\n{"needs3DPrinting": true, "reason": "one sentence why", "enclosureType": "wearable|handheld|desktop|wall-mount|open-frame", "dimensions": {"width": 80, "height": 40, "depth": 30}, "features": ["screen_cutout", "button_holes", "port_holes", "ventilation", "mounting_holes"], "advice": "one sentence about the enclosure design"}\n\nIf no 3D printing needed: {"needs3DPrinting": false, "reason": "one sentence why not", "advice": "what to use instead"}',
+      stream: false,
+    }),
+  })
+
+  const data = await response.json()
+  const text = data.response
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) throw new Error('No JSON found')
+  return JSON.parse(jsonMatch[0])
+}
