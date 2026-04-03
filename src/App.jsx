@@ -1,4 +1,5 @@
 import Layout from './pages/Layout'
+import History from './pages/History'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Components from './pages/Components'
@@ -9,11 +10,12 @@ function Navbar() {
   const location = useLocation()
 
   const links = [
-  { label: 'Home', path: '/' },
-  { label: 'Components', path: '/components' },
-  { label: 'Layout', path: '/layout' },
-  { label: '3D View', path: '/viewer' },
-]
+    { label: 'Home', path: '/' },
+    { label: 'History', path: '/history' },
+    { label: 'Components', path: '/components' },
+    { label: 'Layout', path: '/layout' },
+    { label: '3D View', path: '/viewer' },
+  ]
 
   return (
     <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e] bg-[#0d0d1a]">
@@ -52,6 +54,7 @@ function App() {
           <Route path="/components" element={<Components />} />
           <Route path="/viewer" element={<Viewer />} />
           <Route path="/layout" element={<Layout />} />
+          <Route path="/history" element={<History />} />
         </Routes>
       </div>
     </BrowserRouter>

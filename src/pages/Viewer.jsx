@@ -2,6 +2,7 @@ import { downloadBOM, generateBOMCSV } from '../services/bomExport'
 import ComponentDetail from '../components/ComponentDetail'
 import { analyse3DPrintingNeed } from '../services/claude'
 import { downloadSTL } from '../services/stlExport'
+import { saveProject } from '../services/storage'
 import { Suspense, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
@@ -81,6 +82,7 @@ function Viewer() {
   const [printLoading, setPrintLoading] = useState(false)
   const [selectedComp, setSelectedComp] = useState(null)
   const [bomExported, setBomExported] = useState(false)
+  const [saved, setSaved] = useState(false)
 
   async function sendMessage() {
     if (!input.trim()) return
@@ -146,6 +148,20 @@ function Viewer() {
             </button>
             <button
               onClick={() => {
+                saveProject(idea, selectedComponents, null)
+                setSaved(true)
+              }}
+              disabled={saved}
+              className={`px-6 py-3 rounded-xl text-sm font-semibold transition ${
+                saved
+                  ? 'bg-green-900 text-green-400 cursor-default'
+                  : 'bg-green-700 hover:bg-green-600 text-white'
+              }`}
+            >
+              {saved ? '✅ Saved!' : '💾 Save Project'}
+            </button>
+            <button
+              onClick={() => {
                 downloadBOM(selectedComponents, idea)
                 setBomExported(true)
               }}
@@ -175,7 +191,6 @@ function Viewer() {
         </div>
 
         <div className="flex gap-6">
-          {/* 3D Canvas */}
           <div className="flex-1">
             <div className="flex gap-4 mb-3 text-xs text-slate-600">
               <span>🖱️ Drag — Rotate</span>
@@ -197,7 +212,6 @@ function Viewer() {
             </div>
           </div>
 
-          {/* AI Chat */}
           <div className="w-80 flex flex-col">
             <h3 className="text-sm font-semibold text-slate-300 mb-3">🧠 Ask AI about your prototype</h3>
             <div className="flex-1 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4 overflow-y-auto" style={{ height: '400px' }}>
@@ -246,7 +260,6 @@ function Viewer() {
           </div>
         </div>
 
-        {/* 3D Print Analysis Result */}
         {printAnalysis && (
           <div className={`mt-4 border rounded-xl px-6 py-5 ${
             printAnalysis.needs3DPrinting
@@ -260,14 +273,10 @@ function Viewer() {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h3 className="font-semibold text-white">
-                    {printAnalysis.needs3DPrinting
-                      ? '3D Printing Recommended'
-                      : '3D Printing Not Required'}
+                    {printAnalysis.needs3DPrinting ? '3D Printing Recommended' : '3D Printing Not Required'}
                   </h3>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    printAnalysis.needs3DPrinting
-                      ? 'bg-indigo-800 text-indigo-300'
-                      : 'bg-slate-700 text-slate-400'
+                    printAnalysis.needs3DPrinting ? 'bg-indigo-800 text-indigo-300' : 'bg-slate-700 text-slate-400'
                   }`}>
                     {printAnalysis.enclosureType || 'No enclosure'}
                   </span>
@@ -298,21 +307,17 @@ function Viewer() {
           </div>
         )}
 
-        {/* STL Downloaded Banner */}
         {stlExported && (
           <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">✅</span>
             <div>
               <p className="text-green-400 font-semibold text-sm">Enclosure STL Downloaded!</p>
-              <p className="text-green-700 text-xs mt-0.5">
-                Send this file to JLCPCB, Shapeways, or your local 3D print shop.
-              </p>
+              <p className="text-green-700 text-xs mt-0.5">Send this file to JLCPCB, Shapeways, or your local 3D print shop.</p>
             </div>
             <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs transition">✕</button>
           </div>
         )}
 
-        {/* Component List */}
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-slate-400">
