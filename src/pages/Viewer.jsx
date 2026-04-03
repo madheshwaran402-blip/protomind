@@ -1,3 +1,5 @@
+import { downloadBOM, generateBOMCSV } from '../services/bomExport'
+import ComponentDetail from '../components/ComponentDetail'
 import { analyse3DPrintingNeed } from '../services/claude'
 import { downloadSTL } from '../services/stlExport'
 import { Suspense, useState } from 'react'
@@ -77,6 +79,8 @@ function Viewer() {
   const [loading, setLoading] = useState(false)
   const [printAnalysis, setPrintAnalysis] = useState(null)
   const [printLoading, setPrintLoading] = useState(false)
+  const [selectedComp, setSelectedComp] = useState(null)
+  const [bomExported, setBomExported] = useState(false)
 
   async function sendMessage() {
     if (!input.trim()) return
@@ -133,12 +137,21 @@ function Viewer() {
             </p>
           </div>
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex gap-3 mt-6 flex-wrap justify-end">
             <button
               onClick={() => navigate('/')}
               className="px-6 py-3 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition"
             >
               Start New
+            </button>
+            <button
+              onClick={() => {
+                downloadBOM(selectedComponents, idea)
+                setBomExported(true)
+              }}
+              className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
+            >
+              📋 Download BOM
             </button>
             <button
               onClick={analysePrinting}
@@ -299,17 +312,42 @@ function Viewer() {
           </div>
         )}
 
-        {/* Component list */}
-        <div className="mt-6 grid grid-cols-6 gap-3">
-          {selectedComponents.map(comp => (
-            <div key={comp.id} className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl p-3 text-center">
-              <div className="text-2xl mb-1">{comp.icon}</div>
-              <div className="text-xs text-white font-medium leading-tight">{comp.name}</div>
-              <div className="text-xs text-slate-600 mt-1">{comp.category}</div>
-            </div>
-          ))}
+        {/* Component List */}
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-sm font-semibold text-slate-400">
+              Components — click any to see details
+            </h3>
+            {bomExported && (
+              <span className="text-xs text-emerald-400">✅ BOM Downloaded!</span>
+            )}
+          </div>
+          {selectedComponents.length > 0 && (() => {
+            const { totalMin, totalMax } = generateBOMCSV(selectedComponents, idea)
+            return (
+              <p className="text-xs text-slate-600 mb-3">
+                Estimated total cost: <span className="text-emerald-400">${totalMin.toFixed(0)} — ${totalMax.toFixed(0)} USD</span>
+              </p>
+            )
+          })()}
+          <div className="grid grid-cols-6 gap-3">
+            {selectedComponents.map(comp => (
+              <div
+                key={comp.id}
+                onClick={() => setSelectedComp(comp)}
+                className="bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-500 rounded-xl p-3 text-center cursor-pointer transition"
+              >
+                <div className="text-2xl mb-1">{comp.icon}</div>
+                <div className="text-xs text-white font-medium leading-tight">{comp.name}</div>
+                <div className="text-xs text-slate-600 mt-1">{comp.category}</div>
+                <div className="text-xs text-indigo-500 mt-1">tap for details</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <ComponentDetail comp={selectedComp} onClose={() => setSelectedComp(null)} />
     </div>
   )
 }
