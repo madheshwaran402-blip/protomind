@@ -3,6 +3,9 @@ import ComponentDetail from '../components/ComponentDetail'
 import { analyse3DPrintingNeed } from '../services/claude'
 import { downloadSTL } from '../services/stlExport'
 import { saveProject } from '../services/storage'
+import { validatePrototype } from '../services/validation'
+import ValidationPanel from '../components/ValidationPanel'
+import ChangeValidator from '../components/ChangeValidator'
 import { Suspense, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
@@ -83,6 +86,8 @@ function Viewer() {
   const [selectedComp, setSelectedComp] = useState(null)
   const [bomExported, setBomExported] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [validation, setValidation] = useState(null)
+  const [validating, setValidating] = useState(false)
 
   async function sendMessage() {
     if (!input.trim()) return
@@ -120,6 +125,26 @@ function Viewer() {
       })
     } finally {
       setPrintLoading(false)
+    }
+  }
+
+  async function handleValidate() {
+    setValidating(true)
+    setValidation(null)
+    try {
+      const result = await validatePrototype(idea, selectedComponents)
+      setValidation(result)
+    } catch {
+      setValidation({
+        valid: false,
+        score: 0,
+        issues: ['Could not validate. Make sure Ollama is running.'],
+        warnings: [],
+        suggestions: [],
+        verdict: 'Validation failed',
+      })
+    } finally {
+      setValidating(false)
     }
   }
 
@@ -168,6 +193,13 @@ function Viewer() {
               className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
             >
               📋 Download BOM
+            </button>
+            <button
+              onClick={handleValidate}
+              disabled={validating}
+              className="px-6 py-3 bg-orange-700 hover:bg-orange-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+            >
+              {validating ? '🔍 Validating...' : '🔍 Validate Prototype'}
             </button>
             <button
               onClick={analysePrinting}
@@ -318,6 +350,8 @@ function Viewer() {
           </div>
         )}
 
+        <ChangeValidator idea={idea} components={selectedComponents} />
+
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-slate-400">
@@ -353,6 +387,11 @@ function Viewer() {
       </div>
 
       <ComponentDetail comp={selectedComp} onClose={() => setSelectedComp(null)} />
+      <ValidationPanel
+        result={validation}
+        loading={validating}
+        onClose={() => { setValidation(null); setValidating(false) }}
+      />
     </div>
   )
 }
