@@ -1,3 +1,4 @@
+import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
 import ComponentDetail from '../components/ComponentDetail'
 import { analyse3DPrintingNeed } from '../services/claude'
@@ -351,6 +352,8 @@ function Viewer() {
         )}
 
         <ChangeValidator idea={idea} components={selectedComponents} />
+        <ChangeValidator idea={idea} components={selectedComponents} />
+<CircuitDiagram idea={idea} components={selectedComponents} />
 
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
