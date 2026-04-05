@@ -1,3 +1,4 @@
+import Landing from './pages/Landing'
 import Parts from './pages/Parts'
 import Layout from './pages/Layout'
 import History from './pages/History'
@@ -58,6 +59,7 @@ function App() {
           <Route path="/layout" element={<Layout />} />
           <Route path="/history" element={<History />} />
           <Route path="/parts" element={<Parts />} />
+          <Route path="/landing" element={<Landing />} />
         </Routes>
       </div>
     </BrowserRouter>
