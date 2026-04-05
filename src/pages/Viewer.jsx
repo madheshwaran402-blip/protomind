@@ -5,6 +5,7 @@ import { analyse3DPrintingNeed } from '../services/claude'
 import { downloadSTL } from '../services/stlExport'
 import { saveProject } from '../services/storage'
 import { validatePrototype } from '../services/validation'
+import { generatePrototypePDF } from '../services/pdfExport'
 import ValidationPanel from '../components/ValidationPanel'
 import ChangeValidator from '../components/ChangeValidator'
 import { Suspense, useState } from 'react'
@@ -89,6 +90,7 @@ function Viewer() {
   const [saved, setSaved] = useState(false)
   const [validation, setValidation] = useState(null)
   const [validating, setValidating] = useState(false)
+  const [pdfExported, setPdfExported] = useState(false)
 
   async function sendMessage() {
     if (!input.trim()) return
@@ -194,6 +196,15 @@ function Viewer() {
               className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
             >
               📋 Download BOM
+            </button>
+            <button
+              onClick={() => {
+                generatePrototypePDF(idea, selectedComponents, validation)
+                setPdfExported(true)
+              }}
+              className="px-6 py-3 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition"
+            >
+              📄 Export PDF
             </button>
             <button
               onClick={handleValidate}
@@ -351,9 +362,19 @@ function Viewer() {
           </div>
         )}
 
+        {pdfExported && (
+          <div className="mt-4 bg-rose-950 border border-rose-800 rounded-xl px-6 py-4 flex items-center gap-4">
+            <span className="text-2xl">📄</span>
+            <div>
+              <p className="text-rose-400 font-semibold text-sm">PDF Report Downloaded!</p>
+              <p className="text-rose-700 text-xs mt-0.5">Share this with your team, teacher or 3D printing service.</p>
+            </div>
+            <button onClick={() => setPdfExported(false)} className="ml-auto text-rose-700 hover:text-rose-500 text-xs transition">✕</button>
+          </div>
+        )}
+
         <ChangeValidator idea={idea} components={selectedComponents} />
-        <ChangeValidator idea={idea} components={selectedComponents} />
-<CircuitDiagram idea={idea} components={selectedComponents} />
+        <CircuitDiagram idea={idea} components={selectedComponents} />
 
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">

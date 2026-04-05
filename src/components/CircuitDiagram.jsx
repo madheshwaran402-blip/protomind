@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { generateCircuitData } from '../services/CircuitDiagram'
+import { generateCircuitData } from '../services/circuitDiagram.js'
 
 const WIRE_COLORS = {
   red: '#ef4444',
