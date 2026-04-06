@@ -4,23 +4,27 @@ import Landing from './pages/Landing'
 import Parts from './pages/Parts'
 import Layout from './pages/Layout'
 import History from './pages/History'
+import Settings from './pages/Settings'
+import { getSettings } from './services/settings'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Components from './pages/Components'
 import Viewer from './pages/Viewer'
+import { useEffect } from 'react'
 
 function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
 
   const links = [
-  { label: 'Home', path: '/' },
-  { label: 'History', path: '/history' },
-  { label: 'Parts', path: '/parts' },
-  { label: 'Components', path: '/components' },
-  { label: 'Layout', path: '/layout' },
-  { label: '3D View', path: '/viewer' },
-]
+    { label: 'Home', path: '/' },
+    { label: 'History', path: '/history' },
+    { label: 'Parts', path: '/parts' },
+    { label: 'Components', path: '/components' },
+    { label: 'Layout', path: '/layout' },
+    { label: '3D View', path: '/viewer' },
+    { label: '⚙️', path: '/settings' },
+  ]
 
   return (
     <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e] bg-[#0d0d1a]">
@@ -51,6 +55,17 @@ function Navbar() {
 }
 
 function App() {
+  useEffect(() => {
+    const settings = getSettings()
+    if (settings.theme === 'light') {
+      document.body.style.backgroundColor = '#f8fafc'
+      document.body.style.color = '#0f172a'
+    } else {
+      document.body.style.backgroundColor = '#0a0a0f'
+      document.body.style.color = '#ffffff'
+    }
+  }, [])
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#0a0a0f] text-white">
@@ -64,6 +79,7 @@ function App() {
           <Route path="/parts" element={<Parts />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
     </BrowserRouter>
