@@ -1,3 +1,5 @@
+import Auth from './pages/Auth'
+import UserMenu from './components/UserMenu'
 import Landing from './pages/Landing'
 import Parts from './pages/Parts'
 import Layout from './pages/Layout'
@@ -43,6 +45,7 @@ function Navbar() {
           </span>
         ))}
       </div>
+      <UserMenu />
     </nav>
   )
 }
@@ -60,6 +63,7 @@ function App() {
           <Route path="/history" element={<History />} />
           <Route path="/parts" element={<Parts />} />
           <Route path="/landing" element={<Landing />} />
+          <Route path="/auth" element={<Auth />} />
         </Routes>
       </div>
     </BrowserRouter>

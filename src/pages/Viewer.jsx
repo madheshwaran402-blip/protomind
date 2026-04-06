@@ -1,3 +1,4 @@
+import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
 import ComponentDetail from '../components/ComponentDetail'
@@ -175,19 +176,27 @@ function Viewer() {
               Start New
             </button>
             <button
-              onClick={() => {
-                saveProject(idea, selectedComponents, null)
-                setSaved(true)
-              }}
-              disabled={saved}
-              className={`px-6 py-3 rounded-xl text-sm font-semibold transition ${
-                saved
-                  ? 'bg-green-900 text-green-400 cursor-default'
-                  : 'bg-green-700 hover:bg-green-600 text-white'
-              }`}
-            >
-              {saved ? '✅ Saved!' : '💾 Save Project'}
-            </button>
+  onClick={async () => {
+    saveProject(idea, selectedComponents, null)
+    setSaved(true)
+    const user = await getUser()
+    if (user) {
+      try {
+        await saveProjectCloud(idea, selectedComponents)
+      } catch {
+        console.log('Cloud save failed')
+      }
+    }
+  }}
+  disabled={saved}
+  className={`px-6 py-3 rounded-xl text-sm font-semibold transition ${
+    saved
+      ? 'bg-green-900 text-green-400 cursor-default'
+      : 'bg-green-700 hover:bg-green-600 text-white'
+  }`}
+>
+  {saved ? '✅ Saved!' : '💾 Save Project'}
+</button>
             <button
               onClick={() => {
                 downloadBOM(selectedComponents, idea)
