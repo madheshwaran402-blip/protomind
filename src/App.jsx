@@ -1,3 +1,6 @@
+import CommandPalette from './components/CommandPalette'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { useState, useEffect } from 'react'
 import Auth from './pages/Auth'
 import UserMenu from './components/UserMenu'
 import Landing from './pages/Landing'
@@ -10,9 +13,8 @@ import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-ro
 import Home from './pages/Home'
 import Components from './pages/Components'
 import Viewer from './pages/Viewer'
-import { useEffect } from 'react'
 
-function Navbar() {
+function Navbar({ onOpenPalette }) {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -49,12 +51,28 @@ function Navbar() {
           </span>
         ))}
       </div>
-      <UserMenu />
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onOpenPalette}
+          className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition"
+        >
+          <span className="text-slate-400 text-sm">🔍</span>
+          <span className="text-slate-500 text-xs">Search</span>
+          <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded">⌘K</kbd>
+        </button>
+        <UserMenu />
+      </div>
     </nav>
   )
 }
 
 function App() {
+  const [paletteOpen, setPaletteOpen] = useState(false)
+
+  useKeyboardShortcuts([
+    { key: 'k', meta: true, action: () => setPaletteOpen(prev => !prev) },
+  ])
+
   useEffect(() => {
     const settings = getSettings()
     if (settings.theme === 'light') {
@@ -69,7 +87,8 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#0a0a0f] text-white">
-        <Navbar />
+        <Navbar onOpenPalette={() => setPaletteOpen(true)} />
+        <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/components" element={<Components />} />
