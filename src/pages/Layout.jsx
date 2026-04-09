@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import StepBar from '../components/StepBar'
+import { notify } from '../services/toast'
 
 const CATEGORY_COLORS = {
   Microcontroller: { bg: '#1e1b4b', border: '#6366f1', text: '#a5b4fc' },
@@ -15,7 +16,6 @@ const CATEGORY_COLORS = {
 
 function ComponentBlock({ comp, position, onDragStart }) {
   const colors = CATEGORY_COLORS[comp.category] || CATEGORY_COLORS.Module
-
   return (
     <div
       draggable
@@ -43,13 +43,8 @@ function ComponentBlock({ comp, position, onDragStart }) {
 }
 
 function ConnectionLines({ components, positions }) {
-  if (components.length < 2) return null
-
-  const microcontroller = components.find(c =>
-    c.category === 'Microcontroller'
-  )
+  const microcontroller = components.find(c => c.category === 'Microcontroller')
   if (!microcontroller) return null
-
   const mcPos = positions[microcontroller.id]
   if (!mcPos) return null
 
@@ -63,13 +58,9 @@ function ConnectionLines({ components, positions }) {
           return (
             <line
               key={comp.id}
-              x1={mcPos.x + 80}
-              y1={mcPos.y + 50}
-              x2={pos.x + 80}
-              y2={pos.y + 50}
-              stroke="#2e2e4e"
-              strokeWidth="2"
-              strokeDasharray="6,4"
+              x1={mcPos.x + 80} y1={mcPos.y + 50}
+              x2={pos.x + 80} y2={pos.y + 50}
+              stroke="#2e2e4e" strokeWidth="2" strokeDasharray="6,4"
             />
           )
         })}
@@ -96,8 +87,43 @@ function Layout() {
   }
 
   const [positions, setPositions] = useState(getInitialPositions)
+  const [history, setHistory] = useState([getInitialPositions()])
+  const [historyIndex, setHistoryIndex] = useState(0)
   const [draggingId, setDraggingId] = useState(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+
+  const canUndo = historyIndex > 0
+  const canRedo = historyIndex < history.length - 1
+
+  function pushHistory(newPositions) {
+    const newHistory = history.slice(0, historyIndex + 1)
+    newHistory.push({ ...newPositions })
+    setHistory(newHistory)
+    setHistoryIndex(newHistory.length - 1)
+  }
+
+  function undo() {
+    if (!canUndo) return
+    const newIndex = historyIndex - 1
+    setHistoryIndex(newIndex)
+    setPositions({ ...history[newIndex] })
+    notify.info('Undo')
+  }
+
+  function redo() {
+    if (!canRedo) return
+    const newIndex = historyIndex + 1
+    setHistoryIndex(newIndex)
+    setPositions({ ...history[newIndex] })
+    notify.info('Redo')
+  }
+
+  function resetLayout() {
+    const initial = getInitialPositions()
+    setPositions(initial)
+    pushHistory(initial)
+    notify.info('Layout reset')
+  }
 
   function handleDragStart(e, id) {
     setDraggingId(id)
@@ -123,6 +149,9 @@ function Layout() {
 
   function handleDrop(e) {
     e.preventDefault()
+    if (draggingId) {
+      pushHistory(positions)
+    }
     setDraggingId(null)
   }
 
@@ -137,10 +166,7 @@ function Layout() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-slate-400 mb-4">No components selected.</p>
-          <button
-            onClick={() => navigate('/')}
-            className="px-6 py-3 bg-indigo-600 rounded-xl text-sm"
-          >
+          <button onClick={() => navigate('/')} className="px-6 py-3 bg-indigo-600 rounded-xl text-sm">
             Start Over
           </button>
         </div>
@@ -153,7 +179,6 @@ function Layout() {
       <StepBar currentStep={3} />
 
       <div className="px-16 pb-10">
-        {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div>
             <button
@@ -164,15 +189,48 @@ function Layout() {
             </button>
             <h2 className="text-3xl font-bold mb-1">Component Layout</h2>
             <p className="text-slate-400 text-sm">
-              Drag components to arrange your layout. Lines show connections to the microcontroller.
+              Drag components to arrange your layout.
             </p>
           </div>
-          <button
-            onClick={handleConfirm}
-            className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition mt-6"
-          >
-            View in 3D →
-          </button>
+
+          <div className="flex gap-3 mt-6 items-center">
+            {/* Undo/Redo */}
+            <button
+              onClick={undo}
+              disabled={!canUndo}
+              className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition disabled:opacity-30"
+              title="Undo (last move)"
+            >
+              ↩ Undo
+            </button>
+            <button
+              onClick={redo}
+              disabled={!canRedo}
+              className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition disabled:opacity-30"
+              title="Redo"
+            >
+              Redo ↪
+            </button>
+            <button
+              onClick={resetLayout}
+              className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-sm transition"
+            >
+              ↺ Reset
+            </button>
+            <button
+              onClick={handleConfirm}
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
+            >
+              View in 3D →
+            </button>
+          </div>
+        </div>
+
+        {/* History indicator */}
+        <div className="flex items-center gap-2 mb-4 text-xs text-slate-600">
+          <span>Step {historyIndex + 1} of {history.length}</span>
+          <span>·</span>
+          <span>{canUndo ? historyIndex + ' move' + (historyIndex !== 1 ? 's' : '') + ' made' : 'No moves yet'}</span>
         </div>
 
         {/* Legend */}
@@ -195,7 +253,6 @@ function Layout() {
           style={{ position: 'relative', height: '500px' }}
           className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl overflow-hidden"
         >
-          {/* Grid dots background */}
           <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
             <defs>
               <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
@@ -205,10 +262,7 @@ function Layout() {
             <rect width="100%" height="100%" fill="url(#grid)" />
           </svg>
 
-          <ConnectionLines
-            components={selectedComponents}
-            positions={positions}
-          />
+          <ConnectionLines components={selectedComponents} positions={positions} />
 
           {selectedComponents.map(comp => (
             <ComponentBlock
@@ -221,7 +275,7 @@ function Layout() {
         </div>
 
         <p className="text-slate-600 text-xs mt-3 text-center">
-          💡 Drag any component to rearrange the layout
+          💡 Drag to move · ↩ Undo last move · ↪ Redo · ↺ Reset to original
         </p>
       </div>
     </div>
