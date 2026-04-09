@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import StepBar from '../components/StepBar'
 import { notify } from '../services/toast'
+import html2canvas from 'html2canvas'
 
 const CATEGORY_COLORS = {
   Microcontroller: { bg: '#1e1b4b', border: '#6366f1', text: '#a5b4fc' },
@@ -73,6 +74,7 @@ function Layout() {
   const navigate = useNavigate()
   const idea = location.state?.idea || ''
   const selectedComponents = location.state?.selectedComponents || []
+  const canvasRef = useRef(null)
 
   function getInitialPositions() {
     const positions = {}
@@ -123,6 +125,26 @@ function Layout() {
     setPositions(initial)
     pushHistory(initial)
     notify.info('Layout reset')
+  }
+
+  async function exportAsImage() {
+    if (!canvasRef.current) return
+    try {
+      notify.info('Generating image...')
+      const canvas = await html2canvas(canvasRef.current, {
+        backgroundColor: '#0d0d1a',
+        scale: 2,
+        useCORS: true,
+      })
+      const url = canvas.toDataURL('image/png')
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'ProtoMind_Layout.png'
+      link.click()
+      notify.success('Layout image downloaded!')
+    } catch {
+      notify.error('Could not export image')
+    }
   }
 
   function handleDragStart(e, id) {
@@ -193,13 +215,11 @@ function Layout() {
             </p>
           </div>
 
-          <div className="flex gap-3 mt-6 items-center">
-            {/* Undo/Redo */}
+          <div className="flex gap-3 mt-6 items-center flex-wrap justify-end">
             <button
               onClick={undo}
               disabled={!canUndo}
               className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition disabled:opacity-30"
-              title="Undo (last move)"
             >
               ↩ Undo
             </button>
@@ -207,7 +227,6 @@ function Layout() {
               onClick={redo}
               disabled={!canRedo}
               className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition disabled:opacity-30"
-              title="Redo"
             >
               Redo ↪
             </button>
@@ -218,6 +237,12 @@ function Layout() {
               ↺ Reset
             </button>
             <button
+              onClick={exportAsImage}
+              className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-sm transition"
+            >
+              🖼️ Export Image
+            </button>
+            <button
               onClick={handleConfirm}
               className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
             >
@@ -226,14 +251,12 @@ function Layout() {
           </div>
         </div>
 
-        {/* History indicator */}
         <div className="flex items-center gap-2 mb-4 text-xs text-slate-600">
           <span>Step {historyIndex + 1} of {history.length}</span>
           <span>·</span>
           <span>{canUndo ? historyIndex + ' move' + (historyIndex !== 1 ? 's' : '') + ' made' : 'No moves yet'}</span>
         </div>
 
-        {/* Legend */}
         <div className="flex gap-3 mb-4 flex-wrap">
           {Object.entries(CATEGORY_COLORS).slice(0, 6).map(([cat, colors]) => (
             <div
@@ -246,8 +269,8 @@ function Layout() {
           ))}
         </div>
 
-        {/* Canvas */}
         <div
+          ref={canvasRef}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           style={{ position: 'relative', height: '500px' }}
@@ -275,7 +298,7 @@ function Layout() {
         </div>
 
         <p className="text-slate-600 text-xs mt-3 text-center">
-          💡 Drag to move · ↩ Undo last move · ↪ Redo · ↺ Reset to original
+          💡 Drag to move · ↩ Undo · ↪ Redo · ↺ Reset · 🖼️ Export Image
         </p>
       </div>
     </div>

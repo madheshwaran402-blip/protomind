@@ -1,10 +1,32 @@
-import StepBar from '../components/StepBar'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import StepBar from '../components/StepBar'
+import { getAllProjects } from '../services/storage'
 
 function Home() {
   const [idea, setIdea] = useState('')
   const navigate = useNavigate()
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalComponents: 0,
+    lastIdea: null,
+    lastDate: null,
+  })
+
+  useEffect(() => {
+    const projects = getAllProjects()
+    if (projects.length > 0) {
+      const totalComponents = projects.reduce((sum, p) => sum + (p.components?.length || 0), 0)
+      setStats({
+        totalProjects: projects.length,
+        totalComponents,
+        lastIdea: projects[0].idea,
+        lastDate: new Date(projects[0].createdAt).toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric',
+        }),
+      })
+    }
+  }, [])
 
   function handleGenerate() {
     if (idea.trim().length > 0) {
@@ -13,11 +35,10 @@ function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center text-center px-10 pt-20 pb-16 page-enter">
-      
+    <div className="flex flex-col items-center text-center px-10 pt-10 pb-16 page-enter">
       <StepBar currentStep={1} />
 
-      <div className="bg-indigo-950 text-indigo-400 text-sm px-5 py-2 rounded-full border border-indigo-800 mb-6">
+      <div className="bg-indigo-950 text-indigo-400 text-sm px-5 py-2 rounded-full border border-indigo-800 mb-6 mt-4">
         AI Prototype Generator
       </div>
 
@@ -52,7 +73,6 @@ function Home() {
         </button>
       </div>
 
-      {/* Suggestions */}
       <div className="flex gap-3 mt-5 flex-wrap justify-center items-center">
         <span className="text-slate-600 text-sm">Try:</span>
         {[
@@ -70,8 +90,62 @@ function Home() {
         ))}
       </div>
 
+      {/* Stats Dashboard */}
+      {stats.totalProjects > 0 && (
+        <div className="w-full max-w-3xl mt-16 mb-4">
+          <h3 className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-4 text-center">
+            Your ProtoMind Stats
+          </h3>
+          <div className="grid grid-cols-4 gap-4">
+            {[
+              { label: 'Prototypes Built', value: stats.totalProjects, icon: '⚡' },
+              { label: 'Components Used', value: stats.totalComponents, icon: '🔧' },
+              { label: 'Last Built', value: stats.lastDate, icon: '📅' },
+              { label: 'AI Engine', value: 'Ollama', icon: '🧠' },
+            ].map(stat => (
+              <div
+                key={stat.label}
+                className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4 text-center hover:border-indigo-800 transition"
+              >
+                <div className="text-2xl mb-2">{stat.icon}</div>
+                <div className="text-xl font-bold text-indigo-400 mb-1">{stat.value}</div>
+                <div className="text-slate-600 text-xs">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {stats.lastIdea && (
+            <div
+              className="mt-3 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl px-5 py-3 flex items-center gap-3 cursor-pointer hover:border-indigo-800 transition"
+              onClick={() => setIdea(stats.lastIdea)}
+            >
+              <span className="text-slate-500 text-xs">Last prototype:</span>
+              <span className="text-indigo-400 text-xs italic flex-1 truncate">"{stats.lastIdea}"</span>
+              <span className="text-slate-600 text-xs">Click to reload →</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Quick Actions */}
+      <div className="flex gap-3 mt-8 mb-12 flex-wrap justify-center">
+        {[
+          { label: '📂 View History', path: '/history' },
+          { label: '🔧 Browse Parts', path: '/parts' },
+          { label: '⚙️ Settings', path: '/settings' },
+        ].map(action => (
+          <button
+            key={action.path}
+            onClick={() => navigate(action.path)}
+            className="px-5 py-2 bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-800 text-slate-400 hover:text-white rounded-xl text-sm transition"
+          >
+            {action.label}
+          </button>
+        ))}
+      </div>
+
       {/* Feature Cards */}
-      <div className="flex justify-center gap-6 px-16 mt-16 flex-wrap">
+      <div className="flex justify-center gap-6 flex-wrap">
         {[
           { icon: '🧠', title: 'AI Component Picker', desc: 'AI suggests the best components for your idea with reasons why' },
           { icon: '📐', title: '2D Layout Preview', desc: 'See how components connect before building anything physical' },
@@ -85,18 +159,15 @@ function Home() {
         ))}
       </div>
 
-      {/* How it works */}
+      {/* How it Works */}
       <div className="w-full max-w-3xl mt-20 mb-8">
-        <h2 className="text-2xl font-bold text-center mb-10 text-slate-300">
-          How ProtoMind Works
-        </h2>
-
+        <h2 className="text-2xl font-bold text-center mb-10 text-slate-300">How ProtoMind Works</h2>
         <div className="flex justify-between items-start gap-4">
           {[
             { step: '01', title: 'Describe Your Idea', desc: 'Type your prototype idea in plain English — one sentence is enough' },
             { step: '02', title: 'AI Picks Components', desc: 'Local AI analyses your idea and suggests the perfect components' },
             { step: '03', title: 'Arrange the Layout', desc: 'Drag components on a 2D canvas to design your circuit placement' },
-            { step: '04', title: 'Export & Print', desc: 'View in 3D and export an STL file to send to a 3D printing service' },
+            { step: '04', title: 'Export & Print', desc: 'View in 3D and export STL files to send to any 3D printing service' },
           ].map((item) => (
             <div key={item.step} className="flex-1 text-center">
               <div className="text-3xl font-black text-indigo-900 mb-3">{item.step}</div>
@@ -106,7 +177,6 @@ function Home() {
           ))}
         </div>
       </div>
-
     </div>
   )
 }
