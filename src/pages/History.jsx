@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAllProjects, deleteProject } from '../services/storage'
+import { notify } from '../services/toast'
 
 function ProjectCard({ project, onLoad, onDelete }) {
   const date = new Date(project.createdAt).toLocaleDateString('en-US', {
@@ -15,24 +16,16 @@ function ProjectCard({ project, onLoad, onDelete }) {
 
   return (
     <div className="bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-800 rounded-2xl p-5 transition group">
-      {/* Thumbnail */}
       <div className="flex items-center justify-between mb-4">
         <div className="text-3xl">{project.thumbnail || '🔧'}</div>
         <span className="text-xs text-slate-600">{date} · {time}</span>
       </div>
-
-      {/* Idea */}
       <p className="text-white text-sm font-medium leading-relaxed mb-3 line-clamp-2">
         {project.idea}
       </p>
-
-      {/* Component count */}
       <div className="flex flex-wrap gap-1 mb-4">
         {project.components.slice(0, 4).map(comp => (
-          <span
-            key={comp.id}
-            className="text-xs bg-[#1e1e2e] text-slate-400 px-2 py-0.5 rounded-full"
-          >
+          <span key={comp.id} className="text-xs bg-[#1e1e2e] text-slate-400 px-2 py-0.5 rounded-full">
             {comp.icon} {comp.name.split(' ')[0]}
           </span>
         ))}
@@ -42,8 +35,6 @@ function ProjectCard({ project, onLoad, onDelete }) {
           </span>
         )}
       </div>
-
-      {/* Actions */}
       <div className="flex gap-2">
         <button
           onClick={() => onLoad(project)}
@@ -67,10 +58,12 @@ function History() {
   const [projects, setProjects] = useState([])
 
   useEffect(() => {
-    setProjects(getAllProjects())
-  }, [])
+  const data = getAllProjects()
+  setProjects(data)
+}, [])
 
   function handleLoad(project) {
+    notify.info('Loading project...')
     navigate('/viewer', {
       state: {
         idea: project.idea,
@@ -83,6 +76,7 @@ function History() {
   function handleDelete(id) {
     deleteProject(id)
     setProjects(getAllProjects())
+    notify.success('Project deleted')
   }
 
   return (

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { getSettings, saveSettings, resetSettings } from '../services/settings'
 import { getAllProjects } from '../services/storage'
+import { notify } from '../services/toast'
 
 function Toggle({ value, onChange }) {
   return (
@@ -39,22 +40,19 @@ function SectionTitle({ title }) {
 
 function Settings() {
   const [settings, setSettings] = useState(getSettings())
-  const [saved, setSaved] = useState(false)
   const projects = getAllProjects()
 
   function update(key, value) {
     const updated = { ...settings, [key]: value }
     setSettings(updated)
     saveSettings(updated)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    notify.success('Setting saved!')
   }
 
   function handleReset() {
     const defaults = resetSettings()
     setSettings(defaults)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    notify.info('Settings reset to defaults')
   }
 
   const AI_MODELS = [
@@ -67,21 +65,13 @@ function Settings() {
 
   return (
     <div className="min-h-screen page-enter px-16 py-10 max-w-3xl mx-auto">
-
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2 className="text-3xl font-bold mb-1">Settings</h2>
           <p className="text-slate-400 text-sm">Customise your ProtoMind experience</p>
         </div>
-        {saved && (
-          <span className="text-green-400 text-sm flex items-center gap-2">
-            ✅ Saved automatically
-          </span>
-        )}
       </div>
 
-      {/* App Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         {[
           { label: 'Saved Projects', value: projects.length },
@@ -95,11 +85,8 @@ function Settings() {
         ))}
       </div>
 
-      {/* Settings Sections */}
       <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl px-6">
-
         <SectionTitle title="Appearance" />
-
         <SettingRow label="Theme" desc="Choose between dark and light mode">
           <div className="flex gap-2">
             {['dark', 'light'].map(t => (
@@ -119,7 +106,6 @@ function Settings() {
         </SettingRow>
 
         <SectionTitle title="AI Configuration" />
-
         <SettingRow label="AI Model" desc="Choose which Ollama model to use">
           <select
             value={settings.aiModel}
@@ -132,10 +118,7 @@ function Settings() {
           </select>
         </SettingRow>
 
-        <SettingRow
-          label="Ollama Server URL"
-          desc="Change if you're running Ollama on a different port"
-        >
+        <SettingRow label="Ollama Server URL" desc="Change if running Ollama on a different port">
           <input
             value={settings.ollamaUrl}
             onChange={e => update('ollamaUrl', e.target.value)}
@@ -143,26 +126,13 @@ function Settings() {
           />
         </SettingRow>
 
-        <SettingRow
-          label="Auto Validate"
-          desc="Automatically validate prototype when reaching 3D View"
-        >
-          <Toggle
-            value={settings.autoValidate}
-            onChange={v => update('autoValidate', v)}
-          />
+        <SettingRow label="Auto Validate" desc="Automatically validate prototype when reaching 3D View">
+          <Toggle value={settings.autoValidate} onChange={v => update('autoValidate', v)} />
         </SettingRow>
 
         <SectionTitle title="Display" />
-
-        <SettingRow
-          label="Show Component Prices"
-          desc="Display estimated prices on component cards"
-        >
-          <Toggle
-            value={settings.showPrices}
-            onChange={v => update('showPrices', v)}
-          />
+        <SettingRow label="Show Component Prices" desc="Display estimated prices on component cards">
+          <Toggle value={settings.showPrices} onChange={v => update('showPrices', v)} />
         </SettingRow>
 
         <SettingRow label="Language" desc="Interface language">
@@ -178,15 +148,12 @@ function Settings() {
         </SettingRow>
 
         <SectionTitle title="Data" />
-
-        <SettingRow
-          label="Local Projects"
-          desc={projects.length + ' projects saved on this device'}
-        >
+        <SettingRow label="Local Projects" desc={projects.length + ' projects saved on this device'}>
           <button
             onClick={() => {
               if (confirm('Delete all local projects? This cannot be undone.')) {
                 localStorage.removeItem('protomind_projects')
+                notify.success('All projects cleared')
                 window.location.reload()
               }
             }}
@@ -196,10 +163,7 @@ function Settings() {
           </button>
         </SettingRow>
 
-        <SettingRow
-          label="Export All Projects"
-          desc="Download all your projects as a JSON backup"
-        >
+        <SettingRow label="Export All Projects" desc="Download all your projects as a JSON backup">
           <button
             onClick={() => {
               const data = localStorage.getItem('protomind_projects') || '[]'
@@ -210,6 +174,7 @@ function Settings() {
               link.download = 'protomind_backup.json'
               link.click()
               URL.revokeObjectURL(url)
+              notify.success('Backup downloaded!')
             }}
             className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-xl text-xs transition"
           >
@@ -218,11 +183,7 @@ function Settings() {
         </SettingRow>
 
         <SectionTitle title="Reset" />
-
-        <SettingRow
-          label="Reset All Settings"
-          desc="Restore all settings to their default values"
-        >
+        <SettingRow label="Reset All Settings" desc="Restore all settings to their default values">
           <button
             onClick={handleReset}
             className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
@@ -230,23 +191,22 @@ function Settings() {
             Reset Defaults
           </button>
         </SettingRow>
-
       </div>
 
-      {/* About */}
       <div className="mt-6 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-6">
         <h3 className="text-white font-semibold mb-4">About ProtoMind</h3>
         <div className="space-y-2 text-xs text-slate-500">
           <p>Version 1.0.0 — Built with React, Three.js, Tauri & Ollama</p>
           <p>Running on: {navigator.platform}</p>
           <p>AI Engine: Local Ollama ({settings.aiModel})</p>
-          <p className="text-indigo-500 cursor-pointer hover:text-indigo-300 transition"
-            onClick={() => window.open('https://protomind-ten.vercel.app')}>
+          <p
+            className="text-indigo-500 cursor-pointer hover:text-indigo-300 transition"
+            onClick={() => window.open('https://protomind-ten.vercel.app')}
+          >
             🌐 protomind-ten.vercel.app
           </p>
         </div>
       </div>
-
     </div>
   )
 }

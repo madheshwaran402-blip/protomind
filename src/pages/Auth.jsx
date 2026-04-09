@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signIn, signUp } from '../services/supabase'
+import { notify } from '../services/toast'
 
 function Auth() {
   const navigate = useNavigate()
@@ -19,14 +20,17 @@ function Auth() {
     try {
       if (mode === 'login') {
         await signIn(email, password)
+        notify.success('Welcome back!')
         navigate('/')
       } else {
         await signUp(email, password)
+        notify.info('Account created! Check your email to confirm.')
         setSuccess('Account created! Check your email to confirm, then log in.')
         setMode('login')
       }
     } catch (err) {
       setError(err.message)
+      notify.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -35,8 +39,6 @@ function Auth() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-6">
       <div className="w-full max-w-md">
-
-        {/* Logo */}
         <div className="text-center mb-8">
           <div
             onClick={() => navigate('/')}
@@ -49,7 +51,6 @@ function Auth() {
           </p>
         </div>
 
-        {/* Card */}
         <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-8">
           <h2 className="text-xl font-bold text-white mb-6">
             {mode === 'login' ? 'Welcome back' : 'Create account'}
@@ -78,7 +79,6 @@ function Auth() {
                 className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 outline-none focus:border-indigo-500 transition"
               />
             </div>
-
             <div>
               <label className="text-slate-400 text-xs font-medium mb-1.5 block">Password</label>
               <input
@@ -90,15 +90,12 @@ function Auth() {
                 className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 outline-none focus:border-indigo-500 transition"
               />
             </div>
-
             <button
               onClick={handleSubmit}
               disabled={loading || !email || !password}
               className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition disabled:opacity-50"
             >
-              {loading
-                ? 'Please wait...'
-                : mode === 'login' ? 'Sign In' : 'Create Account'}
+              {loading ? 'Please wait...' : mode === 'login' ? 'Sign In' : 'Create Account'}
             </button>
           </div>
 

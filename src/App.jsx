@@ -1,4 +1,5 @@
 import CommandPalette from './components/CommandPalette'
+import ToastContainer from './components/ToastContainer'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect } from 'react'
 import Auth from './pages/Auth'
@@ -89,6 +90,7 @@ function App() {
       <div className="min-h-screen bg-[#0a0a0f] text-white">
         <Navbar onOpenPalette={() => setPaletteOpen(true)} />
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+        <ToastContainer />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/components" element={<Components />} />

@@ -7,6 +7,7 @@ import { downloadSTL } from '../services/stlExport'
 import { saveProject } from '../services/storage'
 import { validatePrototype } from '../services/validation'
 import { generatePrototypePDF } from '../services/pdfExport'
+import { notify } from '../services/toast'
 import ValidationPanel from '../components/ValidationPanel'
 import ChangeValidator from '../components/ChangeValidator'
 import { Suspense, useState } from 'react'
@@ -121,12 +122,18 @@ function Viewer() {
     try {
       const result = await analyse3DPrintingNeed(idea, selectedComponents)
       setPrintAnalysis(result)
+      if (result.needs3DPrinting) {
+        notify.info('3D printing recommended for this prototype!')
+      } else {
+        notify.info('3D printing not required for this prototype')
+      }
     } catch {
       setPrintAnalysis({
         needs3DPrinting: false,
         reason: 'Could not analyse. Make sure Ollama is running.',
         advice: 'Try again after checking Ollama.',
       })
+      notify.error('Analysis failed — is Ollama running?')
     } finally {
       setPrintLoading(false)
     }
@@ -138,6 +145,11 @@ function Viewer() {
     try {
       const result = await validatePrototype(idea, selectedComponents)
       setValidation(result)
+      if (result.valid) {
+        notify.success('Prototype validated! Score: ' + result.score + '/100')
+      } else {
+        notify.warning('Issues found. Score: ' + result.score + '/100')
+      }
     } catch {
       setValidation({
         valid: false,
@@ -147,6 +159,7 @@ function Viewer() {
         suggestions: [],
         verdict: 'Validation failed',
       })
+      notify.error('Validation failed — is Ollama running?')
     } finally {
       setValidating(false)
     }
@@ -176,31 +189,34 @@ function Viewer() {
               Start New
             </button>
             <button
-  onClick={async () => {
-    saveProject(idea, selectedComponents, null)
-    setSaved(true)
-    const user = await getUser()
-    if (user) {
-      try {
-        await saveProjectCloud(idea, selectedComponents)
-      } catch {
-        console.log('Cloud save failed')
-      }
-    }
-  }}
-  disabled={saved}
-  className={`px-6 py-3 rounded-xl text-sm font-semibold transition ${
-    saved
-      ? 'bg-green-900 text-green-400 cursor-default'
-      : 'bg-green-700 hover:bg-green-600 text-white'
-  }`}
->
-  {saved ? '✅ Saved!' : '💾 Save Project'}
-</button>
+              onClick={async () => {
+                saveProject(idea, selectedComponents, null)
+                setSaved(true)
+                notify.success('Project saved!')
+                const user = await getUser()
+                if (user) {
+                  try {
+                    await saveProjectCloud(idea, selectedComponents)
+                    notify.info('Synced to cloud!')
+                  } catch {
+                    notify.warning('Cloud sync failed — saved locally')
+                  }
+                }
+              }}
+              disabled={saved}
+              className={`px-6 py-3 rounded-xl text-sm font-semibold transition ${
+                saved
+                  ? 'bg-green-900 text-green-400 cursor-default'
+                  : 'bg-green-700 hover:bg-green-600 text-white'
+              }`}
+            >
+              {saved ? '✅ Saved!' : '💾 Save Project'}
+            </button>
             <button
               onClick={() => {
                 downloadBOM(selectedComponents, idea)
                 setBomExported(true)
+                notify.success('BOM spreadsheet downloaded!')
               }}
               className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
             >
@@ -210,6 +226,7 @@ function Viewer() {
               onClick={() => {
                 generatePrototypePDF(idea, selectedComponents, validation)
                 setPdfExported(true)
+                notify.success('PDF report downloaded!')
               }}
               className="px-6 py-3 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition"
             >
@@ -235,6 +252,7 @@ function Viewer() {
                 onClick={() => {
                   downloadSTL(selectedComponents, idea, printAnalysis)
                   setStlExported(true)
+                  notify.success('STL file ready for 3D printing!')
                 }}
               >
                 🖨️ Export Enclosure STL
