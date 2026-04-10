@@ -3,6 +3,7 @@ import ToastContainer from './components/ToastContainer'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect } from 'react'
 import Auth from './pages/Auth'
+import Gallery from './pages/Gallery'
 import UserMenu from './components/UserMenu'
 import Landing from './pages/Landing'
 import Parts from './pages/Parts'
@@ -22,6 +23,7 @@ function Navbar({ onOpenPalette }) {
   const links = [
     { label: 'Home', path: '/' },
     { label: 'History', path: '/history' },
+    { label: 'Gallery', path: '/gallery' },
     { label: 'Parts', path: '/parts' },
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
@@ -37,7 +39,7 @@ function Navbar({ onOpenPalette }) {
       >
         ⚡ ProtoMind
       </div>
-      <div className="flex gap-10">
+      <div className="flex gap-8">
         {links.map((link) => (
           <span
             key={link.path}
@@ -98,6 +100,7 @@ function App() {
           <Route path="/layout" element={<Layout />} />
           <Route path="/history" element={<History />} />
           <Route path="/parts" element={<Parts />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/settings" element={<Settings />} />

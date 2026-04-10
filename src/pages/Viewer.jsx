@@ -1,3 +1,4 @@
+import ShareModal from '../components/ShareModal'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -93,6 +94,7 @@ function Viewer() {
   const [validation, setValidation] = useState(null)
   const [validating, setValidating] = useState(false)
   const [pdfExported, setPdfExported] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
 
   async function sendMessage() {
     if (!input.trim()) return
@@ -211,6 +213,12 @@ function Viewer() {
               }`}
             >
               {saved ? '✅ Saved!' : '💾 Save Project'}
+            </button>
+            <button
+              onClick={() => setShareOpen(true)}
+              className="px-6 py-3 bg-blue-700 hover:bg-blue-600 rounded-xl text-sm font-semibold transition"
+            >
+              🔗 Share
             </button>
             <button
               onClick={() => {
@@ -443,6 +451,13 @@ function Viewer() {
         loading={validating}
         onClose={() => { setValidation(null); setValidating(false) }}
       />
+      {shareOpen && (
+        <ShareModal
+          idea={idea}
+          components={selectedComponents}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
     </div>
   )
 }

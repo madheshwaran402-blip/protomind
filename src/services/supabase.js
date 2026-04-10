@@ -27,7 +27,7 @@ export async function getUser() {
   return data.user
 }
 
-export async function saveProjectCloud(idea, components) {
+export async function saveProjectCloud(idea, components, isPublic = false, title = '') {
   const user = await getUser()
   if (!user) throw new Error('Not logged in')
 
@@ -37,12 +37,14 @@ export async function saveProjectCloud(idea, components) {
       user_id: user.id,
       idea,
       components: JSON.stringify(components),
+      is_public: isPublic,
+      title: title || idea.slice(0, 60),
       created_at: new Date().toISOString(),
     })
     .select()
 
   if (error) throw error
-  return data
+  return data[0]
 }
 
 export async function getProjectsCloud() {
@@ -70,4 +72,49 @@ export async function deleteProjectCloud(id) {
     .eq('id', id)
 
   if (error) throw error
+}
+
+export async function getPublicProjects() {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('is_public', true)
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  if (error) throw error
+  return data.map(p => ({
+    ...p,
+    components: JSON.parse(p.components),
+    thumbnail: JSON.parse(p.components).slice(0, 3).map(c => c.icon).join(''),
+  }))
+}
+
+export async function getProjectByShareId(shareId) {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('share_id', shareId)
+    .single()
+
+  if (error) throw error
+  return {
+    ...data,
+    components: JSON.parse(data.components),
+  }
+}
+
+export async function toggleProjectPublic(id, isPublic) {
+  const { error } = await supabase
+    .from('projects')
+    .update({ is_public: isPublic })
+    .eq('id', id)
+
+  if (error) throw error
+}
+
+export async function likeProject(id) {
+  const { data, error } = await supabase.rpc('increment_likes', { project_id: id })
+  if (error) throw error
+  return data
 }
