@@ -1,4 +1,5 @@
 import ShareModal from '../components/ShareModal'
+import AIChat from '../components/AIChat'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -55,37 +56,13 @@ function Scene({ components }) {
   )
 }
 
-function ChatMessage({ msg }) {
-  const isUser = msg.role === 'user'
-  return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
-      <div className={`max-w-xs px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
-        isUser
-          ? 'bg-indigo-600 text-white rounded-br-sm'
-          : 'bg-[#1e1e2e] text-slate-300 rounded-bl-sm'
-      }`}>
-        {!isUser && <span className="text-indigo-400 font-semibold text-xs block mb-1">🧠 ProtoMind AI</span>}
-        {msg.content}
-      </div>
-    </div>
-  )
-}
-
 function Viewer() {
   const location = useLocation()
   const navigate = useNavigate()
   const idea = location.state?.idea || 'Your prototype'
   const selectedComponents = location.state?.selectedComponents || []
 
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: 'Your 3D prototype is ready! Ask me anything — "Will this work?", "What voltage do I need?", or "Suggest improvements".',
-    },
-  ])
-  const [input, setInput] = useState('')
   const [stlExported, setStlExported] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [printAnalysis, setPrintAnalysis] = useState(null)
   const [printLoading, setPrintLoading] = useState(false)
   const [selectedComp, setSelectedComp] = useState(null)
@@ -95,29 +72,6 @@ function Viewer() {
   const [validating, setValidating] = useState(false)
   const [pdfExported, setPdfExported] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
-
-  async function sendMessage() {
-    if (!input.trim()) return
-    const userMsg = { role: 'user', content: input }
-    setMessages(prev => [...prev, userMsg])
-    setInput('')
-    setLoading(true)
-    try {
-      const componentList = selectedComponents.map(c => c.name).join(', ')
-      const prompt = 'You are an expert electronics engineer reviewing a prototype. The prototype idea is: "' + idea + '". The selected components are: ' + componentList + '. The user asks: "' + input + '". Give a helpful, concise answer in 2-3 sentences.'
-      const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'llama3.2', prompt: prompt, stream: false }),
-      })
-      const data = await response.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }])
-    } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Make sure Ollama is running with: ollama serve' }])
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function analysePrinting() {
     setPrintLoading(true)
@@ -174,7 +128,10 @@ function Viewer() {
       <div className="px-16 pb-10">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <button onClick={() => navigate(-1)} className="text-slate-500 hover:text-white text-sm mb-2 flex items-center gap-2 transition">
+            <button
+              onClick={() => navigate(-1)}
+              className="text-slate-500 hover:text-white text-sm mb-2 flex items-center gap-2 transition"
+            >
               ← Back
             </button>
             <h2 className="text-3xl font-bold mb-1">3D Prototype View</h2>
@@ -186,7 +143,7 @@ function Viewer() {
           <div className="flex gap-2 mt-4 flex-wrap justify-end max-w-4xl">
             <button
               onClick={() => navigate('/')}
-              className="px-6 py-3 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition"
+              className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition"
             >
               Start New
             </button>
@@ -206,17 +163,17 @@ function Viewer() {
                 }
               }}
               disabled={saved}
-              className={`px-6 py-3 rounded-xl text-sm font-semibold transition ${
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${
                 saved
                   ? 'bg-green-900 text-green-400 cursor-default'
                   : 'bg-green-700 hover:bg-green-600 text-white'
               }`}
             >
-              {saved ? '✅ Saved!' : '💾 Save Project'}
+              {saved ? '✅ Saved!' : '💾 Save'}
             </button>
             <button
               onClick={() => setShareOpen(true)}
-              className="px-6 py-3 bg-blue-700 hover:bg-blue-600 rounded-xl text-sm font-semibold transition"
+              className="px-4 py-2.5 bg-blue-700 hover:bg-blue-600 rounded-xl text-sm font-semibold transition"
             >
               🔗 Share
             </button>
@@ -224,52 +181,53 @@ function Viewer() {
               onClick={() => {
                 downloadBOM(selectedComponents, idea)
                 setBomExported(true)
-                notify.success('BOM spreadsheet downloaded!')
+                notify.success('BOM downloaded!')
               }}
-              className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
+              className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
             >
-              📋 Download BOM
+              📋 BOM
             </button>
             <button
               onClick={() => {
                 generatePrototypePDF(idea, selectedComponents, validation)
                 setPdfExported(true)
-                notify.success('PDF report downloaded!')
+                notify.success('PDF downloaded!')
               }}
-              className="px-6 py-3 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition"
+              className="px-4 py-2.5 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition"
             >
-              📄 Export PDF
+              📄 PDF
             </button>
             <button
               onClick={handleValidate}
               disabled={validating}
-              className="px-6 py-3 bg-orange-700 hover:bg-orange-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+              className="px-4 py-2.5 bg-orange-700 hover:bg-orange-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
             >
-              {validating ? '🔍 Validating...' : '🔍 Validate Prototype'}
+              {validating ? '...' : '🔍 Validate'}
             </button>
             <button
               onClick={analysePrinting}
               disabled={printLoading}
-              className="px-6 py-3 bg-violet-700 hover:bg-violet-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+              className="px-4 py-2.5 bg-violet-700 hover:bg-violet-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
             >
-              {printLoading ? '🔍 Analysing...' : '🔍 Check 3D Print Need'}
+              {printLoading ? '...' : '🖨️ 3D Print?'}
             </button>
             {printAnalysis?.needs3DPrinting && (
               <button
-                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
+                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
                 onClick={() => {
                   downloadSTL(selectedComponents, idea, printAnalysis)
                   setStlExported(true)
-                  notify.success('STL file ready for 3D printing!')
+                  notify.success('STL file ready!')
                 }}
               >
-                🖨️ Export Enclosure STL
+                ⬇️ STL
               </button>
             )}
           </div>
         </div>
 
         <div className="flex gap-6">
+          {/* 3D Canvas */}
           <div className="flex-1">
             <div className="flex gap-4 mb-3 text-xs text-slate-600">
               <span>🖱️ Drag — Rotate</span>
@@ -291,54 +249,13 @@ function Viewer() {
             </div>
           </div>
 
-          <div className="w-80 flex flex-col">
-            <h3 className="text-sm font-semibold text-slate-300 mb-3">🧠 Ask AI about your prototype</h3>
-            <div className="flex-1 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4 overflow-y-auto" style={{ height: '400px' }}>
-              {messages.map((msg, i) => (
-                <ChatMessage key={i} msg={msg} />
-              ))}
-              {loading && (
-                <div className="flex justify-start mb-3">
-                  <div className="bg-[#1e1e2e] px-4 py-2.5 rounded-2xl rounded-bl-sm">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2 my-3">
-              {['Will this work?', 'What voltage?', 'Suggest improvements'].map(q => (
-                <button
-                  key={q}
-                  onClick={() => setInput(q)}
-                  className="text-xs bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 px-3 py-1.5 rounded-full transition"
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && sendMessage()}
-                placeholder="Ask about your prototype..."
-                className="flex-1 bg-[#13131f] border border-[#2e2e4e] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 transition"
-              />
-              <button
-                onClick={sendMessage}
-                disabled={loading || !input.trim()}
-                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm transition disabled:opacity-50"
-              >
-                →
-              </button>
-            </div>
+          {/* AI Chat Panel */}
+          <div className="w-80">
+            <AIChat idea={idea} components={selectedComponents} />
           </div>
         </div>
 
+        {/* 3D Print Analysis */}
         {printAnalysis && (
           <div className={`mt-4 border rounded-xl px-6 py-5 ${
             printAnalysis.needs3DPrinting
@@ -391,7 +308,7 @@ function Viewer() {
             <span className="text-2xl">✅</span>
             <div>
               <p className="text-green-400 font-semibold text-sm">Enclosure STL Downloaded!</p>
-              <p className="text-green-700 text-xs mt-0.5">Send this file to JLCPCB, Shapeways, or your local 3D print shop.</p>
+              <p className="text-green-700 text-xs mt-0.5">Send to JLCPCB, Shapeways, or your local 3D print shop.</p>
             </div>
             <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs transition">✕</button>
           </div>
@@ -402,7 +319,7 @@ function Viewer() {
             <span className="text-2xl">📄</span>
             <div>
               <p className="text-rose-400 font-semibold text-sm">PDF Report Downloaded!</p>
-              <p className="text-rose-700 text-xs mt-0.5">Share this with your team, teacher or 3D printing service.</p>
+              <p className="text-rose-700 text-xs mt-0.5">Share with your team or 3D printing service.</p>
             </div>
             <button onClick={() => setPdfExported(false)} className="ml-auto text-rose-700 hover:text-rose-500 text-xs transition">✕</button>
           </div>
