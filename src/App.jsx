@@ -1,3 +1,4 @@
+import NotFound from './pages/NotFound'
 import CommandPalette from './components/CommandPalette'
 import ToastContainer from './components/ToastContainer'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
@@ -19,51 +20,91 @@ import Viewer from './pages/Viewer'
 function Navbar({ onOpenPalette }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  const links = [
+  const primaryLinks = [
     { label: 'Home', path: '/' },
     { label: 'History', path: '/history' },
     { label: 'Gallery', path: '/gallery' },
     { label: 'Parts', path: '/parts' },
+  ]
+
+  const secondaryLinks = [
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
     { label: '3D View', path: '/viewer' },
-    { label: '⚙️', path: '/settings' },
+    { label: '⚙️ Settings', path: '/settings' },
+    { label: '🌐 Landing', path: '/landing' },
   ]
 
   return (
-    <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e] bg-[#0d0d1a]">
-      <div
-        onClick={() => navigate('/')}
-        className="text-xl font-bold text-indigo-400 tracking-wider cursor-pointer"
-      >
-        ⚡ ProtoMind
-      </div>
-      <div className="flex gap-8">
-        {links.map((link) => (
-          <span
-            key={link.path}
-            onClick={() => navigate(link.path)}
-            className={`cursor-pointer transition text-sm font-medium ${
-              location.pathname === link.path
-                ? 'text-indigo-400'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            {link.label}
-          </span>
-        ))}
-      </div>
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onOpenPalette}
-          className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition"
+    <nav className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative">
+      <div className="flex justify-between items-center px-10 py-4">
+        <div
+          onClick={() => navigate('/')}
+          className="text-xl font-bold text-indigo-400 tracking-wider cursor-pointer shrink-0"
         >
-          <span className="text-slate-400 text-sm">🔍</span>
-          <span className="text-slate-500 text-xs">Search</span>
-          <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded">⌘K</kbd>
-        </button>
-        <UserMenu />
+          ⚡ ProtoMind
+        </div>
+
+        <div className="flex items-center gap-6">
+          {primaryLinks.map((link) => (
+            <span
+              key={link.path}
+              onClick={() => navigate(link.path)}
+              className={`cursor-pointer transition text-sm font-medium whitespace-nowrap ${
+                location.pathname === link.path
+                  ? 'text-indigo-400'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              {link.label}
+            </span>
+          ))}
+
+          {/* More dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className={`text-sm font-medium transition flex items-center gap-1 ${
+                secondaryLinks.some(l => l.path === location.pathname)
+                  ? 'text-indigo-400'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              More {menuOpen ? '▲' : '▼'}
+            </button>
+            {menuOpen && (
+              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl">
+                {secondaryLinks.map(link => (
+                  <div
+                    key={link.path}
+                    onClick={() => { navigate(link.path); setMenuOpen(false) }}
+                    className={`px-4 py-2.5 text-sm cursor-pointer transition ${
+                      location.pathname === link.path
+                        ? 'text-indigo-400 bg-indigo-950'
+                        : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
+                    }`}
+                  >
+                    {link.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onOpenPalette}
+            className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition"
+          >
+            <span className="text-slate-400 text-sm">🔍</span>
+            <span className="text-slate-500 text-xs hidden lg:block">Search</span>
+            <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded hidden lg:block">⌘K</kbd>
+          </button>
+          <UserMenu />
+        </div>
       </div>
     </nav>
   )
@@ -104,6 +145,7 @@ function App() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </BrowserRouter>

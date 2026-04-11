@@ -126,8 +126,8 @@ function Components() {
             <div className="bg-indigo-950 border border-indigo-800 rounded-xl px-5 py-3 mb-4 flex items-center gap-3">
               <span className="text-xl">🧠</span>
               <p className="text-indigo-300 text-sm">
-                AI suggested these components for your idea. Select the ones you want — drag to reorder.
-              </p>
+  AI suggested these {components.length} components for your idea. Drag to reorder, click to select or deselect.
+</p>
             </div>
 
             <p className="text-slate-600 text-xs mb-4">

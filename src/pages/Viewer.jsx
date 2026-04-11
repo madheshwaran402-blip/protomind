@@ -183,7 +183,7 @@ function Viewer() {
             </p>
           </div>
 
-          <div className="flex gap-3 mt-6 flex-wrap justify-end">
+          <div className="flex gap-2 mt-4 flex-wrap justify-end max-w-4xl">
             <button
               onClick={() => navigate('/')}
               className="px-6 py-3 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition"

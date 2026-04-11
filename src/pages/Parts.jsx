@@ -234,7 +234,20 @@ function Parts() {
       )}
 
       {/* Results */}
-      <p className="text-slate-600 text-xs mb-4">{filtered.length} result{filtered.length !== 1 ? 's' : ''}</p>
+      <div className="flex justify-between items-center mb-4">
+  <p className="text-slate-600 text-xs">
+    {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+    {query && <span className="text-indigo-400 ml-1">for "{query}"</span>}
+  </p>
+  {query && (
+    <button
+      onClick={() => { setQuery(''); setCategory('All') }}
+      className="text-xs text-slate-500 hover:text-white transition"
+    >
+      Clear search ✕
+    </button>
+  )}
+</div>
       <div className="grid grid-cols-3 gap-4">
         {filtered.map(part => (
           <PartCard
