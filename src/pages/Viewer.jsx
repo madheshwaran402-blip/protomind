@@ -1,6 +1,7 @@
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
+import DifficultyPanel from '../components/DifficultyPanel'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -323,6 +324,7 @@ function Viewer() {
           </div>
         )}
 
+        <DifficultyPanel idea={idea} components={selectedComponents} />
         <MissingComponents idea={idea} components={selectedComponents} />
         <ChangeValidator idea={idea} components={selectedComponents} />
         <CircuitDiagram idea={idea} components={selectedComponents} />
