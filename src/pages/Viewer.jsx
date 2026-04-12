@@ -1,5 +1,6 @@
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
+import MissingComponents from '../components/MissingComponents'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -227,7 +228,6 @@ function Viewer() {
         </div>
 
         <div className="flex gap-6">
-          {/* 3D Canvas */}
           <div className="flex-1">
             <div className="flex gap-4 mb-3 text-xs text-slate-600">
               <span>🖱️ Drag — Rotate</span>
@@ -249,13 +249,11 @@ function Viewer() {
             </div>
           </div>
 
-          {/* AI Chat Panel */}
           <div className="w-80">
             <AIChat idea={idea} components={selectedComponents} />
           </div>
         </div>
 
-        {/* 3D Print Analysis */}
         {printAnalysis && (
           <div className={`mt-4 border rounded-xl px-6 py-5 ${
             printAnalysis.needs3DPrinting
@@ -325,6 +323,7 @@ function Viewer() {
           </div>
         )}
 
+        <MissingComponents idea={idea} components={selectedComponents} />
         <ChangeValidator idea={idea} components={selectedComponents} />
         <CircuitDiagram idea={idea} components={selectedComponents} />
 
