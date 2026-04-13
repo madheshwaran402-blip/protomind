@@ -53,13 +53,21 @@ function Home() {
       </p>
 
       <div className="w-full max-w-2xl flex flex-col gap-3">
-        <textarea
-          className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-5 py-4 text-white text-base resize-none outline-none focus:border-indigo-500 transition placeholder-slate-600"
-          placeholder="e.g. A smart water bottle that tracks temperature and hydration..."
-          value={idea}
-          onChange={(e) => setIdea(e.target.value)}
-          rows={3}
-        />
+        <div className="relative w-full">
+          <textarea
+            className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-5 py-4 text-white text-base resize-none outline-none focus:border-indigo-500 transition placeholder-slate-600"
+            placeholder="e.g. A smart water bottle that tracks temperature and hydration..."
+            value={idea}
+            onChange={(e) => setIdea(e.target.value.slice(0, 200))}
+            rows={3}
+            maxLength={200}
+          />
+          <span className={`absolute bottom-3 right-4 text-xs ${
+            idea.length > 180 ? 'text-orange-400' : 'text-slate-600'
+          }`}>
+            {idea.length}/200
+          </span>
+        </div>
         <button
           onClick={handleGenerate}
           disabled={idea.length === 0}

@@ -1,4 +1,3 @@
-import NotFound from './pages/NotFound'
 import CommandPalette from './components/CommandPalette'
 import ToastContainer from './components/ToastContainer'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
@@ -11,11 +10,20 @@ import Parts from './pages/Parts'
 import Layout from './pages/Layout'
 import History from './pages/History'
 import Settings from './pages/Settings'
+import NotFound from './pages/NotFound'
 import { getSettings } from './services/settings'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Components from './pages/Components'
 import Viewer from './pages/Viewer'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [pathname])
+  return null
+}
 
 function Navbar({ onOpenPalette }) {
   const navigate = useNavigate()
@@ -62,7 +70,6 @@ function Navbar({ onOpenPalette }) {
             </span>
           ))}
 
-          {/* More dropdown */}
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -134,6 +141,7 @@ function App() {
         <Navbar onOpenPalette={() => setPaletteOpen(true)} />
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
         <ToastContainer />
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/components" element={<Components />} />

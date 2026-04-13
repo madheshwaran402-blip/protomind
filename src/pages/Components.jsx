@@ -5,6 +5,21 @@ import ComponentCard from '../components/ComponentCard'
 import { analyseIdea } from '../services/claude'
 import { notify } from '../services/toast'
 
+function SkeletonCard() {
+  return (
+    <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-5 animate-pulse">
+      <div className="flex justify-between items-start mb-4">
+        <div className="w-10 h-10 bg-[#1e1e2e] rounded-xl" />
+        <div className="w-6 h-6 bg-[#1e1e2e] rounded-full" />
+      </div>
+      <div className="w-3/4 h-4 bg-[#1e1e2e] rounded mb-2" />
+      <div className="w-1/2 h-3 bg-[#1e1e2e] rounded mb-4" />
+      <div className="w-full h-3 bg-[#1e1e2e] rounded mb-2" />
+      <div className="w-5/6 h-3 bg-[#1e1e2e] rounded" />
+    </div>
+  )
+}
+
 function Components() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -24,6 +39,7 @@ function Components() {
         const result = await analyseIdea(idea)
         setComponents(result)
         setSelected(result.map((c) => c.id))
+        notify.success('AI found ' + result.length + ' components!')
       } catch {
         setError('Failed to analyse idea. Make sure Ollama is running.')
         notify.error('AI failed — is Ollama running?')
@@ -55,14 +71,11 @@ function Components() {
       setDragOverId(null)
       return
     }
-
     const oldIndex = components.findIndex(c => c.id === draggedId)
     const newIndex = components.findIndex(c => c.id === id)
-
     const updated = [...components]
     const [moved] = updated.splice(oldIndex, 1)
     updated.splice(newIndex, 0, moved)
-
     setComponents(updated)
     setDraggedId(null)
     setDragOverId(null)
@@ -93,26 +106,18 @@ function Components() {
         </div>
 
         {loading && (
-          <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <div className="relative w-20 h-20">
-              <div className="absolute inset-0 border-4 border-indigo-900 rounded-full" />
-              <div className="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-              <div className="absolute inset-3 border-4 border-indigo-700 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+          <>
+            <div className="flex items-center gap-3 bg-indigo-950 border border-indigo-900 rounded-xl px-5 py-3 mb-6">
+              <div className="w-5 h-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin shrink-0" />
+              <div>
+                <p className="text-indigo-300 text-sm font-medium">AI is analysing your idea...</p>
+                <p className="text-indigo-600 text-xs">"{idea}"</p>
+              </div>
             </div>
-            <div className="text-center">
-              <p className="text-white font-semibold mb-1">AI is analysing your idea...</p>
-              <p className="text-slate-500 text-sm">Selecting the best components for</p>
-              <p className="text-indigo-400 text-sm italic mt-1">"{idea}"</p>
+            <div className="grid grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} />)}
             </div>
-            <div className="flex gap-2">
-              {['Researching components', 'Checking compatibility', 'Finalising list'].map((step, i) => (
-                <div key={step} className="flex items-center gap-1.5 text-xs text-slate-600 bg-[#0d0d1a] px-3 py-1.5 rounded-full border border-[#1e1e2e]">
-                  <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" style={{ animationDelay: i * 200 + 'ms' }} />
-                  {step}
-                </div>
-              ))}
-            </div>
-          </div>
+          </>
         )}
 
         {error && (
@@ -126,13 +131,11 @@ function Components() {
             <div className="bg-indigo-950 border border-indigo-800 rounded-xl px-5 py-3 mb-4 flex items-center gap-3">
               <span className="text-xl">🧠</span>
               <p className="text-indigo-300 text-sm">
-  AI suggested these {components.length} components for your idea. Drag to reorder, click to select or deselect.
-</p>
+                AI suggested these {components.length} components for your idea. Drag to reorder, click to select or deselect.
+              </p>
             </div>
 
-            <p className="text-slate-600 text-xs mb-4">
-              💡 Drag any component card to reorder it
-            </p>
+            <p className="text-slate-600 text-xs mb-4">💡 Drag any component card to reorder it</p>
 
             <div className="grid grid-cols-3 gap-4 mb-10">
               {components.map((comp) => (
@@ -170,19 +173,13 @@ function Components() {
               </div>
               <div className="flex gap-3">
                 <button
-                  onClick={() => {
-                    setSelected(components.map(c => c.id))
-                    notify.info('All components selected')
-                  }}
+                  onClick={() => { setSelected(components.map(c => c.id)); notify.info('All selected') }}
                   className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
                 >
                   Select All
                 </button>
                 <button
-                  onClick={() => {
-                    setSelected([])
-                    notify.info('All components deselected')
-                  }}
+                  onClick={() => { setSelected([]); notify.info('All deselected') }}
                   className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
                 >
                   Deselect All
