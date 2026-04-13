@@ -3,6 +3,7 @@ import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
 import DifficultyPanel from '../components/DifficultyPanel'
 import PowerCalculator from '../components/PowerCalculator'
+import SafetyChecklist from '../components/SafetyChecklist'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -325,6 +326,7 @@ function Viewer() {
           </div>
         )}
 
+        <SafetyChecklist idea={idea} components={selectedComponents} />
         <PowerCalculator idea={idea} components={selectedComponents} />
         <DifficultyPanel idea={idea} components={selectedComponents} />
         <MissingComponents idea={idea} components={selectedComponents} />
