@@ -4,6 +4,7 @@ import MissingComponents from '../components/MissingComponents'
 import DifficultyPanel from '../components/DifficultyPanel'
 import PowerCalculator from '../components/PowerCalculator'
 import SafetyChecklist from '../components/SafetyChecklist'
+import SubstitutionSuggester from '../components/SubstitutionSuggester'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -326,6 +327,7 @@ function Viewer() {
           </div>
         )}
 
+        <SubstitutionSuggester idea={idea} components={selectedComponents} />
         <SafetyChecklist idea={idea} components={selectedComponents} />
         <PowerCalculator idea={idea} components={selectedComponents} />
         <DifficultyPanel idea={idea} components={selectedComponents} />
