@@ -7,6 +7,7 @@ import SafetyChecklist from '../components/SafetyChecklist'
 import SubstitutionSuggester from '../components/SubstitutionSuggester'
 import PrototypeComparison from '../components/PrototypeComparison'
 import PrototypeExplainer from '../components/PrototypeExplainer'
+import CostEstimator from '../components/CostEstimator'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -329,6 +330,7 @@ function Viewer() {
           </div>
         )}
 
+        <CostEstimator idea={idea} components={selectedComponents} />
         <PrototypeExplainer idea={idea} components={selectedComponents} />
         <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
         <SubstitutionSuggester idea={idea} components={selectedComponents} />
