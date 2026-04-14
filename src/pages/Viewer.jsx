@@ -10,6 +10,7 @@ import PrototypeExplainer from '../components/PrototypeExplainer'
 import CostEstimator from '../components/CostEstimator'
 import VersionHistory from '../components/VersionHistory'
 import PrototypeNotes from '../components/PrototypeNotes'
+import AccordionSection from '../components/AccordionSection'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -136,6 +137,7 @@ function Viewer() {
       <StepBar currentStep={4} />
 
       <div className="px-16 pb-10">
+        {/* Header */}
         <div className="flex justify-between items-start mb-4">
           <div>
             <button
@@ -151,91 +153,37 @@ function Viewer() {
           </div>
 
           <div className="flex gap-2 mt-4 flex-wrap justify-end max-w-4xl">
-            <button
-              onClick={() => navigate('/')}
-              className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition"
-            >
+            <button onClick={() => navigate('/')} className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition">
               Start New
             </button>
             <button
               onClick={async () => {
                 const project = saveProject(idea, selectedComponents, null)
                 setSaved(true)
-                notify.success('Project saved — version ' + project.version + '!')
+                notify.success('Saved — version ' + project.version + '!')
                 const user = await getUser()
                 if (user) {
-                  try {
-                    await saveProjectCloud(idea, selectedComponents)
-                    notify.info('Synced to cloud!')
-                  } catch {
-                    notify.warning('Cloud sync failed — saved locally')
-                  }
+                  try { await saveProjectCloud(idea, selectedComponents); notify.info('Synced!') }
+                  catch { notify.warning('Cloud sync failed') }
                 }
               }}
               disabled={saved}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${
-                saved
-                  ? 'bg-green-900 text-green-400 cursor-default'
-                  : 'bg-green-700 hover:bg-green-600 text-white'
-              }`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${saved ? 'bg-green-900 text-green-400 cursor-default' : 'bg-green-700 hover:bg-green-600 text-white'}`}
             >
               {saved ? '✅ Saved!' : '💾 Save'}
             </button>
-            <button
-              onClick={() => setShareOpen(true)}
-              className="px-4 py-2.5 bg-blue-700 hover:bg-blue-600 rounded-xl text-sm font-semibold transition"
-            >
-              🔗 Share
-            </button>
-            <button
-              onClick={() => {
-                downloadBOM(selectedComponents, idea)
-                setBomExported(true)
-                notify.success('BOM downloaded!')
-              }}
-              className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition"
-            >
-              📋 BOM
-            </button>
-            <button
-              onClick={() => {
-                generatePrototypePDF(idea, selectedComponents, validation)
-                setPdfExported(true)
-                notify.success('PDF downloaded!')
-              }}
-              className="px-4 py-2.5 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition"
-            >
-              📄 PDF
-            </button>
-            <button
-              onClick={handleValidate}
-              disabled={validating}
-              className="px-4 py-2.5 bg-orange-700 hover:bg-orange-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
-            >
-              {validating ? '...' : '🔍 Validate'}
-            </button>
-            <button
-              onClick={analysePrinting}
-              disabled={printLoading}
-              className="px-4 py-2.5 bg-violet-700 hover:bg-violet-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
-            >
-              {printLoading ? '...' : '🖨️ 3D Print?'}
-            </button>
+            <button onClick={() => setShareOpen(true)} className="px-4 py-2.5 bg-blue-700 hover:bg-blue-600 rounded-xl text-sm font-semibold transition">🔗 Share</button>
+            <button onClick={() => { downloadBOM(selectedComponents, idea); setBomExported(true); notify.success('BOM downloaded!') }} className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition">📋 BOM</button>
+            <button onClick={() => { generatePrototypePDF(idea, selectedComponents, validation); setPdfExported(true); notify.success('PDF downloaded!') }} className="px-4 py-2.5 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition">📄 PDF</button>
+            <button onClick={handleValidate} disabled={validating} className="px-4 py-2.5 bg-orange-700 hover:bg-orange-600 rounded-xl text-sm font-semibold transition disabled:opacity-50">{validating ? '...' : '🔍 Validate'}</button>
+            <button onClick={analysePrinting} disabled={printLoading} className="px-4 py-2.5 bg-violet-700 hover:bg-violet-600 rounded-xl text-sm font-semibold transition disabled:opacity-50">{printLoading ? '...' : '🖨️ 3D Print?'}</button>
             {printAnalysis?.needs3DPrinting && (
-              <button
-                className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-                onClick={() => {
-                  downloadSTL(selectedComponents, idea, printAnalysis)
-                  setStlExported(true)
-                  notify.success('STL file ready!')
-                }}
-              >
-                ⬇️ STL
-              </button>
+              <button onClick={() => { downloadSTL(selectedComponents, idea, printAnalysis); setStlExported(true); notify.success('STL ready!') }} className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition">⬇️ STL</button>
             )}
           </div>
         </div>
 
+        {/* 3D Canvas + AI Chat */}
         <div className="flex gap-6">
           <div className="flex-1">
             <div className="flex gap-4 mb-3 text-xs text-slate-600">
@@ -262,48 +210,18 @@ function Viewer() {
           </div>
         </div>
 
+        {/* 3D Print Result */}
         {printAnalysis && (
-          <div className={`mt-4 border rounded-xl px-6 py-5 ${
-            printAnalysis.needs3DPrinting
-              ? 'bg-indigo-950 border-indigo-800'
-              : 'bg-slate-900 border-slate-700'
-          }`}>
+          <div className={`mt-4 border rounded-xl px-6 py-5 ${printAnalysis.needs3DPrinting ? 'bg-indigo-950 border-indigo-800' : 'bg-slate-900 border-slate-700'}`}>
             <div className="flex items-start gap-4">
-              <span className="text-3xl">
-                {printAnalysis.needs3DPrinting ? '🖨️' : '📦'}
-              </span>
+              <span className="text-3xl">{printAnalysis.needs3DPrinting ? '🖨️' : '📦'}</span>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-semibold text-white">
-                    {printAnalysis.needs3DPrinting ? '3D Printing Recommended' : '3D Printing Not Required'}
-                  </h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    printAnalysis.needs3DPrinting ? 'bg-indigo-800 text-indigo-300' : 'bg-slate-700 text-slate-400'
-                  }`}>
-                    {printAnalysis.enclosureType || 'No enclosure'}
-                  </span>
+                  <h3 className="font-semibold text-white">{printAnalysis.needs3DPrinting ? '3D Printing Recommended' : '3D Printing Not Required'}</h3>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${printAnalysis.needs3DPrinting ? 'bg-indigo-800 text-indigo-300' : 'bg-slate-700 text-slate-400'}`}>{printAnalysis.enclosureType || 'No enclosure'}</span>
                 </div>
-                <p className="text-slate-300 text-sm mb-2">{printAnalysis.reason}</p>
+                <p className="text-slate-300 text-sm mb-1">{printAnalysis.reason}</p>
                 <p className="text-slate-500 text-xs">{printAnalysis.advice}</p>
-                {printAnalysis.needs3DPrinting && printAnalysis.dimensions && (
-                  <div className="flex gap-4 mt-3 flex-wrap">
-                    <div className="text-xs text-slate-500">
-                      Enclosure size:
-                      <span className="text-indigo-400 ml-1 font-mono">
-                        {printAnalysis.dimensions.width} × {printAnalysis.dimensions.height} × {printAnalysis.dimensions.depth} mm
-                      </span>
-                    </div>
-                    {printAnalysis.features && (
-                      <div className="flex gap-1 flex-wrap">
-                        {printAnalysis.features.map(f => (
-                          <span key={f} className="text-xs bg-indigo-900 text-indigo-400 px-2 py-0.5 rounded-full">
-                            {f.replace(/_/g, ' ')}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -312,46 +230,80 @@ function Viewer() {
         {stlExported && (
           <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">✅</span>
-            <div>
-              <p className="text-green-400 font-semibold text-sm">Enclosure STL Downloaded!</p>
-              <p className="text-green-700 text-xs mt-0.5">Send to JLCPCB, Shapeways, or your local 3D print shop.</p>
-            </div>
-            <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs transition">✕</button>
+            <div><p className="text-green-400 font-semibold text-sm">STL Downloaded!</p><p className="text-green-700 text-xs">Send to JLCPCB, Shapeways, or your local 3D print shop.</p></div>
+            <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs">✕</button>
           </div>
         )}
 
         {pdfExported && (
           <div className="mt-4 bg-rose-950 border border-rose-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">📄</span>
-            <div>
-              <p className="text-rose-400 font-semibold text-sm">PDF Report Downloaded!</p>
-              <p className="text-rose-700 text-xs mt-0.5">Share with your team or 3D printing service.</p>
-            </div>
-            <button onClick={() => setPdfExported(false)} className="ml-auto text-rose-700 hover:text-rose-500 text-xs transition">✕</button>
+            <div><p className="text-rose-400 font-semibold text-sm">PDF Downloaded!</p><p className="text-rose-700 text-xs">Share with your team or 3D printing service.</p></div>
+            <button onClick={() => setPdfExported(false)} className="ml-auto text-rose-700 hover:text-rose-500 text-xs">✕</button>
           </div>
         )}
 
-        <PrototypeNotes idea={idea} components={selectedComponents} />
-        <VersionHistory idea={idea} currentComponents={selectedComponents} />
-        <CostEstimator idea={idea} components={selectedComponents} />
-        <PrototypeExplainer idea={idea} components={selectedComponents} />
-        <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
-        <SubstitutionSuggester idea={idea} components={selectedComponents} />
-        <SafetyChecklist idea={idea} components={selectedComponents} />
-        <PowerCalculator idea={idea} components={selectedComponents} />
-        <DifficultyPanel idea={idea} components={selectedComponents} />
-        <MissingComponents idea={idea} components={selectedComponents} />
-        <ChangeValidator idea={idea} components={selectedComponents} />
-        <CircuitDiagram idea={idea} components={selectedComponents} />
+        {/* ── ACCORDION SECTIONS ── */}
 
+        <div className="mt-6">
+          <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">AI Analysis Tools — click to expand</p>
+
+          <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking" defaultOpen={true}>
+            <PrototypeNotes idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
+            <VersionHistory idea={idea} currentComponents={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
+            <CircuitDiagram idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
+            <CostEstimator idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="💬" title="Prototype Explainer" subtitle="Explain your prototype in simple language for any audience">
+            <PrototypeExplainer idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="⚖️" title="Prototype Comparison" subtitle="Compare your prototype against an AI-generated alternative">
+            <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="🔄" title="Component Substitution" subtitle="Find alternatives for any unavailable or expensive component">
+            <SubstitutionSuggester idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="🛡️" title="Safety Checklist" subtitle="AI identifies risks and generates a pre-build safety checklist">
+            <SafetyChecklist idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="⚡" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
+            <PowerCalculator idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="📊" title="Difficulty & Build Time" subtitle="AI estimates how hard this is to build and how long it takes">
+            <DifficultyPanel idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="🔍" title="Missing Components" subtitle="AI scans for missing resistors, capacitors, and protection circuits">
+            <MissingComponents idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="🔧" title="Change Validator" subtitle="Validate proposed changes before implementing them">
+            <ChangeValidator idea={idea} components={selectedComponents} />
+          </AccordionSection>
+        </div>
+
+        {/* Components grid */}
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-sm font-semibold text-slate-400">
               Components — click any to see details
             </h3>
-            {bomExported && (
-              <span className="text-xs text-emerald-400">✅ BOM Downloaded!</span>
-            )}
+            {bomExported && <span className="text-xs text-emerald-400">✅ BOM Downloaded!</span>}
           </div>
           {selectedComponents.length > 0 && (() => {
             const { totalMin, totalMax } = generateBOMCSV(selectedComponents, idea)
@@ -385,11 +337,7 @@ function Viewer() {
         onClose={() => { setValidation(null); setValidating(false) }}
       />
       {shareOpen && (
-        <ShareModal
-          idea={idea}
-          components={selectedComponents}
-          onClose={() => setShareOpen(false)}
-        />
+        <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />
       )}
     </div>
   )
