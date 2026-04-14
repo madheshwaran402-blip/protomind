@@ -8,6 +8,7 @@ import SubstitutionSuggester from '../components/SubstitutionSuggester'
 import PrototypeComparison from '../components/PrototypeComparison'
 import PrototypeExplainer from '../components/PrototypeExplainer'
 import CostEstimator from '../components/CostEstimator'
+import VersionHistory from '../components/VersionHistory'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -157,9 +158,9 @@ function Viewer() {
             </button>
             <button
               onClick={async () => {
-                saveProject(idea, selectedComponents, null)
+                const project = saveProject(idea, selectedComponents, null)
                 setSaved(true)
-                notify.success('Project saved!')
+                notify.success('Project saved — version ' + project.version + '!')
                 const user = await getUser()
                 if (user) {
                   try {
@@ -330,6 +331,7 @@ function Viewer() {
           </div>
         )}
 
+        <VersionHistory idea={idea} currentComponents={selectedComponents} />
         <CostEstimator idea={idea} components={selectedComponents} />
         <PrototypeExplainer idea={idea} components={selectedComponents} />
         <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
