@@ -9,6 +9,7 @@ import PrototypeComparison from '../components/PrototypeComparison'
 import PrototypeExplainer from '../components/PrototypeExplainer'
 import CostEstimator from '../components/CostEstimator'
 import VersionHistory from '../components/VersionHistory'
+import PrototypeNotes from '../components/PrototypeNotes'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -256,7 +257,6 @@ function Viewer() {
               )}
             </div>
           </div>
-
           <div className="w-80">
             <AIChat idea={idea} components={selectedComponents} />
           </div>
@@ -331,6 +331,7 @@ function Viewer() {
           </div>
         )}
 
+        <PrototypeNotes idea={idea} components={selectedComponents} />
         <VersionHistory idea={idea} currentComponents={selectedComponents} />
         <CostEstimator idea={idea} components={selectedComponents} />
         <PrototypeExplainer idea={idea} components={selectedComponents} />
