@@ -11,6 +11,7 @@ import CostEstimator from '../components/CostEstimator'
 import VersionHistory from '../components/VersionHistory'
 import PrototypeNotes from '../components/PrototypeNotes'
 import AccordionSection from '../components/AccordionSection'
+import EnclosureCustomizer from '../components/EnclosureCustomizer'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -90,9 +91,9 @@ function Viewer() {
       const result = await analyse3DPrintingNeed(idea, selectedComponents)
       setPrintAnalysis(result)
       if (result.needs3DPrinting) {
-        notify.info('3D printing recommended for this prototype!')
+        notify.info('3D printing recommended!')
       } else {
-        notify.info('3D printing not required for this prototype')
+        notify.info('3D printing not required')
       }
     } catch {
       setPrintAnalysis({
@@ -113,18 +114,15 @@ function Viewer() {
       const result = await validatePrototype(idea, selectedComponents)
       setValidation(result)
       if (result.valid) {
-        notify.success('Prototype validated! Score: ' + result.score + '/100')
+        notify.success('Validated! Score: ' + result.score + '/100')
       } else {
         notify.warning('Issues found. Score: ' + result.score + '/100')
       }
     } catch {
       setValidation({
-        valid: false,
-        score: 0,
+        valid: false, score: 0,
         issues: ['Could not validate. Make sure Ollama is running.'],
-        warnings: [],
-        suggestions: [],
-        verdict: 'Validation failed',
+        warnings: [], suggestions: [], verdict: 'Validation failed',
       })
       notify.error('Validation failed — is Ollama running?')
     } finally {
@@ -135,27 +133,17 @@ function Viewer() {
   return (
     <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
-
       <div className="px-16 pb-10">
+
         {/* Header */}
         <div className="flex justify-between items-start mb-4">
           <div>
-            <button
-              onClick={() => navigate(-1)}
-              className="text-slate-500 hover:text-white text-sm mb-2 flex items-center gap-2 transition"
-            >
-              ← Back
-            </button>
+            <button onClick={() => navigate(-1)} className="text-slate-500 hover:text-white text-sm mb-2 flex items-center gap-2 transition">← Back</button>
             <h2 className="text-3xl font-bold mb-1">3D Prototype View</h2>
-            <p className="text-slate-400 text-sm">
-              Idea: <span className="text-indigo-400 italic">"{idea}"</span>
-            </p>
+            <p className="text-slate-400 text-sm">Idea: <span className="text-indigo-400 italic">"{idea}"</span></p>
           </div>
-
           <div className="flex gap-2 mt-4 flex-wrap justify-end max-w-4xl">
-            <button onClick={() => navigate('/')} className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition">
-              Start New
-            </button>
+            <button onClick={() => navigate('/')} className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition">Start New</button>
             <button
               onClick={async () => {
                 const project = saveProject(idea, selectedComponents, null)
@@ -183,7 +171,7 @@ function Viewer() {
           </div>
         </div>
 
-        {/* 3D Canvas + AI Chat */}
+        {/* 3D Canvas + Chat */}
         <div className="flex gap-6">
           <div className="flex-1">
             <div className="flex gap-4 mb-3 text-xs text-slate-600">
@@ -217,11 +205,10 @@ function Viewer() {
               <span className="text-3xl">{printAnalysis.needs3DPrinting ? '🖨️' : '📦'}</span>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-semibold text-white">{printAnalysis.needs3DPrinting ? '3D Printing Recommended' : '3D Printing Not Required'}</h3>
+                  <h3 className="font-semibold text-white">{printAnalysis.needs3DPrinting ? '3D Printing Recommended' : 'Not Required'}</h3>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${printAnalysis.needs3DPrinting ? 'bg-indigo-800 text-indigo-300' : 'bg-slate-700 text-slate-400'}`}>{printAnalysis.enclosureType || 'No enclosure'}</span>
                 </div>
-                <p className="text-slate-300 text-sm mb-1">{printAnalysis.reason}</p>
-                <p className="text-slate-500 text-xs">{printAnalysis.advice}</p>
+                <p className="text-slate-300 text-sm">{printAnalysis.reason}</p>
               </div>
             </div>
           </div>
@@ -238,13 +225,12 @@ function Viewer() {
         {pdfExported && (
           <div className="mt-4 bg-rose-950 border border-rose-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">📄</span>
-            <div><p className="text-rose-400 font-semibold text-sm">PDF Downloaded!</p><p className="text-rose-700 text-xs">Share with your team or 3D printing service.</p></div>
+            <div><p className="text-rose-400 font-semibold text-sm">PDF Downloaded!</p><p className="text-rose-700 text-xs">Share with your team.</p></div>
             <button onClick={() => setPdfExported(false)} className="ml-auto text-rose-700 hover:text-rose-500 text-xs">✕</button>
           </div>
         )}
 
-        {/* ── ACCORDION SECTIONS ── */}
-
+        {/* Accordion Sections */}
         <div className="mt-6">
           <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">AI Analysis Tools — click to expand</p>
 
@@ -254,6 +240,10 @@ function Viewer() {
 
           <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
             <VersionHistory idea={idea} currentComponents={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="🖨️" title="Custom Enclosure Builder" subtitle="Choose enclosure type, color, material and export STL" badge="3D Print">
+            <EnclosureCustomizer components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
           </AccordionSection>
 
           <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
@@ -280,7 +270,7 @@ function Viewer() {
             <SafetyChecklist idea={idea} components={selectedComponents} />
           </AccordionSection>
 
-          <AccordionSection icon="⚡" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
+          <AccordionSection icon="🔋" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
             <PowerCalculator idea={idea} components={selectedComponents} />
           </AccordionSection>
 
@@ -300,9 +290,7 @@ function Viewer() {
         {/* Components grid */}
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-semibold text-slate-400">
-              Components — click any to see details
-            </h3>
+            <h3 className="text-sm font-semibold text-slate-400">Components — click any to see details</h3>
             {bomExported && <span className="text-xs text-emerald-400">✅ BOM Downloaded!</span>}
           </div>
           {selectedComponents.length > 0 && (() => {
@@ -331,14 +319,8 @@ function Viewer() {
       </div>
 
       <ComponentDetail comp={selectedComp} onClose={() => setSelectedComp(null)} />
-      <ValidationPanel
-        result={validation}
-        loading={validating}
-        onClose={() => { setValidation(null); setValidating(false) }}
-      />
-      {shareOpen && (
-        <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />
-      )}
+      <ValidationPanel result={validation} loading={validating} onClose={() => { setValidation(null); setValidating(false) }} />
+      {shareOpen && <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />}
     </div>
   )
 }
