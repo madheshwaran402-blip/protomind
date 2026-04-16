@@ -1,3 +1,4 @@
+import ModelExportPanel from '../components/ModelExportPanel'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
@@ -361,6 +362,10 @@ function Viewer() {
           <AccordionSection icon="🖨️" title="Custom Enclosure Builder" subtitle="Choose enclosure type, color, material and export STL" badge="3D Print">
             <EnclosureCustomizer components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
           </AccordionSection>
+
+          <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF, or estimate 3D print cost" badge="New">
+  <ModelExportPanel components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
+</AccordionSection>
 
           <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
             <CircuitDiagram idea={idea} components={selectedComponents} />
