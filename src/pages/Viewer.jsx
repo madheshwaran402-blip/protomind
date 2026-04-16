@@ -1,3 +1,4 @@
+import BreadboardView from '../components/BreadboardView'
 import ModelExportPanel from '../components/ModelExportPanel'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
@@ -370,6 +371,10 @@ function Viewer() {
           <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
             <CircuitDiagram idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="🔌" title="Breadboard View" subtitle="Visual wiring guide for physical breadboard building">
+  <BreadboardView idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
             <CostEstimator idea={idea} components={selectedComponents} />
