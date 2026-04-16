@@ -27,47 +27,81 @@ import ChangeValidator from '../components/ChangeValidator'
 import { Suspense, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Grid } from '@react-three/drei'
+import { OrbitControls, Grid, Html } from '@react-three/drei'
 import StepBar from '../components/StepBar'
 import ComponentBox3D from '../components/ComponentBox3D'
 import ConnectionLines3D from '../components/ConnectionLines3D'
 
-function get3DPositions(count) {
+function get3DPositions(count, exploded = false) {
   const positions = []
   const cols = 3
+  const spread = exploded ? 5 : 3
   for (let i = 0; i < count; i++) {
     positions.push([
-      (i % cols) * 3 - 3,
-      0,
-      Math.floor(i / cols) * 3 - 1.5,
+      (i % cols) * spread - (spread * (Math.min(count, cols) - 1)) / 2,
+      exploded ? Math.floor(i / cols) * 1.5 : 0,
+      Math.floor(i / cols) * spread - 1.5,
     ])
   }
   return positions
 }
 
-function Scene({ components }) {
-  const positions = get3DPositions(components.length)
+function MeasurementLine({ start, end, label }) {
+  return (
+    <Html position={[
+      (start[0] + end[0]) / 2,
+      (start[1] + end[1]) / 2 + 0.3,
+      (start[2] + end[2]) / 2,
+    ]}>
+      <div className="bg-black bg-opacity-70 text-yellow-400 text-xs px-2 py-0.5 rounded whitespace-nowrap border border-yellow-800">
+        {label}
+      </div>
+    </Html>
+  )
+}
+
+function Scene({ components, exploded, showMeasurements }) {
+  const positions = get3DPositions(components.length, exploded)
+
+  const width = components.length > 0
+    ? Math.min(components.length, 3) * (exploded ? 5 : 3)
+    : 0
+  const depth = Math.ceil(components.length / 3) * (exploded ? 5 : 3)
+
   return (
     <>
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
       <pointLight position={[-10, -10, -5]} intensity={0.5} color="#6366f1" />
       <Grid
-        args={[20, 20]}
+        args={[30, 30]}
         position={[0, -0.5, 0]}
         cellColor="#1e1e2e"
         sectionColor="#2e2e4e"
-        fadeDistance={25}
+        fadeDistance={30}
       />
-      <ConnectionLines3D components={components} positions={positions} />
+      {!exploded && <ConnectionLines3D components={components} positions={positions} />}
       {components.map((comp, index) => (
         <ComponentBox3D key={comp.id} comp={comp} position={positions[index]} />
       ))}
-      <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} minDistance={3} maxDistance={20} />
+      {showMeasurements && positions.length > 1 && (
+        <>
+          <MeasurementLine
+            start={positions[0]}
+            end={positions[Math.min(2, positions.length - 1)]}
+            label={`Width: ~${(width * 30).toFixed(0)}mm`}
+          />
+          <MeasurementLine
+            start={positions[0]}
+            end={positions[positions.length - 1]}
+            label={`Depth: ~${(depth * 25).toFixed(0)}mm`}
+          />
+        </>
+      )}
+      <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} minDistance={3} maxDistance={30} />
     </>
   )
 }
-
 function Viewer() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -84,6 +118,9 @@ function Viewer() {
   const [validating, setValidating] = useState(false)
   const [pdfExported, setPdfExported] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
+  const [exploded, setExploded] = useState(false)
+  const [showMeasurements, setShowMeasurements] = useState(false)
+  const [viewAngle, setViewAngle] = useState('perspective')
 
   async function analysePrinting() {
     setPrintLoading(true)
@@ -130,6 +167,15 @@ function Viewer() {
     }
   }
 
+  const CAMERA_PRESETS = {
+    perspective: { position: [0, 8, 12], fov: 50 },
+    top: { position: [0, 20, 0], fov: 45 },
+    front: { position: [0, 2, 16], fov: 45 },
+    side: { position: [16, 2, 0], fov: 45 },
+  }
+
+  const camera = CAMERA_PRESETS[viewAngle] || CAMERA_PRESETS.perspective
+
   return (
     <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
@@ -170,20 +216,76 @@ function Viewer() {
             )}
           </div>
         </div>
+        {/* 3D Canvas Controls */}
+        <div className="flex gap-3 mb-3 flex-wrap items-center">
+          <div className="flex gap-1 text-xs text-slate-600">
+            <span>🖱️ Drag — Rotate</span>
+            <span className="mx-2">·</span>
+            <span>Scroll — Zoom</span>
+            <span className="mx-2">·</span>
+            <span>Hover — Spin</span>
+          </div>
+
+          <div className="ml-auto flex gap-2 flex-wrap">
+            {/* View angle presets */}
+            {['perspective', 'top', 'front', 'side'].map(angle => (
+              <button
+                key={angle}
+                onClick={() => setViewAngle(angle)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                  viewAngle === angle
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+                }`}
+              >
+                {angle === 'perspective' ? '🎥' : angle === 'top' ? '⬆️' : angle === 'front' ? '⬛' : '◀️'} {angle.charAt(0).toUpperCase() + angle.slice(1)}
+              </button>
+            ))}
+
+            {/* Exploded view toggle */}
+            <button
+              onClick={() => {
+                setExploded(!exploded)
+                notify.info(exploded ? 'Normal view' : 'Exploded view — components spread apart')
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                exploded ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+              }`}
+            >
+              💥 {exploded ? 'Exploded' : 'Explode'}
+            </button>
+
+            {/* Measurements toggle */}
+            <button
+              onClick={() => {
+                setShowMeasurements(!showMeasurements)
+                notify.info(showMeasurements ? 'Measurements hidden' : 'Measurements shown')
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                showMeasurements ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+              }`}
+            >
+              📏 {showMeasurements ? 'Hide Sizes' : 'Show Sizes'}
+            </button>
+          </div>
+        </div>
 
         {/* 3D Canvas + Chat */}
         <div className="flex gap-6">
           <div className="flex-1">
-            <div className="flex gap-4 mb-3 text-xs text-slate-600">
-              <span>🖱️ Drag — Rotate</span>
-              <span>Scroll — Zoom</span>
-              <span>Hover — Spin</span>
-            </div>
             <div className="rounded-2xl overflow-hidden border border-[#1e1e2e]" style={{ height: '480px' }}>
               {selectedComponents.length > 0 ? (
-                <Canvas camera={{ position: [0, 8, 12], fov: 50 }} style={{ background: '#0a0a0f' }}>
+                <Canvas
+                  key={viewAngle}
+                  camera={{ position: camera.position, fov: camera.fov }}
+                  style={{ background: '#0a0a0f' }}
+                >
                   <Suspense fallback={null}>
-                    <Scene components={selectedComponents} />
+                    <Scene
+                      components={selectedComponents}
+                      exploded={exploded}
+                      showMeasurements={showMeasurements}
+                    />
                   </Suspense>
                 </Canvas>
               ) : (
@@ -192,7 +294,22 @@ function Viewer() {
                 </div>
               )}
             </div>
+
+            {/* View mode indicators */}
+            <div className="flex gap-2 mt-2">
+              {exploded && (
+                <span className="text-xs bg-yellow-950 text-yellow-400 border border-yellow-900 px-3 py-1 rounded-full">
+                  💥 Exploded View — components spread apart for inspection
+                </span>
+              )}
+              {showMeasurements && (
+                <span className="text-xs bg-indigo-950 text-indigo-400 border border-indigo-900 px-3 py-1 rounded-full">
+                  📏 Approximate dimensions shown
+                </span>
+              )}
+            </div>
           </div>
+
           <div className="w-80">
             <AIChat idea={idea} components={selectedComponents} />
           </div>
@@ -213,11 +330,10 @@ function Viewer() {
             </div>
           </div>
         )}
-
         {stlExported && (
           <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">✅</span>
-            <div><p className="text-green-400 font-semibold text-sm">STL Downloaded!</p><p className="text-green-700 text-xs">Send to JLCPCB, Shapeways, or your local 3D print shop.</p></div>
+            <div><p className="text-green-400 font-semibold text-sm">STL Downloaded!</p><p className="text-green-700 text-xs">Send to JLCPCB or Shapeways.</p></div>
             <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs">✕</button>
           </div>
         )}
@@ -225,7 +341,7 @@ function Viewer() {
         {pdfExported && (
           <div className="mt-4 bg-rose-950 border border-rose-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">📄</span>
-            <div><p className="text-rose-400 font-semibold text-sm">PDF Downloaded!</p><p className="text-rose-700 text-xs">Share with your team.</p></div>
+            <div><p className="text-rose-400 font-semibold text-sm">PDF Downloaded!</p></div>
             <button onClick={() => setPdfExported(false)} className="ml-auto text-rose-700 hover:text-rose-500 text-xs">✕</button>
           </div>
         )}
