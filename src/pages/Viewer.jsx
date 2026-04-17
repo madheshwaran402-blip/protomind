@@ -1,3 +1,4 @@
+import PinAssignmentEditor from '../components/PinAssignmentEditor'
 import BreadboardView from '../components/BreadboardView'
 import ModelExportPanel from '../components/ModelExportPanel'
 import ShareModal from '../components/ShareModal'
@@ -374,6 +375,10 @@ function Viewer() {
 
           <AccordionSection icon="🔌" title="Breadboard View" subtitle="Visual wiring guide for physical breadboard building">
   <BreadboardView idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
+  <PinAssignmentEditor idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
