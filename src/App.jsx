@@ -11,6 +11,7 @@ import Layout from './pages/Layout'
 import History from './pages/History'
 import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
+import CustomLibrary from './pages/CustomLibrary'
 import { getSettings } from './services/settings'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
@@ -41,6 +42,7 @@ function Navbar({ onOpenPalette }) {
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
     { label: '3D View', path: '/viewer' },
+    { label: '🔧 My Library', path: '/library' },
     { label: '⚙️ Settings', path: '/settings' },
     { label: '🌐 Landing', path: '/landing' },
   ]
@@ -153,6 +155,7 @@ function App() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/library" element={<CustomLibrary />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
