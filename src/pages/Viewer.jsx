@@ -1,3 +1,4 @@
+import CodeGenerator from '../components/CodeGenerator'
 import PinAssignmentEditor from '../components/PinAssignmentEditor'
 import BreadboardView from '../components/BreadboardView'
 import ModelExportPanel from '../components/ModelExportPanel'
@@ -379,6 +380,10 @@ function Viewer() {
 
 <AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
   <PinAssignmentEditor idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="💻" title="Arduino Code Generator" subtitle="AI generates complete working code for your prototype" badge="New">
+  <CodeGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
