@@ -1,5 +1,7 @@
 import CommandPalette from './components/CommandPalette'
 import ToastContainer from './components/ToastContainer'
+import OfflineDetector from './components/OfflineDetector'
+import InstallPrompt from './components/InstallPrompt'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect } from 'react'
 import Auth from './pages/Auth'
@@ -140,9 +142,11 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#0a0a0f] text-white">
+        <OfflineDetector />
         <Navbar onOpenPalette={() => setPaletteOpen(true)} />
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
         <ToastContainer />
+        <InstallPrompt />
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
