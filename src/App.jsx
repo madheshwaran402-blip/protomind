@@ -2,6 +2,7 @@ import CommandPalette from './components/CommandPalette'
 import ToastContainer from './components/ToastContainer'
 import OfflineDetector from './components/OfflineDetector'
 import InstallPrompt from './components/InstallPrompt'
+import AccessibilityPanel from './components/AccessibilityPanel'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect } from 'react'
 import Auth from './pages/Auth'
@@ -15,6 +16,7 @@ import Settings from './pages/Settings'
 import NotFound from './pages/NotFound'
 import CustomLibrary from './pages/CustomLibrary'
 import { getSettings } from './services/settings'
+import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Components from './pages/Components'
@@ -50,11 +52,19 @@ function Navbar({ onOpenPalette }) {
   ]
 
   return (
-    <nav className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative">
+    <nav
+      className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       <div className="flex justify-between items-center px-10 py-4">
         <div
           onClick={() => navigate('/')}
           className="text-xl font-bold text-indigo-400 tracking-wider cursor-pointer shrink-0"
+          role="link"
+          tabIndex={0}
+          aria-label="ProtoMind home"
+          onKeyDown={e => e.key === 'Enter' && navigate('/')}
         >
           ⚡ ProtoMind
         </div>
@@ -64,6 +74,10 @@ function Navbar({ onOpenPalette }) {
             <span
               key={link.path}
               onClick={() => navigate(link.path)}
+              onKeyDown={e => e.key === 'Enter' && navigate(link.path)}
+              tabIndex={0}
+              role="link"
+              aria-current={location.pathname === link.path ? 'page' : undefined}
               className={`cursor-pointer transition text-sm font-medium whitespace-nowrap ${
                 location.pathname === link.path
                   ? 'text-indigo-400'
@@ -77,6 +91,8 @@ function Navbar({ onOpenPalette }) {
           <div className="relative">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-haspopup="true"
               className={`text-sm font-medium transition flex items-center gap-1 ${
                 secondaryLinks.some(l => l.path === location.pathname)
                   ? 'text-indigo-400'
@@ -86,11 +102,17 @@ function Navbar({ onOpenPalette }) {
               More {menuOpen ? '▲' : '▼'}
             </button>
             {menuOpen && (
-              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl">
+              <div
+                className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl"
+                role="menu"
+              >
                 {secondaryLinks.map(link => (
                   <div
                     key={link.path}
                     onClick={() => { navigate(link.path); setMenuOpen(false) }}
+                    onKeyDown={e => { if (e.key === 'Enter') { navigate(link.path); setMenuOpen(false) } }}
+                    tabIndex={0}
+                    role="menuitem"
                     className={`px-4 py-2.5 text-sm cursor-pointer transition ${
                       location.pathname === link.path
                         ? 'text-indigo-400 bg-indigo-950'
@@ -108,6 +130,7 @@ function Navbar({ onOpenPalette }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenPalette}
+            aria-label="Open search (Command K)"
             className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition"
           >
             <span className="text-slate-400 text-sm">🔍</span>
@@ -137,31 +160,36 @@ function App() {
       document.body.style.backgroundColor = '#0a0a0f'
       document.body.style.color = '#ffffff'
     }
+    applyA11ySettings(getA11ySettings())
   }, [])
 
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#0a0a0f] text-white">
+        <a href="#main" className="skip-link">Skip to content</a>
         <OfflineDetector />
         <Navbar onOpenPalette={() => setPaletteOpen(true)} />
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
         <ToastContainer />
         <InstallPrompt />
+        <AccessibilityPanel />
         <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/components" element={<Components />} />
-          <Route path="/viewer" element={<Viewer />} />
-          <Route path="/layout" element={<Layout />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/parts" element={<Parts />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/landing" element={<Landing />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/library" element={<CustomLibrary />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <main id="main" tabIndex={-1}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/components" element={<Components />} />
+            <Route path="/viewer" element={<Viewer />} />
+            <Route path="/layout" element={<Layout />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/parts" element={<Parts />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/library" element={<CustomLibrary />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
       </div>
     </BrowserRouter>
   )
