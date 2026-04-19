@@ -21,11 +21,11 @@ function Toggle({ value, onChange }) {
 function SettingRow({ label, desc, children }) {
   return (
     <div className="flex justify-between items-center py-4 border-b border-[#1e1e2e]">
-      <div>
+      <div className="flex-1 mr-4">
         <p className="text-white text-sm font-medium">{label}</p>
         {desc && <p className="text-slate-500 text-xs mt-0.5">{desc}</p>}
       </div>
-      <div>{children}</div>
+      <div className="shrink-0">{children}</div>
     </div>
   )
 }
@@ -64,15 +64,15 @@ function Settings() {
   ]
 
   return (
-    <div className="min-h-screen page-enter px-16 py-10 max-w-3xl mx-auto">
+    <div className="min-h-screen page-enter px-4 sm:px-8 md:px-16 py-6 sm:py-10 max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-3xl font-bold mb-1">Settings</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-1">Settings</h2>
           <p className="text-slate-400 text-sm">Customise your ProtoMind experience</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {[
           { label: 'Saved Projects', value: projects.length },
           { label: 'App Version', value: 'v1.0.0' },
@@ -85,7 +85,7 @@ function Settings() {
         ))}
       </div>
 
-      <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl px-6">
+      <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl px-4 sm:px-6">
         <SectionTitle title="Appearance" />
         <SettingRow label="Theme" desc="Choose between dark and light mode">
           <div className="flex gap-2">
@@ -93,7 +93,7 @@ function Settings() {
               <button
                 key={t}
                 onClick={() => update('theme', t)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                   settings.theme === t
                     ? 'bg-indigo-600 text-white'
                     : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
@@ -122,7 +122,7 @@ function Settings() {
           <input
             value={settings.ollamaUrl}
             onChange={e => update('ollamaUrl', e.target.value)}
-            className="bg-[#1e1e2e] border border-[#2e2e4e] text-white text-xs rounded-lg px-3 py-2 outline-none w-48 font-mono"
+            className="bg-[#1e1e2e] border border-[#2e2e4e] text-white text-xs rounded-lg px-3 py-2 outline-none w-36 sm:w-48 font-mono"
           />
         </SettingRow>
 
@@ -157,7 +157,7 @@ function Settings() {
                 window.location.reload()
               }
             }}
-            className="px-4 py-2 bg-red-950 hover:bg-red-900 border border-red-800 text-red-400 rounded-xl text-xs transition"
+            className="px-3 py-2 bg-red-950 hover:bg-red-900 border border-red-800 text-red-400 rounded-xl text-xs transition"
           >
             Clear All
           </button>
@@ -176,9 +176,9 @@ function Settings() {
               URL.revokeObjectURL(url)
               notify.success('Backup downloaded!')
             }}
-            className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-xl text-xs transition"
+            className="px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-xl text-xs transition"
           >
-            ⬇️ Export Backup
+            ⬇️ Export
           </button>
         </SettingRow>
 
@@ -186,14 +186,14 @@ function Settings() {
         <SettingRow label="Reset All Settings" desc="Restore all settings to their default values">
           <button
             onClick={handleReset}
-            className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
+            className="px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
           >
             Reset Defaults
           </button>
         </SettingRow>
       </div>
 
-      <div className="mt-6 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-6">
+      <div className="mt-6 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4 sm:p-6">
         <h3 className="text-white font-semibold mb-4">About ProtoMind</h3>
         <div className="space-y-2 text-xs text-slate-500">
           <p>Version 1.0.0 — Built with React, Three.js, Tauri & Ollama</p>
