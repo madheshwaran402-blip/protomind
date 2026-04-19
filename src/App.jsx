@@ -4,23 +4,39 @@ import OfflineDetector from './components/OfflineDetector'
 import InstallPrompt from './components/InstallPrompt'
 import AccessibilityPanel from './components/AccessibilityPanel'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import { useState, useEffect } from 'react'
-import Auth from './pages/Auth'
-import Gallery from './pages/Gallery'
-import UserMenu from './components/UserMenu'
-import Landing from './pages/Landing'
-import Parts from './pages/Parts'
-import Layout from './pages/Layout'
-import History from './pages/History'
-import Settings from './pages/Settings'
-import NotFound from './pages/NotFound'
-import CustomLibrary from './pages/CustomLibrary'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import Home from './pages/Home'
-import Components from './pages/Components'
-import Viewer from './pages/Viewer'
+import UserMenu from './components/UserMenu'
+
+const Home = lazy(() => import('./pages/Home'))
+const Components = lazy(() => import('./pages/Components'))
+const Viewer = lazy(() => import('./pages/Viewer'))
+const Layout = lazy(() => import('./pages/Layout'))
+const History = lazy(() => import('./pages/History'))
+const Parts = lazy(() => import('./pages/Parts'))
+const Gallery = lazy(() => import('./pages/Gallery'))
+const Landing = lazy(() => import('./pages/Landing'))
+const Auth = lazy(() => import('./pages/Auth'))
+const Settings = lazy(() => import('./pages/Settings'))
+const CustomLibrary = lazy(() => import('./pages/CustomLibrary'))
+const NotFound = lazy(() => import('./pages/NotFound'))
+
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 border-4 border-indigo-900 rounded-full" />
+          <div className="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-3 border-4 border-indigo-700 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+        </div>
+        <p className="text-indigo-400 text-sm font-medium">Loading ProtoMind...</p>
+      </div>
+    </div>
+  )
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -57,10 +73,10 @@ function Navbar({ onOpenPalette }) {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="flex justify-between items-center px-10 py-4">
+      <div className="flex justify-between items-center px-4 sm:px-10 py-4">
         <div
           onClick={() => navigate('/')}
-          className="text-xl font-bold text-indigo-400 tracking-wider cursor-pointer shrink-0"
+          className="text-lg sm:text-xl font-bold text-indigo-400 tracking-wider cursor-pointer shrink-0"
           role="link"
           tabIndex={0}
           aria-label="ProtoMind home"
@@ -69,7 +85,7 @@ function Navbar({ onOpenPalette }) {
           ⚡ ProtoMind
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6">
           {primaryLinks.map((link) => (
             <span
               key={link.path}
@@ -127,19 +143,58 @@ function Navbar({ onOpenPalette }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Mobile hamburger */}
+        <div className="flex md:hidden">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-slate-400 hover:text-white p-2"
+            aria-label="Open menu"
+          >
+            {menuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+
+        <div className="hidden md:flex items-center gap-3">
           <button
             onClick={onOpenPalette}
-            aria-label="Open search (Command K)"
+            aria-label="Open search"
             className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition"
           >
             <span className="text-slate-400 text-sm">🔍</span>
-            <span className="text-slate-500 text-xs hidden lg:block">Search</span>
-            <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded hidden lg:block">⌘K</kbd>
+            <span className="text-slate-500 text-xs">Search</span>
+            <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded">⌘K</kbd>
           </button>
           <UserMenu />
         </div>
       </div>
+
+      {/* Mobile menu dropdown */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-[#1e1e2e] bg-[#0d0d1a] py-2">
+          {[...primaryLinks, ...secondaryLinks].map(link => (
+            <div
+              key={link.path}
+              onClick={() => { navigate(link.path); setMenuOpen(false) }}
+              className={`px-6 py-3 text-sm cursor-pointer transition ${
+                location.pathname === link.path
+                  ? 'text-indigo-400 bg-indigo-950'
+                  : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
+              }`}
+            >
+              {link.label}
+            </div>
+          ))}
+          <div className="px-6 py-3 border-t border-[#1e1e2e] flex items-center justify-between">
+            <button
+              onClick={() => { onOpenPalette(); setMenuOpen(false) }}
+              className="text-slate-400 text-sm"
+            >
+              🔍 Search
+            </button>
+            <UserMenu />
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
@@ -175,20 +230,22 @@ function App() {
         <AccessibilityPanel />
         <ScrollToTop />
         <main id="main" tabIndex={-1}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/components" element={<Components />} />
-            <Route path="/viewer" element={<Viewer />} />
-            <Route path="/layout" element={<Layout />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/parts" element={<Parts />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/landing" element={<Landing />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/library" element={<CustomLibrary />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/components" element={<Components />} />
+              <Route path="/viewer" element={<Viewer />} />
+              <Route path="/layout" element={<Layout />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/parts" element={<Parts />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/landing" element={<Landing />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/library" element={<CustomLibrary />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </BrowserRouter>
