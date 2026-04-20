@@ -1,7 +1,3 @@
-import CodeGenerator from '../components/CodeGenerator'
-import PinAssignmentEditor from '../components/PinAssignmentEditor'
-import BreadboardView from '../components/BreadboardView'
-import ModelExportPanel from '../components/ModelExportPanel'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
@@ -16,6 +12,10 @@ import VersionHistory from '../components/VersionHistory'
 import PrototypeNotes from '../components/PrototypeNotes'
 import AccordionSection from '../components/AccordionSection'
 import EnclosureCustomizer from '../components/EnclosureCustomizer'
+import ModelExportPanel from '../components/ModelExportPanel'
+import BreadboardView from '../components/BreadboardView'
+import PinAssignmentEditor from '../components/PinAssignmentEditor'
+import CodeGenerator from '../components/CodeGenerator'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -31,10 +31,28 @@ import ChangeValidator from '../components/ChangeValidator'
 import { Suspense, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Grid, Html } from '@react-three/drei'
+import { OrbitControls, Grid, Stars, Html } from '@react-three/drei'
 import StepBar from '../components/StepBar'
 import ComponentBox3D from '../components/ComponentBox3D'
 import ConnectionLines3D from '../components/ConnectionLines3D'
+
+const ENVIRONMENTS = [
+  { id: 'dark', label: '🌑 Dark Lab', bg: '#0a0a0f', gridColor: '#1e1e2e', sectionColor: '#2e2e4e', ambient: 0.5, stars: false },
+  { id: 'space', label: '🚀 Space', bg: '#000005', gridColor: '#0a0a1f', sectionColor: '#1a1a3e', ambient: 0.3, stars: true },
+  { id: 'neon', label: '🌈 Neon City', bg: '#0a0018', gridColor: '#1a0030', sectionColor: '#2a0050', ambient: 0.4, stars: false },
+  { id: 'lab', label: '🔬 Clean Lab', bg: '#0d1117', gridColor: '#1e2530', sectionColor: '#2e3540', ambient: 0.7, stars: false },
+  { id: 'sunset', label: '🌅 Sunset', bg: '#1a0a00', gridColor: '#2d1500', sectionColor: '#3d2500', ambient: 0.6, stars: false },
+  { id: 'ocean', label: '🌊 Ocean', bg: '#000d1a', gridColor: '#001a2e', sectionColor: '#002a3e', ambient: 0.5, stars: false },
+]
+
+const NEON_COLORS = {
+  'neon': '#ff00ff',
+  'space': '#4444ff',
+  'sunset': '#ff6600',
+  'ocean': '#0088ff',
+  'lab': '#00ffaa',
+  'dark': '#6366f1',
+}
 
 function get3DPositions(count, exploded = false) {
   const positions = []
@@ -52,11 +70,7 @@ function get3DPositions(count, exploded = false) {
 
 function MeasurementLine({ start, end, label }) {
   return (
-    <Html position={[
-      (start[0] + end[0]) / 2,
-      (start[1] + end[1]) / 2 + 0.3,
-      (start[2] + end[2]) / 2,
-    ]}>
+    <Html position={[(start[0] + end[0]) / 2, (start[1] + end[1]) / 2 + 0.3, (start[2] + end[2]) / 2]}>
       <div className="bg-black bg-opacity-70 text-yellow-400 text-xs px-2 py-0.5 rounded whitespace-nowrap border border-yellow-800">
         {label}
       </div>
@@ -64,30 +78,57 @@ function MeasurementLine({ start, end, label }) {
   )
 }
 
-function Scene({ components, exploded, showMeasurements }) {
+function Scene({ components, exploded, showMeasurements, environment }) {
   const positions = get3DPositions(components.length, exploded)
-
-  const width = components.length > 0
-    ? Math.min(components.length, 3) * (exploded ? 5 : 3)
-    : 0
+  const env = ENVIRONMENTS.find(e => e.id === environment) || ENVIRONMENTS[0]
+  const accentColor = NEON_COLORS[environment] || '#6366f1'
+  const width = Math.min(components.length, 3) * (exploded ? 5 : 3)
   const depth = Math.ceil(components.length / 3) * (exploded ? 5 : 3)
 
   return (
     <>
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={env.ambient} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#6366f1" />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} color={accentColor} />
+      <pointLight position={[10, 5, -10]} intensity={0.3} color={accentColor} />
+
+      {env.stars && <Stars radius={100} depth={50} count={3000} factor={4} fade speed={1} />}
+
+      {environment === 'neon' && (
+        <>
+          <pointLight position={[0, 5, 0]} intensity={1} color="#ff00ff" />
+          <pointLight position={[5, 0, 5]} intensity={0.5} color="#00ffff" />
+        </>
+      )}
+
+      {environment === 'sunset' && (
+        <>
+          <pointLight position={[10, 3, 0]} intensity={1.5} color="#ff6600" />
+          <pointLight position={[-10, 3, 0]} intensity={0.5} color="#ff4400" />
+        </>
+      )}
+
+      {environment === 'ocean' && (
+        <>
+          <pointLight position={[0, 8, 0]} intensity={0.8} color="#0088ff" />
+          <fog attach="fog" args={[env.bg, 15, 40]} />
+        </>
+      )}
+
       <Grid
         args={[30, 30]}
         position={[0, -0.5, 0]}
-        cellColor="#1e1e2e"
-        sectionColor="#2e2e4e"
+        cellColor={env.gridColor}
+        sectionColor={env.sectionColor}
         fadeDistance={30}
       />
+
       {!exploded && <ConnectionLines3D components={components} positions={positions} />}
+
       {components.map((comp, index) => (
         <ComponentBox3D key={comp.id} comp={comp} position={positions[index]} />
       ))}
+
       {showMeasurements && positions.length > 1 && (
         <>
           <MeasurementLine
@@ -102,10 +143,12 @@ function Scene({ components, exploded, showMeasurements }) {
           />
         </>
       )}
+
       <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} minDistance={3} maxDistance={30} />
     </>
   )
 }
+
 function Viewer() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -125,23 +168,16 @@ function Viewer() {
   const [exploded, setExploded] = useState(false)
   const [showMeasurements, setShowMeasurements] = useState(false)
   const [viewAngle, setViewAngle] = useState('perspective')
+  const [environment, setEnvironment] = useState('dark')
 
   async function analysePrinting() {
     setPrintLoading(true)
     try {
       const result = await analyse3DPrintingNeed(idea, selectedComponents)
       setPrintAnalysis(result)
-      if (result.needs3DPrinting) {
-        notify.info('3D printing recommended!')
-      } else {
-        notify.info('3D printing not required')
-      }
+      notify.info(result.needs3DPrinting ? '3D printing recommended!' : '3D printing not required')
     } catch {
-      setPrintAnalysis({
-        needs3DPrinting: false,
-        reason: 'Could not analyse. Make sure Ollama is running.',
-        advice: 'Try again after checking Ollama.',
-      })
+      setPrintAnalysis({ needs3DPrinting: false, reason: 'Could not analyse. Make sure Ollama is running.', advice: 'Try again after checking Ollama.' })
       notify.error('Analysis failed — is Ollama running?')
     } finally {
       setPrintLoading(false)
@@ -154,17 +190,10 @@ function Viewer() {
     try {
       const result = await validatePrototype(idea, selectedComponents)
       setValidation(result)
-      if (result.valid) {
-        notify.success('Validated! Score: ' + result.score + '/100')
-      } else {
-        notify.warning('Issues found. Score: ' + result.score + '/100')
-      }
+      if (result.valid) notify.success('Validated! Score: ' + result.score + '/100')
+      else notify.warning('Issues found. Score: ' + result.score + '/100')
     } catch {
-      setValidation({
-        valid: false, score: 0,
-        issues: ['Could not validate. Make sure Ollama is running.'],
-        warnings: [], suggestions: [], verdict: 'Validation failed',
-      })
+      setValidation({ valid: false, score: 0, issues: ['Could not validate. Make sure Ollama is running.'], warnings: [], suggestions: [], verdict: 'Validation failed' })
       notify.error('Validation failed — is Ollama running?')
     } finally {
       setValidating(false)
@@ -172,33 +201,33 @@ function Viewer() {
   }
 
   const CAMERA_PRESETS = {
-    perspective: { position: [0, 8, 12], fov: 50 },
-    top: { position: [0, 20, 0], fov: 45 },
-    front: { position: [0, 2, 16], fov: 45 },
-    side: { position: [16, 2, 0], fov: 45 },
+    perspective: [0, 8, 12],
+    top: [0, 20, 0],
+    front: [0, 2, 16],
+    side: [16, 2, 0],
   }
 
-  const camera = CAMERA_PRESETS[viewAngle] || CAMERA_PRESETS.perspective
+  const currentEnv = ENVIRONMENTS.find(e => e.id === environment) || ENVIRONMENTS[0]
 
   return (
     <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
-      <div className="px-16 pb-10">
+      <div className="px-4 sm:px-8 md:px-16 pb-10">
 
         {/* Header */}
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4 mt-4">
           <div>
             <button onClick={() => navigate(-1)} className="text-slate-500 hover:text-white text-sm mb-2 flex items-center gap-2 transition">← Back</button>
-            <h2 className="text-3xl font-bold mb-1">3D Prototype View</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-1">3D Prototype View</h2>
             <p className="text-slate-400 text-sm">Idea: <span className="text-indigo-400 italic">"{idea}"</span></p>
           </div>
-          <div className="flex gap-2 mt-4 flex-wrap justify-end max-w-4xl">
-            <button onClick={() => navigate('/')} className="px-4 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-sm transition">Start New</button>
+          <div className="flex gap-2 flex-wrap">
+            <button onClick={() => navigate('/')} className="px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-xs transition">Start New</button>
             <button
               onClick={async () => {
                 const project = saveProject(idea, selectedComponents, null)
                 setSaved(true)
-                notify.success('Saved — version ' + project.version + '!')
+                notify.success('Saved — v' + project.version + '!')
                 const user = await getUser()
                 if (user) {
                   try { await saveProjectCloud(idea, selectedComponents); notify.info('Synced!') }
@@ -206,89 +235,84 @@ function Viewer() {
                 }
               }}
               disabled={saved}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition ${saved ? 'bg-green-900 text-green-400 cursor-default' : 'bg-green-700 hover:bg-green-600 text-white'}`}
+              className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${saved ? 'bg-green-900 text-green-400 cursor-default' : 'bg-green-700 hover:bg-green-600 text-white'}`}
             >
               {saved ? '✅ Saved!' : '💾 Save'}
             </button>
-            <button onClick={() => setShareOpen(true)} className="px-4 py-2.5 bg-blue-700 hover:bg-blue-600 rounded-xl text-sm font-semibold transition">🔗 Share</button>
-            <button onClick={() => { downloadBOM(selectedComponents, idea); setBomExported(true); notify.success('BOM downloaded!') }} className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-semibold transition">📋 BOM</button>
-            <button onClick={() => { generatePrototypePDF(idea, selectedComponents, validation); setPdfExported(true); notify.success('PDF downloaded!') }} className="px-4 py-2.5 bg-rose-700 hover:bg-rose-600 rounded-xl text-sm font-semibold transition">📄 PDF</button>
-            <button onClick={handleValidate} disabled={validating} className="px-4 py-2.5 bg-orange-700 hover:bg-orange-600 rounded-xl text-sm font-semibold transition disabled:opacity-50">{validating ? '...' : '🔍 Validate'}</button>
-            <button onClick={analysePrinting} disabled={printLoading} className="px-4 py-2.5 bg-violet-700 hover:bg-violet-600 rounded-xl text-sm font-semibold transition disabled:opacity-50">{printLoading ? '...' : '🖨️ 3D Print?'}</button>
+            <button onClick={() => setShareOpen(true)} className="px-3 py-2 bg-blue-700 hover:bg-blue-600 rounded-xl text-xs font-semibold transition">🔗 Share</button>
+            <button onClick={() => { downloadBOM(selectedComponents, idea); setBomExported(true); notify.success('BOM downloaded!') }} className="px-3 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-xs font-semibold transition">📋 BOM</button>
+            <button onClick={() => { generatePrototypePDF(idea, selectedComponents, validation); setPdfExported(true); notify.success('PDF downloaded!') }} className="px-3 py-2 bg-rose-700 hover:bg-rose-600 rounded-xl text-xs font-semibold transition">📄 PDF</button>
+            <button onClick={handleValidate} disabled={validating} className="px-3 py-2 bg-orange-700 hover:bg-orange-600 rounded-xl text-xs font-semibold transition disabled:opacity-50">{validating ? '...' : '🔍 Validate'}</button>
+            <button onClick={analysePrinting} disabled={printLoading} className="px-3 py-2 bg-violet-700 hover:bg-violet-600 rounded-xl text-xs font-semibold transition disabled:opacity-50">{printLoading ? '...' : '🖨️ 3D Print?'}</button>
             {printAnalysis?.needs3DPrinting && (
-              <button onClick={() => { downloadSTL(selectedComponents, idea, printAnalysis); setStlExported(true); notify.success('STL ready!') }} className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition">⬇️ STL</button>
+              <button onClick={() => { downloadSTL(selectedComponents, idea, printAnalysis); setStlExported(true); notify.success('STL ready!') }} className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-semibold transition">⬇️ STL</button>
             )}
           </div>
         </div>
-        {/* 3D Canvas Controls */}
-        <div className="flex gap-3 mb-3 flex-wrap items-center">
-          <div className="flex gap-1 text-xs text-slate-600">
-            <span>🖱️ Drag — Rotate</span>
-            <span className="mx-2">·</span>
-            <span>Scroll — Zoom</span>
-            <span className="mx-2">·</span>
-            <span>Hover — Spin</span>
-          </div>
 
-          <div className="ml-auto flex gap-2 flex-wrap">
-            {/* View angle presets */}
+        {/* Environment Picker */}
+        <div className="flex gap-2 mb-3 flex-wrap">
+          {ENVIRONMENTS.map(env => (
+            <button
+              key={env.id}
+              onClick={() => setEnvironment(env.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+                environment === env.id
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+              }`}
+            >
+              {env.label}
+            </button>
+          ))}
+        </div>
+
+        {/* View Controls */}
+        <div className="flex gap-2 mb-3 flex-wrap items-center">
+          <div className="flex gap-1">
             {['perspective', 'top', 'front', 'side'].map(angle => (
               <button
                 key={angle}
                 onClick={() => setViewAngle(angle)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                  viewAngle === angle
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${
+                  viewAngle === angle ? 'bg-indigo-600 text-white' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
                 }`}
               >
                 {angle === 'perspective' ? '🎥' : angle === 'top' ? '⬆️' : angle === 'front' ? '⬛' : '◀️'} {angle.charAt(0).toUpperCase() + angle.slice(1)}
               </button>
             ))}
-
-            {/* Exploded view toggle */}
-            <button
-              onClick={() => {
-                setExploded(!exploded)
-                notify.info(exploded ? 'Normal view' : 'Exploded view — components spread apart')
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                exploded ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
-              }`}
-            >
-              💥 {exploded ? 'Exploded' : 'Explode'}
-            </button>
-
-            {/* Measurements toggle */}
-            <button
-              onClick={() => {
-                setShowMeasurements(!showMeasurements)
-                notify.info(showMeasurements ? 'Measurements hidden' : 'Measurements shown')
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                showMeasurements ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
-              }`}
-            >
-              📏 {showMeasurements ? 'Hide Sizes' : 'Show Sizes'}
-            </button>
           </div>
+          <button
+            onClick={() => { setExploded(!exploded); notify.info(exploded ? 'Normal view' : 'Exploded view') }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${exploded ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}
+          >
+            💥 {exploded ? 'Exploded' : 'Explode'}
+          </button>
+          <button
+            onClick={() => setShowMeasurements(!showMeasurements)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${showMeasurements ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}
+          >
+            📏 {showMeasurements ? 'Hide Sizes' : 'Show Sizes'}
+          </button>
+          <span className="text-slate-700 text-xs ml-auto hidden sm:block">🖱️ Drag to rotate · Scroll to zoom · Hover to spin</span>
         </div>
 
         {/* 3D Canvas + Chat */}
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1">
             <div className="rounded-2xl overflow-hidden border border-[#1e1e2e]" style={{ height: '480px' }}>
               {selectedComponents.length > 0 ? (
                 <Canvas
-                  key={viewAngle}
-                  camera={{ position: camera.position, fov: camera.fov }}
-                  style={{ background: '#0a0a0f' }}
+                  key={viewAngle + environment}
+                  camera={{ position: CAMERA_PRESETS[viewAngle] || CAMERA_PRESETS.perspective, fov: 50 }}
+                  style={{ background: currentEnv.bg }}
                 >
                   <Suspense fallback={null}>
                     <Scene
                       components={selectedComponents}
                       exploded={exploded}
                       showMeasurements={showMeasurements}
+                      environment={environment}
                     />
                   </Suspense>
                 </Canvas>
@@ -298,23 +322,14 @@ function Viewer() {
                 </div>
               )}
             </div>
-
-            {/* View mode indicators */}
-            <div className="flex gap-2 mt-2">
-              {exploded && (
-                <span className="text-xs bg-yellow-950 text-yellow-400 border border-yellow-900 px-3 py-1 rounded-full">
-                  💥 Exploded View — components spread apart for inspection
-                </span>
-              )}
-              {showMeasurements && (
-                <span className="text-xs bg-indigo-950 text-indigo-400 border border-indigo-900 px-3 py-1 rounded-full">
-                  📏 Approximate dimensions shown
-                </span>
-              )}
-            </div>
+            {(exploded || showMeasurements) && (
+              <div className="flex gap-2 mt-2">
+                {exploded && <span className="text-xs bg-yellow-950 text-yellow-400 border border-yellow-900 px-3 py-1 rounded-full">💥 Exploded View</span>}
+                {showMeasurements && <span className="text-xs bg-indigo-950 text-indigo-400 border border-indigo-900 px-3 py-1 rounded-full">📏 Measurements shown</span>}
+              </div>
+            )}
           </div>
-
-          <div className="w-80">
+          <div className="w-full lg:w-80">
             <AIChat idea={idea} components={selectedComponents} />
           </div>
         </div>
@@ -334,6 +349,7 @@ function Viewer() {
             </div>
           </div>
         )}
+
         {stlExported && (
           <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">✅</span>
@@ -354,7 +370,7 @@ function Viewer() {
         <div className="mt-6">
           <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">AI Analysis Tools — click to expand</p>
 
-          <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking" defaultOpen={true}>
+          <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking" defaultOpen={false}>
             <PrototypeNotes idea={idea} components={selectedComponents} />
           </AccordionSection>
 
@@ -366,25 +382,25 @@ function Viewer() {
             <EnclosureCustomizer components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
           </AccordionSection>
 
-          <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF, or estimate 3D print cost" badge="New">
-  <ModelExportPanel components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
-</AccordionSection>
+          <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF or estimate 3D print cost">
+            <ModelExportPanel components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
+          </AccordionSection>
+
+          <AccordionSection icon="🔌" title="Breadboard View" subtitle="Visual wiring guide for physical breadboard building">
+            <BreadboardView idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
+            <PinAssignmentEditor idea={idea} components={selectedComponents} />
+          </AccordionSection>
+
+          <AccordionSection icon="💻" title="Arduino Code Generator" subtitle="AI generates complete working code for your prototype" badge="New">
+            <CodeGenerator idea={idea} components={selectedComponents} />
+          </AccordionSection>
 
           <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
             <CircuitDiagram idea={idea} components={selectedComponents} />
           </AccordionSection>
-
-          <AccordionSection icon="🔌" title="Breadboard View" subtitle="Visual wiring guide for physical breadboard building">
-  <BreadboardView idea={idea} components={selectedComponents} />
-</AccordionSection>
-
-<AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
-  <PinAssignmentEditor idea={idea} components={selectedComponents} />
-</AccordionSection>
-
-<AccordionSection icon="💻" title="Arduino Code Generator" subtitle="AI generates complete working code for your prototype" badge="New">
-  <CodeGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
 
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
             <CostEstimator idea={idea} components={selectedComponents} />
@@ -437,7 +453,7 @@ function Viewer() {
               </p>
             )
           })()}
-          <div className="grid grid-cols-6 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {selectedComponents.map(comp => (
               <div
                 key={comp.id}
@@ -447,7 +463,6 @@ function Viewer() {
                 <div className="text-2xl mb-1">{comp.icon}</div>
                 <div className="text-xs text-white font-medium leading-tight">{comp.name}</div>
                 <div className="text-xs text-slate-600 mt-1">{comp.category}</div>
-                <div className="text-xs text-indigo-500 mt-1">tap for details</div>
               </div>
             ))}
           </div>

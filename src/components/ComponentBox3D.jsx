@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { RoundedBox, Cylinder, Sphere, Text } from '@react-three/drei'
-import * as THREE from 'three'
+import { RoundedBox, Cylinder, Text } from '@react-three/drei'
 
 const CATEGORY_COLORS = {
   Microcontroller: '#6366f1',
@@ -32,13 +31,13 @@ function MicrocontrollerShape({ color, emissive, hovered }) {
         <meshStandardMaterial color={hovered ? '#818cf8' : color} emissive={emissive} emissiveIntensity={hovered ? 0.5 : 0.2} />
       </RoundedBox>
       {[-0.7, -0.3, 0.1, 0.5].map((x, i) => (
-        <mesh key={i} position={[x, 0.18, 0.7]}>
+        <mesh key={'f' + i} position={[x, 0.18, 0.7]}>
           <cylinderGeometry args={[0.04, 0.04, 0.2, 8]} />
           <meshStandardMaterial color="#c0c0c0" />
         </mesh>
       ))}
       {[-0.7, -0.3, 0.1, 0.5].map((x, i) => (
-        <mesh key={i} position={[x, 0.18, -0.7]}>
+        <mesh key={'b' + i} position={[x, 0.18, -0.7]}>
           <cylinderGeometry args={[0.04, 0.04, 0.2, 8]} />
           <meshStandardMaterial color="#c0c0c0" />
         </mesh>
@@ -62,14 +61,7 @@ function SensorShape({ color, emissive, hovered }) {
         <meshStandardMaterial color="#1a1a2e" metalness={0.8} roughness={0.2} />
       </mesh>
       {[0, 72, 144, 216, 288].map((deg, i) => (
-        <mesh
-          key={i}
-          position={[
-            Math.cos((deg * Math.PI) / 180) * 0.7,
-            -0.3,
-            Math.sin((deg * Math.PI) / 180) * 0.7,
-          ]}
-        >
+        <mesh key={i} position={[Math.cos((deg * Math.PI) / 180) * 0.7, -0.3, Math.sin((deg * Math.PI) / 180) * 0.7]}>
           <cylinderGeometry args={[0.03, 0.03, 0.35, 6]} />
           <meshStandardMaterial color="#c0c0c0" />
         </mesh>
@@ -197,34 +189,13 @@ function ComponentBox3D({ comp, position }) {
       onPointerOut={() => setHovered(false)}
     >
       {getShape()}
-
-      <Text
-        position={[0, 1.2, 0]}
-        fontSize={0.22}
-        color={hovered ? '#ffffff' : '#94a3b8'}
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={2.5}
-      >
+      <Text position={[0, 1.2, 0]} fontSize={0.22} color={hovered ? '#ffffff' : '#94a3b8'} anchorX="center" anchorY="middle" maxWidth={2.5}>
         {comp.name.length > 14 ? comp.name.slice(0, 14) + '...' : comp.name}
       </Text>
-
-      <Text
-        position={[0, -1.0, 0]}
-        fontSize={0.18}
-        color={color}
-        anchorX="center"
-        anchorY="middle"
-      >
+      <Text position={[0, -1.0, 0]} fontSize={0.18} color={color} anchorX="center" anchorY="middle">
         {comp.category}
       </Text>
-
-      <Text
-        position={[0, 1.55, 0]}
-        fontSize={0.28}
-        anchorX="center"
-        anchorY="middle"
-      >
+      <Text position={[0, 1.55, 0]} fontSize={0.28} anchorX="center" anchorY="middle">
         {comp.icon}
       </Text>
     </group>
