@@ -22,6 +22,7 @@ const Auth = lazy(() => import('./pages/Auth'))
 const Settings = lazy(() => import('./pages/Settings'))
 const CustomLibrary = lazy(() => import('./pages/CustomLibrary'))
 const NotFound = lazy(() => import('./pages/NotFound'))
+const Templates = lazy(() => import('./pages/Templates'))
 
 function PageLoader() {
   return (
@@ -53,12 +54,13 @@ function Navbar({ onOpenPalette }) {
 
   const primaryLinks = [
     { label: 'Home', path: '/' },
+    { label: 'Templates', path: '/templates' },
     { label: 'History', path: '/history' },
     { label: 'Gallery', path: '/gallery' },
-    { label: 'Parts', path: '/parts' },
   ]
 
   const secondaryLinks = [
+    { label: 'Parts', path: '/parts' },
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
     { label: '3D View', path: '/viewer' },
@@ -79,7 +81,7 @@ function Navbar({ onOpenPalette }) {
           ⚡ ProtoMind
         </div>
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-5">
           {primaryLinks.map((link) => (
             <span
               key={link.path}
@@ -99,7 +101,6 @@ function Navbar({ onOpenPalette }) {
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-expanded={menuOpen}
-              aria-haspopup="true"
               className={`text-sm font-medium transition flex items-center gap-1 ${
                 secondaryLinks.some(l => l.path === location.pathname) ? 'text-indigo-400' : 'text-slate-400 hover:text-white'
               }`}
@@ -107,13 +108,12 @@ function Navbar({ onOpenPalette }) {
               More {menuOpen ? '▲' : '▼'}
             </button>
             {menuOpen && (
-              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl" role="menu">
+              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl">
                 {secondaryLinks.map(link => (
                   <div
                     key={link.path}
                     onClick={() => { navigate(link.path); setMenuOpen(false) }}
-                    onKeyDown={e => { if (e.key === 'Enter') { navigate(link.path); setMenuOpen(false) } }}
-                    tabIndex={0} role="menuitem"
+                    tabIndex={0}
                     className={`px-4 py-2.5 text-sm cursor-pointer transition ${
                       location.pathname === link.path ? 'text-indigo-400 bg-indigo-950' : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
                     }`}
@@ -133,7 +133,7 @@ function Navbar({ onOpenPalette }) {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <button onClick={onOpenPalette} aria-label="Open search" className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition">
+          <button onClick={onOpenPalette} className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition">
             <span className="text-slate-400 text-sm">🔍</span>
             <span className="text-slate-500 text-xs">Search</span>
             <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded">⌘K</kbd>
@@ -210,6 +210,7 @@ function App() {
               <Route path="/auth" element={<Auth />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/library" element={<CustomLibrary />} />
+              <Route path="/templates" element={<Templates />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
