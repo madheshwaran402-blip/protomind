@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { getSettings, saveSettings, resetSettings } from '../services/settings'
+import { useState, useEffect } from 'react'
+import { getSettings, saveSettings, resetSettings, applyFontSize } from '../services/settings'
 import { getAllProjects } from '../services/storage'
 import { notify } from '../services/toast'
 
@@ -42,6 +42,10 @@ function Settings() {
   const [settings, setSettings] = useState(getSettings())
   const projects = getAllProjects()
 
+  useEffect(() => {
+    applyFontSize(settings.fontSize)
+  }, [settings.fontSize])
+
   function update(key, value) {
     const updated = { ...settings, [key]: value }
     setSettings(updated)
@@ -63,6 +67,13 @@ function Settings() {
     { value: 'phi3', label: 'Phi-3 Mini (Fast)' },
   ]
 
+  const FONT_SIZES = [
+    { value: 'small', label: 'Small', size: '12px' },
+    { value: 'medium', label: 'Medium', size: '15px' },
+    { value: 'large', label: 'Large', size: '17px' },
+    { value: 'xlarge', label: 'X-Large', size: '19px' },
+  ]
+
   return (
     <div className="min-h-screen page-enter px-4 sm:px-8 md:px-16 py-6 sm:py-10 max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-8">
@@ -72,6 +83,7 @@ function Settings() {
         </div>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {[
           { label: 'Saved Projects', value: projects.length },
@@ -86,7 +98,9 @@ function Settings() {
       </div>
 
       <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl px-4 sm:px-6">
+
         <SectionTitle title="Appearance" />
+
         <SettingRow label="Theme" desc="Choose between dark and light mode">
           <div className="flex gap-2">
             {['dark', 'light'].map(t => (
@@ -105,7 +119,31 @@ function Settings() {
           </div>
         </SettingRow>
 
+        <SettingRow label="Font Size" desc="Adjust the text size across the app">
+          <div className="flex gap-1">
+            {FONT_SIZES.map(f => (
+              <button
+                key={f.value}
+                onClick={() => update('fontSize', f.value)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${
+                  settings.fontSize === f.value
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+                }`}
+                style={{ fontSize: f.size }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </SettingRow>
+
+        <SettingRow label="Show Animations" desc="Enable page transitions and animations">
+          <Toggle value={settings.showAnimations} onChange={v => update('showAnimations', v)} />
+        </SettingRow>
+
         <SectionTitle title="AI Configuration" />
+
         <SettingRow label="AI Model" desc="Choose which Ollama model to use">
           <select
             value={settings.aiModel}
@@ -131,6 +169,7 @@ function Settings() {
         </SettingRow>
 
         <SectionTitle title="Display" />
+
         <SettingRow label="Show Component Prices" desc="Display estimated prices on component cards">
           <Toggle value={settings.showPrices} onChange={v => update('showPrices', v)} />
         </SettingRow>
@@ -148,6 +187,7 @@ function Settings() {
         </SettingRow>
 
         <SectionTitle title="Data" />
+
         <SettingRow label="Local Projects" desc={projects.length + ' projects saved on this device'}>
           <button
             onClick={() => {
@@ -183,6 +223,7 @@ function Settings() {
         </SettingRow>
 
         <SectionTitle title="Reset" />
+
         <SettingRow label="Reset All Settings" desc="Restore all settings to their default values">
           <button
             onClick={handleReset}
@@ -191,14 +232,17 @@ function Settings() {
             Reset Defaults
           </button>
         </SettingRow>
+
       </div>
 
+      {/* About */}
       <div className="mt-6 bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4 sm:p-6">
         <h3 className="text-white font-semibold mb-4">About ProtoMind</h3>
         <div className="space-y-2 text-xs text-slate-500">
           <p>Version 1.0.0 — Built with React, Three.js, Tauri & Ollama</p>
           <p>Running on: {navigator.platform}</p>
           <p>AI Engine: Local Ollama ({settings.aiModel})</p>
+          <p>Font Size: {settings.fontSize}</p>
           <p
             className="text-indigo-500 cursor-pointer hover:text-indigo-300 transition"
             onClick={() => window.open('https://protomind-ten.vercel.app')}

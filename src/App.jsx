@@ -5,7 +5,7 @@ import InstallPrompt from './components/InstallPrompt'
 import AccessibilityPanel from './components/AccessibilityPanel'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { getSettings } from './services/settings'
+import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
@@ -68,18 +68,12 @@ function Navbar({ onOpenPalette }) {
   ]
 
   return (
-    <nav
-      className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative"
-      role="navigation"
-      aria-label="Main navigation"
-    >
+    <nav className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative" role="navigation" aria-label="Main navigation">
       <div className="flex justify-between items-center px-4 sm:px-10 py-4">
         <div
           onClick={() => navigate('/')}
           className="text-lg sm:text-xl font-bold text-indigo-400 tracking-wider cursor-pointer shrink-0"
-          role="link"
-          tabIndex={0}
-          aria-label="ProtoMind home"
+          role="link" tabIndex={0} aria-label="ProtoMind home"
           onKeyDown={e => e.key === 'Enter' && navigate('/')}
         >
           ⚡ ProtoMind
@@ -91,13 +85,10 @@ function Navbar({ onOpenPalette }) {
               key={link.path}
               onClick={() => navigate(link.path)}
               onKeyDown={e => e.key === 'Enter' && navigate(link.path)}
-              tabIndex={0}
-              role="link"
+              tabIndex={0} role="link"
               aria-current={location.pathname === link.path ? 'page' : undefined}
               className={`cursor-pointer transition text-sm font-medium whitespace-nowrap ${
-                location.pathname === link.path
-                  ? 'text-indigo-400'
-                  : 'text-slate-400 hover:text-white'
+                location.pathname === link.path ? 'text-indigo-400' : 'text-slate-400 hover:text-white'
               }`}
             >
               {link.label}
@@ -110,29 +101,21 @@ function Navbar({ onOpenPalette }) {
               aria-expanded={menuOpen}
               aria-haspopup="true"
               className={`text-sm font-medium transition flex items-center gap-1 ${
-                secondaryLinks.some(l => l.path === location.pathname)
-                  ? 'text-indigo-400'
-                  : 'text-slate-400 hover:text-white'
+                secondaryLinks.some(l => l.path === location.pathname) ? 'text-indigo-400' : 'text-slate-400 hover:text-white'
               }`}
             >
               More {menuOpen ? '▲' : '▼'}
             </button>
             {menuOpen && (
-              <div
-                className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl"
-                role="menu"
-              >
+              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl" role="menu">
                 {secondaryLinks.map(link => (
                   <div
                     key={link.path}
                     onClick={() => { navigate(link.path); setMenuOpen(false) }}
                     onKeyDown={e => { if (e.key === 'Enter') { navigate(link.path); setMenuOpen(false) } }}
-                    tabIndex={0}
-                    role="menuitem"
+                    tabIndex={0} role="menuitem"
                     className={`px-4 py-2.5 text-sm cursor-pointer transition ${
-                      location.pathname === link.path
-                        ? 'text-indigo-400 bg-indigo-950'
-                        : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
+                      location.pathname === link.path ? 'text-indigo-400 bg-indigo-950' : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
                     }`}
                   >
                     {link.label}
@@ -143,23 +126,14 @@ function Navbar({ onOpenPalette }) {
           </div>
         </div>
 
-        {/* Mobile hamburger */}
         <div className="flex md:hidden">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-slate-400 hover:text-white p-2"
-            aria-label="Open menu"
-          >
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-slate-400 hover:text-white p-2" aria-label="Open menu">
             {menuOpen ? '✕' : '☰'}
           </button>
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={onOpenPalette}
-            aria-label="Open search"
-            className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition"
-          >
+          <button onClick={onOpenPalette} aria-label="Open search" className="flex items-center gap-2 px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl transition">
             <span className="text-slate-400 text-sm">🔍</span>
             <span className="text-slate-500 text-xs">Search</span>
             <kbd className="text-xs text-slate-600 bg-[#13131f] px-1.5 py-0.5 rounded">⌘K</kbd>
@@ -168,7 +142,6 @@ function Navbar({ onOpenPalette }) {
         </div>
       </div>
 
-      {/* Mobile menu dropdown */}
       {menuOpen && (
         <div className="md:hidden border-t border-[#1e1e2e] bg-[#0d0d1a] py-2">
           {[...primaryLinks, ...secondaryLinks].map(link => (
@@ -176,21 +149,14 @@ function Navbar({ onOpenPalette }) {
               key={link.path}
               onClick={() => { navigate(link.path); setMenuOpen(false) }}
               className={`px-6 py-3 text-sm cursor-pointer transition ${
-                location.pathname === link.path
-                  ? 'text-indigo-400 bg-indigo-950'
-                  : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
+                location.pathname === link.path ? 'text-indigo-400 bg-indigo-950' : 'text-slate-400 hover:text-white hover:bg-[#1e1e2e]'
               }`}
             >
               {link.label}
             </div>
           ))}
           <div className="px-6 py-3 border-t border-[#1e1e2e] flex items-center justify-between">
-            <button
-              onClick={() => { onOpenPalette(); setMenuOpen(false) }}
-              className="text-slate-400 text-sm"
-            >
-              🔍 Search
-            </button>
+            <button onClick={() => { onOpenPalette(); setMenuOpen(false) }} className="text-slate-400 text-sm">🔍 Search</button>
             <UserMenu />
           </div>
         </div>
@@ -216,6 +182,7 @@ function App() {
       document.body.style.color = '#ffffff'
     }
     applyA11ySettings(getA11ySettings())
+    applyFontSize(settings.fontSize || 'medium')
   }, [])
 
   return (
