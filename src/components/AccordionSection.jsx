@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PanelErrorBoundary from './PanelErrorBoundary'
 
 function AccordionSection({ title, subtitle, icon, children, defaultOpen = false, badge = null }) {
   const [open, setOpen] = useState(defaultOpen)
@@ -8,6 +9,7 @@ function AccordionSection({ title, subtitle, icon, children, defaultOpen = false
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex justify-between items-center px-6 py-4 hover:bg-[#13131f] transition text-left"
+        aria-expanded={open}
       >
         <div className="flex items-center gap-3">
           <span className="text-xl">{icon}</span>
@@ -27,7 +29,9 @@ function AccordionSection({ title, subtitle, icon, children, defaultOpen = false
       </button>
       {open && (
         <div className="px-6 pb-6">
-          {children}
+          <PanelErrorBoundary name={title}>
+            {children}
+          </PanelErrorBoundary>
         </div>
       )}
     </div>
