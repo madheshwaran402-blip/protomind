@@ -32,8 +32,6 @@ const MODE_COLORS = {
 
 function PinAssignmentEditor({ idea, components }) {
   const microcontroller = components.find(c => c.category === 'Microcontroller')
-  const otherComponents = components.filter(c => c.category !== 'Microcontroller')
-
   const mcuName = microcontroller?.name || 'Arduino Nano'
   const mcuPins = MCU_OPTIONS[mcuName] || ARDUINO_NANO_PINS
 
@@ -46,8 +44,8 @@ function PinAssignmentEditor({ idea, components }) {
 
   function addAssignment() {
     const newAssignment = {
-      id: Date.now().toString(),
-      componentName: otherComponents[0]?.name || '',
+      id: Date.now().toString() + Math.random().toString(36).slice(2),
+      componentName: components[0]?.name || '',
       componentPin: '',
       mcuPin: '',
       mode: 'INPUT',
@@ -73,7 +71,7 @@ function PinAssignmentEditor({ idea, components }) {
     if (result.isValid) {
       notify.success('Pin assignments saved! No conflicts found.')
     } else {
-      notify.warning(result.errors.length + ' conflicts found — check the validation panel')
+      notify.warning(result.errors.length + ' conflicts found')
     }
   }
 
@@ -150,9 +148,7 @@ function PinAssignmentEditor({ idea, components }) {
       {/* Validation result */}
       {validation && (
         <div className={`rounded-xl border p-4 ${
-          validation.isValid
-            ? 'bg-green-950 border-green-900'
-            : 'bg-red-950 border-red-900'
+          validation.isValid ? 'bg-green-950 border-green-900' : 'bg-red-950 border-red-900'
         }`}>
           <p className={`font-semibold text-sm mb-2 ${validation.isValid ? 'text-green-400' : 'text-red-400'}`}>
             {validation.isValid ? '✅ No pin conflicts found!' : '❌ ' + validation.errors.length + ' conflict(s) found'}
@@ -177,8 +173,6 @@ function PinAssignmentEditor({ idea, components }) {
         {assignments.map(assignment => (
           <div key={assignment.id} className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-3">
             <div className="grid grid-cols-5 gap-2 items-center">
-
-              {/* Component */}
               <select
                 value={assignment.componentName}
                 onChange={e => updateAssignment(assignment.id, 'componentName', e.target.value)}
@@ -190,15 +184,13 @@ function PinAssignmentEditor({ idea, components }) {
                 ))}
               </select>
 
-              {/* Component pin */}
               <input
                 value={assignment.componentPin}
                 onChange={e => updateAssignment(assignment.id, 'componentPin', e.target.value)}
-                placeholder="Pin name (e.g. DATA)"
+                placeholder="Pin (e.g. DATA)"
                 className="bg-[#0d0d1a] border border-[#2e2e4e] text-white text-xs rounded-lg px-2 py-2 outline-none placeholder-slate-600"
               />
 
-              {/* MCU pin */}
               <select
                 value={assignment.mcuPin}
                 onChange={e => updateAssignment(assignment.id, 'mcuPin', e.target.value)}
@@ -215,26 +207,21 @@ function PinAssignmentEditor({ idea, components }) {
                     value={pin.pin}
                     disabled={usedMcuPins.includes(pin.pin) && pin.pin !== assignment.mcuPin}
                   >
-                    {pin.pin} — {pin.type}
-                    {usedMcuPins.includes(pin.pin) && pin.pin !== assignment.mcuPin ? ' (used)' : ''}
+                    {pin.pin} — {pin.type}{usedMcuPins.includes(pin.pin) && pin.pin !== assignment.mcuPin ? ' (used)' : ''}
                   </option>
                 ))}
               </select>
 
-              {/* Mode */}
               <select
                 value={assignment.mode}
                 onChange={e => updateAssignment(assignment.id, 'mode', e.target.value)}
-                className={`bg-[#0d0d1a] border border-[#2e2e4e] rounded-lg px-2 py-2 outline-none text-xs ${
-                  MODE_COLORS[assignment.mode] || 'text-white'
-                }`}
+                className={`bg-[#0d0d1a] border border-[#2e2e4e] rounded-lg px-2 py-2 outline-none text-xs ${MODE_COLORS[assignment.mode] || 'text-white'}`}
               >
                 {['INPUT', 'OUTPUT', 'PWM', 'ANALOG_INPUT', 'I2C_SDA', 'I2C_SCL', 'SPI_MOSI', 'SPI_MISO', 'SPI_SCK', 'POWER', 'GND'].map(mode => (
                   <option key={mode} value={mode}>{mode}</option>
                 ))}
               </select>
 
-              {/* Delete */}
               <button
                 onClick={() => removeAssignment(assignment.id)}
                 className="px-3 py-2 bg-red-950 hover:bg-red-900 text-red-400 rounded-lg text-xs transition text-center"
@@ -243,11 +230,10 @@ function PinAssignmentEditor({ idea, components }) {
               </button>
             </div>
 
-            {/* Notes */}
             <input
               value={assignment.notes}
               onChange={e => updateAssignment(assignment.id, 'notes', e.target.value)}
-              placeholder="Optional notes about this connection..."
+              placeholder="Optional notes..."
               className="mt-2 w-full bg-[#0d0d1a] border border-[#1e1e2e] text-white text-xs rounded-lg px-2 py-1.5 outline-none placeholder-slate-700"
             />
           </div>
@@ -261,7 +247,6 @@ function PinAssignmentEditor({ idea, components }) {
         + Add Pin Assignment
       </button>
 
-      {/* Summary table */}
       {assignments.length > 0 && (
         <div className="bg-[#13131f] border border-[#2e2e4e] rounded-xl overflow-hidden">
           <div className="px-4 py-2 border-b border-[#2e2e4e]">

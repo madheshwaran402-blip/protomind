@@ -16,6 +16,7 @@ import ModelExportPanel from '../components/ModelExportPanel'
 import BreadboardView from '../components/BreadboardView'
 import PinAssignmentEditor from '../components/PinAssignmentEditor'
 import CodeGenerator from '../components/CodeGenerator'
+import ComponentSearch from '../components/ComponentSearch'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -46,12 +47,12 @@ const ENVIRONMENTS = [
 ]
 
 const NEON_COLORS = {
-  'neon': '#ff00ff',
-  'space': '#4444ff',
-  'sunset': '#ff6600',
-  'ocean': '#0088ff',
-  'lab': '#00ffaa',
-  'dark': '#6366f1',
+  neon: '#ff00ff',
+  space: '#4444ff',
+  sunset: '#ff6600',
+  ocean: '#0088ff',
+  lab: '#00ffaa',
+  dark: '#6366f1',
 }
 
 function get3DPositions(count, exploded = false) {
@@ -177,7 +178,7 @@ function Viewer() {
       setPrintAnalysis(result)
       notify.info(result.needs3DPrinting ? '3D printing recommended!' : '3D printing not required')
     } catch {
-      setPrintAnalysis({ needs3DPrinting: false, reason: 'Could not analyse. Make sure Ollama is running.', advice: 'Try again after checking Ollama.' })
+      setPrintAnalysis({ needs3DPrinting: false, reason: 'Could not analyse. Make sure Ollama is running.', advice: 'Try again.' })
       notify.error('Analysis failed — is Ollama running?')
     } finally {
       setPrintLoading(false)
@@ -257,9 +258,7 @@ function Viewer() {
               key={env.id}
               onClick={() => setEnvironment(env.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
-                environment === env.id
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
+                environment === env.id ? 'bg-indigo-600 text-white' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
               }`}
             >
               {env.label}
@@ -294,7 +293,7 @@ function Viewer() {
           >
             📏 {showMeasurements ? 'Hide Sizes' : 'Show Sizes'}
           </button>
-          <span className="text-slate-700 text-xs ml-auto hidden sm:block">🖱️ Drag to rotate · Scroll to zoom · Hover to spin</span>
+          <span className="text-slate-700 text-xs ml-auto hidden sm:block">🖱️ Drag to rotate · Scroll to zoom</span>
         </div>
 
         {/* 3D Canvas + Chat */}
@@ -353,7 +352,7 @@ function Viewer() {
         {stlExported && (
           <div className="mt-4 bg-green-950 border border-green-800 rounded-xl px-6 py-4 flex items-center gap-4">
             <span className="text-2xl">✅</span>
-            <div><p className="text-green-400 font-semibold text-sm">STL Downloaded!</p><p className="text-green-700 text-xs">Send to JLCPCB or Shapeways.</p></div>
+            <div><p className="text-green-400 font-semibold text-sm">STL Downloaded!</p></div>
             <button onClick={() => setStlExported(false)} className="ml-auto text-green-700 hover:text-green-500 text-xs">✕</button>
           </div>
         )}
@@ -369,6 +368,14 @@ function Viewer() {
         {/* Accordion Sections */}
         <div className="mt-6">
           <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">AI Analysis Tools — click to expand</p>
+
+          <AccordionSection icon="🔍" title="Component Inspector" subtitle="Search, filter and highlight components" defaultOpen={true}>
+            <ComponentSearch
+              components={selectedComponents}
+              onHighlight={(id) => console.log('Highlight:', id)}
+              onSelect={(comp) => setSelectedComp(comp)}
+            />
+          </AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking" defaultOpen={false}>
             <PrototypeNotes idea={idea} components={selectedComponents} />
