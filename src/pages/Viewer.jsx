@@ -1,3 +1,4 @@
+import PrototypeRating from '../components/PrototypeRating'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
@@ -376,6 +377,10 @@ function Viewer() {
               onSelect={(comp) => setSelectedComp(comp)}
             />
           </AccordionSection>
+
+          <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
+  <PrototypeRating idea={idea} />
+</AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking" defaultOpen={false}>
             <PrototypeNotes idea={idea} components={selectedComponents} />
