@@ -23,6 +23,7 @@ const Settings = lazy(() => import('./pages/Settings'))
 const CustomLibrary = lazy(() => import('./pages/CustomLibrary'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 const Templates = lazy(() => import('./pages/Templates'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
 
 function PageLoader() {
   return (
@@ -60,6 +61,7 @@ function Navbar({ onOpenPalette }) {
   ]
 
   const secondaryLinks = [
+    { label: '📊 Dashboard', path: '/dashboard' },
     { label: 'Parts', path: '/parts' },
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
@@ -211,6 +213,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/library" element={<CustomLibrary />} />
               <Route path="/templates" element={<Templates />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
