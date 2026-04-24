@@ -24,6 +24,7 @@ const CustomLibrary = lazy(() => import('./pages/CustomLibrary'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 const Templates = lazy(() => import('./pages/Templates'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Help = lazy(() => import('./pages/Help'))
 
 function PageLoader() {
   return (
@@ -67,6 +68,7 @@ function Navbar({ onOpenPalette }) {
     { label: 'Layout', path: '/layout' },
     { label: '3D View', path: '/viewer' },
     { label: '🔧 My Library', path: '/library' },
+    { label: '🆘 Help', path: '/help' },
     { label: '⚙️ Settings', path: '/settings' },
     { label: '🌐 Landing', path: '/landing' },
   ]
@@ -214,6 +216,7 @@ function App() {
               <Route path="/library" element={<CustomLibrary />} />
               <Route path="/templates" element={<Templates />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/help" element={<Help />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
