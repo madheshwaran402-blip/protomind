@@ -1,5 +1,3 @@
-import ComponentComparison from '../components/ComponentComparison'
-import PrototypeRating from '../components/PrototypeRating'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
@@ -19,6 +17,9 @@ import BreadboardView from '../components/BreadboardView'
 import PinAssignmentEditor from '../components/PinAssignmentEditor'
 import CodeGenerator from '../components/CodeGenerator'
 import ComponentSearch from '../components/ComponentSearch'
+import ComponentComparison from '../components/ComponentComparison'
+import DatasheetViewer from '../components/DatasheetViewer'
+import PrototypeRating from '../components/PrototypeRating'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
@@ -94,59 +95,36 @@ function Scene({ components, exploded, showMeasurements, environment }) {
       <directionalLight position={[10, 10, 5]} intensity={1} />
       <pointLight position={[-10, -10, -5]} intensity={0.5} color={accentColor} />
       <pointLight position={[10, 5, -10]} intensity={0.3} color={accentColor} />
-
       {env.stars && <Stars radius={100} depth={50} count={3000} factor={4} fade speed={1} />}
-
       {environment === 'neon' && (
         <>
           <pointLight position={[0, 5, 0]} intensity={1} color="#ff00ff" />
           <pointLight position={[5, 0, 5]} intensity={0.5} color="#00ffff" />
         </>
       )}
-
       {environment === 'sunset' && (
         <>
           <pointLight position={[10, 3, 0]} intensity={1.5} color="#ff6600" />
           <pointLight position={[-10, 3, 0]} intensity={0.5} color="#ff4400" />
         </>
       )}
-
       {environment === 'ocean' && (
         <>
           <pointLight position={[0, 8, 0]} intensity={0.8} color="#0088ff" />
           <fog attach="fog" args={[env.bg, 15, 40]} />
         </>
       )}
-
-      <Grid
-        args={[30, 30]}
-        position={[0, -0.5, 0]}
-        cellColor={env.gridColor}
-        sectionColor={env.sectionColor}
-        fadeDistance={30}
-      />
-
+      <Grid args={[30, 30]} position={[0, -0.5, 0]} cellColor={env.gridColor} sectionColor={env.sectionColor} fadeDistance={30} />
       {!exploded && <ConnectionLines3D components={components} positions={positions} />}
-
       {components.map((comp, index) => (
         <ComponentBox3D key={comp.id} comp={comp} position={positions[index]} />
       ))}
-
       {showMeasurements && positions.length > 1 && (
         <>
-          <MeasurementLine
-            start={positions[0]}
-            end={positions[Math.min(2, positions.length - 1)]}
-            label={`Width: ~${(width * 30).toFixed(0)}mm`}
-          />
-          <MeasurementLine
-            start={positions[0]}
-            end={positions[positions.length - 1]}
-            label={`Depth: ~${(depth * 25).toFixed(0)}mm`}
-          />
+          <MeasurementLine start={positions[0]} end={positions[Math.min(2, positions.length - 1)]} label={`Width: ~${(width * 30).toFixed(0)}mm`} />
+          <MeasurementLine start={positions[0]} end={positions[positions.length - 1]} label={`Depth: ~${(depth * 25).toFixed(0)}mm`} />
         </>
       )}
-
       <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} minDistance={3} maxDistance={30} />
     </>
   )
@@ -162,6 +140,7 @@ function Viewer() {
   const [printAnalysis, setPrintAnalysis] = useState(null)
   const [printLoading, setPrintLoading] = useState(false)
   const [selectedComp, setSelectedComp] = useState(null)
+  const [datasheetComp, setDatasheetComp] = useState(null)
   const [bomExported, setBomExported] = useState(false)
   const [saved, setSaved] = useState(false)
   const [validation, setValidation] = useState(null)
@@ -217,7 +196,6 @@ function Viewer() {
       <StepBar currentStep={4} />
       <div className="px-4 sm:px-8 md:px-16 pb-10">
 
-        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4 mt-4">
           <div>
             <button onClick={() => navigate(-1)} className="text-slate-500 hover:text-white text-sm mb-2 flex items-center gap-2 transition">← Back</button>
@@ -253,68 +231,46 @@ function Viewer() {
           </div>
         </div>
 
-        {/* Environment Picker */}
         <div className="flex gap-2 mb-3 flex-wrap">
           {ENVIRONMENTS.map(env => (
             <button
               key={env.id}
               onClick={() => setEnvironment(env.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
-                environment === env.id ? 'bg-indigo-600 text-white' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${environment === env.id ? 'bg-indigo-600 text-white' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}
             >
               {env.label}
             </button>
           ))}
         </div>
 
-        {/* View Controls */}
         <div className="flex gap-2 mb-3 flex-wrap items-center">
           <div className="flex gap-1">
             {['perspective', 'top', 'front', 'side'].map(angle => (
               <button
                 key={angle}
                 onClick={() => setViewAngle(angle)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${
-                  viewAngle === angle ? 'bg-indigo-600 text-white' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'
-                }`}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${viewAngle === angle ? 'bg-indigo-600 text-white' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}
               >
                 {angle === 'perspective' ? '🎥' : angle === 'top' ? '⬆️' : angle === 'front' ? '⬛' : '◀️'} {angle.charAt(0).toUpperCase() + angle.slice(1)}
               </button>
             ))}
           </div>
-          <button
-            onClick={() => { setExploded(!exploded); notify.info(exploded ? 'Normal view' : 'Exploded view') }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${exploded ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}
-          >
+          <button onClick={() => { setExploded(!exploded); notify.info(exploded ? 'Normal view' : 'Exploded view') }} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${exploded ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}>
             💥 {exploded ? 'Exploded' : 'Explode'}
           </button>
-          <button
-            onClick={() => setShowMeasurements(!showMeasurements)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${showMeasurements ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}
-          >
+          <button onClick={() => setShowMeasurements(!showMeasurements)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${showMeasurements ? 'bg-yellow-700 text-yellow-100' : 'bg-[#1e1e2e] text-slate-400 hover:text-white'}`}>
             📏 {showMeasurements ? 'Hide Sizes' : 'Show Sizes'}
           </button>
           <span className="text-slate-700 text-xs ml-auto hidden sm:block">🖱️ Drag to rotate · Scroll to zoom</span>
         </div>
 
-        {/* 3D Canvas + Chat */}
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1">
             <div className="rounded-2xl overflow-hidden border border-[#1e1e2e]" style={{ height: '480px' }}>
               {selectedComponents.length > 0 ? (
-                <Canvas
-                  key={viewAngle + environment}
-                  camera={{ position: CAMERA_PRESETS[viewAngle] || CAMERA_PRESETS.perspective, fov: 50 }}
-                  style={{ background: currentEnv.bg }}
-                >
+                <Canvas key={viewAngle + environment} camera={{ position: CAMERA_PRESETS[viewAngle] || CAMERA_PRESETS.perspective, fov: 50 }} style={{ background: currentEnv.bg }}>
                   <Suspense fallback={null}>
-                    <Scene
-                      components={selectedComponents}
-                      exploded={exploded}
-                      showMeasurements={showMeasurements}
-                      environment={environment}
-                    />
+                    <Scene components={selectedComponents} exploded={exploded} showMeasurements={showMeasurements} environment={environment} />
                   </Suspense>
                 </Canvas>
               ) : (
@@ -335,7 +291,6 @@ function Viewer() {
           </div>
         </div>
 
-        {/* 3D Print Result */}
         {printAnalysis && (
           <div className={`mt-4 border rounded-xl px-6 py-5 ${printAnalysis.needs3DPrinting ? 'bg-indigo-950 border-indigo-800' : 'bg-slate-900 border-slate-700'}`}>
             <div className="flex items-start gap-4">
@@ -367,27 +322,22 @@ function Viewer() {
           </div>
         )}
 
-        {/* Accordion Sections */}
         <div className="mt-6">
           <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">AI Analysis Tools — click to expand</p>
 
           <AccordionSection icon="🔍" title="Component Inspector" subtitle="Search, filter and highlight components" defaultOpen={true}>
-            <ComponentSearch
-              components={selectedComponents}
-              onHighlight={(id) => console.log('Highlight:', id)}
-              onSelect={(comp) => setSelectedComp(comp)}
-            />
+            <ComponentSearch components={selectedComponents} onHighlight={(id) => console.log('Highlight:', id)} onSelect={(comp) => setSelectedComp(comp)} />
+          </AccordionSection>
+
+          <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
+            <PrototypeRating idea={idea} />
           </AccordionSection>
 
           <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
-  <ComponentComparison components={selectedComponents} idea={idea} />
-</AccordionSection>
+            <ComponentComparison components={selectedComponents} idea={idea} />
+          </AccordionSection>
 
-          <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
-  <PrototypeRating idea={idea} />
-</AccordionSection>
-
-          <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking" defaultOpen={false}>
+          <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
             <PrototypeNotes idea={idea} components={selectedComponents} />
           </AccordionSection>
 
@@ -409,10 +359,6 @@ function Viewer() {
 
           <AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
             <PinAssignmentEditor idea={idea} components={selectedComponents} />
-          </AccordionSection>
-
-          <AccordionSection icon="💻" title="Arduino Code Generator" subtitle="AI generates complete working code for your prototype" badge="New">
-            <CodeGenerator idea={idea} components={selectedComponents} />
           </AccordionSection>
 
           <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
@@ -456,10 +402,9 @@ function Viewer() {
           </AccordionSection>
         </div>
 
-        {/* Components grid */}
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-semibold text-slate-400">Components — click any to see details</h3>
+            <h3 className="text-sm font-semibold text-slate-400">Components — click for details or datasheet</h3>
             {bomExported && <span className="text-xs text-emerald-400">✅ BOM Downloaded!</span>}
           </div>
           {selectedComponents.length > 0 && (() => {
@@ -472,14 +417,14 @@ function Viewer() {
           })()}
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {selectedComponents.map(comp => (
-              <div
-                key={comp.id}
-                onClick={() => setSelectedComp(comp)}
-                className="bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-500 rounded-xl p-3 text-center cursor-pointer transition"
-              >
+              <div key={comp.id} className="bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-500 rounded-xl p-3 text-center transition">
                 <div className="text-2xl mb-1">{comp.icon}</div>
                 <div className="text-xs text-white font-medium leading-tight">{comp.name}</div>
                 <div className="text-xs text-slate-600 mt-1">{comp.category}</div>
+                <div className="flex gap-1 mt-2">
+                  <button onClick={() => setSelectedComp(comp)} className="flex-1 text-xs text-indigo-500 hover:text-indigo-300 transition">details</button>
+                  <button onClick={() => setDatasheetComp(comp)} className="flex-1 text-xs text-slate-500 hover:text-white transition">sheet</button>
+                </div>
               </div>
             ))}
           </div>
@@ -487,6 +432,7 @@ function Viewer() {
       </div>
 
       <ComponentDetail comp={selectedComp} onClose={() => setSelectedComp(null)} />
+      {datasheetComp && <DatasheetViewer component={datasheetComp} onClose={() => setDatasheetComp(null)} />}
       <ValidationPanel result={validation} loading={validating} onClose={() => { setValidation(null); setValidating(false) }} />
       {shareOpen && <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />}
     </div>
