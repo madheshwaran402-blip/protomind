@@ -1,3 +1,4 @@
+import BuildTimeline from '../components/BuildTimeline'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
@@ -332,6 +333,10 @@ function Viewer() {
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
             <PrototypeRating idea={idea} />
           </AccordionSection>
+
+          <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
+  <BuildTimeline idea={idea} />
+</AccordionSection>
 
           <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
             <ComponentComparison components={selectedComponents} idea={idea} />
