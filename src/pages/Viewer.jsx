@@ -1,3 +1,4 @@
+import ComponentComparison from '../components/ComponentComparison'
 import PrototypeRating from '../components/PrototypeRating'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
@@ -377,6 +378,10 @@ function Viewer() {
               onSelect={(comp) => setSelectedComp(comp)}
             />
           </AccordionSection>
+
+          <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
+  <ComponentComparison components={selectedComponents} idea={idea} />
+</AccordionSection>
 
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
   <PrototypeRating idea={idea} />
