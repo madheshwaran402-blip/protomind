@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAllProjects, deleteProject, getAllTags, updateProjectTags } from '../services/storage'
 import { notify } from '../services/toast'
+import ProjectExportPanel from '../components/ProjectExportPanel'
 
 const TAG_COLORS = {
   Wearable: { bg: 'bg-purple-950', text: 'text-purple-400', border: 'border-purple-800' },
@@ -149,8 +150,7 @@ function History() {
   const allTags = getAllTags()
 
   useEffect(() => {
-    const data = getAllProjects()
-    setProjects(data)
+    setProjects(getAllProjects())
   }, [])
 
   function handleLoad(project) {
@@ -166,15 +166,13 @@ function History() {
 
   function handleDelete(id) {
     deleteProject(id)
-    const data = getAllProjects()
-    setProjects(data)
+    setProjects(getAllProjects())
     notify.success('Project deleted')
   }
 
   function handleTagUpdate(id, tags) {
     updateProjectTags(id, tags)
-    const data = getAllProjects()
-    setProjects(data)
+    setProjects(getAllProjects())
   }
 
   function getFiltered() {
@@ -228,12 +226,7 @@ function History() {
                 className="w-full bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none focus:border-indigo-500 transition placeholder-slate-600"
               />
               {search && (
-                <button
-                  onClick={() => setSearch('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs"
-                >
-                  ✕
-                </button>
+                <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs">✕</button>
               )}
             </div>
             <select
@@ -253,9 +246,7 @@ function History() {
               <button
                 onClick={() => setSelectedTag(null)}
                 className={`text-xs px-3 py-1.5 rounded-full border transition ${
-                  !selectedTag
-                    ? 'bg-indigo-600 text-white border-indigo-600'
-                    : 'bg-[#0d0d1a] text-slate-400 border-[#1e1e2e] hover:border-indigo-800'
+                  !selectedTag ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-[#0d0d1a] text-slate-400 border-[#1e1e2e] hover:border-indigo-800'
                 }`}
               >
                 All
@@ -284,10 +275,7 @@ function History() {
           <div className="text-6xl mb-4">📂</div>
           <h3 className="text-xl font-semibold mb-2">No saved projects yet</h3>
           <p className="text-slate-500 text-sm mb-6">Build your first prototype and save it to see it here</p>
-          <button
-            onClick={() => navigate('/')}
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-          >
+          <button onClick={() => navigate('/')} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition">
             Start Building
           </button>
         </div>
@@ -296,10 +284,7 @@ function History() {
           <div className="text-5xl mb-4">🔍</div>
           <h3 className="text-lg font-semibold mb-2">No results found</h3>
           <p className="text-slate-500 text-sm mb-4">Try a different search or clear the filters</p>
-          <button
-            onClick={() => { setSearch(''); setSelectedTag(null) }}
-            className="px-5 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-sm transition"
-          >
+          <button onClick={() => { setSearch(''); setSelectedTag(null) }} className="px-5 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-sm transition">
             Clear filters
           </button>
         </div>
@@ -314,6 +299,16 @@ function History() {
               onTagUpdate={handleTagUpdate}
             />
           ))}
+        </div>
+      )}
+
+      {projects.length > 0 && (
+        <div className="mt-10">
+          <h3 className="text-lg font-bold mb-1">📤 Export & Import</h3>
+          <p className="text-slate-400 text-sm mb-4">
+            Back up your projects or share them with others
+          </p>
+          <ProjectExportPanel />
         </div>
       )}
     </div>
