@@ -205,6 +205,12 @@ function Viewer() {
           </div>
           <div className="flex gap-2 flex-wrap">
             <button onClick={() => navigate('/')} className="px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-xs transition">Start New</button>
+             <button
+  onClick={() => navigate('/showcase', { state: { idea, selectedComponents } })}
+  className="px-3 py-2 bg-purple-700 hover:bg-purple-600 rounded-xl text-xs font-semibold transition"
+>
+  🎭 Showcase
+</button>
             <button
               onClick={async () => {
                 const project = saveProject(idea, selectedComponents, null)

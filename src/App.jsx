@@ -25,6 +25,7 @@ const NotFound = lazy(() => import('./pages/NotFound'))
 const Templates = lazy(() => import('./pages/Templates'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Help = lazy(() => import('./pages/Help'))
+const Showcase = lazy(() => import('./pages/Showcase'))
 
 function PageLoader() {
   return (
@@ -72,6 +73,8 @@ function Navbar({ onOpenPalette }) {
     { label: '⚙️ Settings', path: '/settings' },
     { label: '🌐 Landing', path: '/landing' },
   ]
+
+  if (location.pathname === '/showcase') return null
 
   return (
     <nav className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative" role="navigation" aria-label="Main navigation">
@@ -217,6 +220,7 @@ function App() {
               <Route path="/templates" element={<Templates />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/help" element={<Help />} />
+              <Route path="/showcase" element={<Showcase />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
