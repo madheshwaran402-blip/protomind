@@ -1,3 +1,4 @@
+import ImprovementSuggester from '../components/ImprovementSuggester'
 import BuildTimeline from '../components/BuildTimeline'
 import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
@@ -335,6 +336,10 @@ function Viewer() {
           <AccordionSection icon="🔍" title="Component Inspector" subtitle="Search, filter and highlight components" defaultOpen={true}>
             <ComponentSearch components={selectedComponents} onHighlight={(id) => console.log('Highlight:', id)} onSelect={(comp) => setSelectedComp(comp)} />
           </AccordionSection>
+
+          <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
+  <ImprovementSuggester idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
             <PrototypeRating idea={idea} />
