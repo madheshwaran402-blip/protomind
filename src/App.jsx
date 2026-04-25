@@ -27,6 +27,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Help = lazy(() => import('./pages/Help'))
 const Showcase = lazy(() => import('./pages/Showcase'))
 const ProgressReport = lazy(() => import('./pages/ProgressReport'))
+const Inventory = lazy(() => import('./pages/Inventory'))
 
 function PageLoader() {
   return (
@@ -66,6 +67,7 @@ function Navbar({ onOpenPalette }) {
   const secondaryLinks = [
     { label: '📊 Dashboard', path: '/dashboard' },
     { label: '📈 Progress', path: '/progress' },
+    { label: '📦 Inventory', path: '/inventory' },
     { label: 'Parts', path: '/parts' },
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
@@ -224,6 +226,7 @@ function App() {
               <Route path="/help" element={<Help />} />
               <Route path="/showcase" element={<Showcase />} />
               <Route path="/progress" element={<ProgressReport />} />
+              <Route path="/inventory" element={<Inventory />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
