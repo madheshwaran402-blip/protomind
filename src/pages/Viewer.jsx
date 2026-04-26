@@ -1,3 +1,4 @@
+import ShoppingListGenerator from '../components/ShoppingListGenerator'
 import NameGenerator from '../components/NameGenerator'
 import PCBPlanner from '../components/PCBPlanner'
 import ImprovementSuggester from '../components/ImprovementSuggester'
@@ -394,6 +395,10 @@ function Viewer() {
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
             <CostEstimator idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="🛒" title="Shopping List Generator" subtitle="Complete prioritized shopping list with buy links and prices">
+  <ShoppingListGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="💬" title="Prototype Explainer" subtitle="Explain your prototype in simple language for any audience">
             <PrototypeExplainer idea={idea} components={selectedComponents} />
