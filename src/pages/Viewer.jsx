@@ -1,3 +1,4 @@
+import NameGenerator from '../components/NameGenerator'
 import PCBPlanner from '../components/PCBPlanner'
 import ImprovementSuggester from '../components/ImprovementSuggester'
 import BuildTimeline from '../components/BuildTimeline'
@@ -340,6 +341,10 @@ function Viewer() {
 
           <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
   <ImprovementSuggester idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="✨" title="Brand Kit Generator" subtitle="AI creates product names, taglines, colors and pitch" badge="New">
+  <NameGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
