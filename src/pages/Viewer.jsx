@@ -1,3 +1,4 @@
+import DocumentationGenerator from '../components/DocumentationGenerator'
 import TeamCollaboration from '../components/TeamCollaboration'
 import LearningRoadmap from '../components/LearningRoadmap'
 import ShoppingListGenerator from '../components/ShoppingListGenerator'
@@ -413,6 +414,10 @@ function Viewer() {
           <AccordionSection icon="⚖️" title="Prototype Comparison" subtitle="Compare your prototype against an AI-generated alternative">
             <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="📄" title="Documentation Generator" subtitle="AI writes complete technical docs with wiring guide and troubleshooting">
+  <DocumentationGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🔄" title="Component Substitution" subtitle="Find alternatives for any unavailable or expensive component">
             <SubstitutionSuggester idea={idea} components={selectedComponents} />
