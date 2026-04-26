@@ -1,3 +1,4 @@
+import TeamCollaboration from '../components/TeamCollaboration'
 import LearningRoadmap from '../components/LearningRoadmap'
 import ShoppingListGenerator from '../components/ShoppingListGenerator'
 import NameGenerator from '../components/NameGenerator'
@@ -364,6 +365,10 @@ function Viewer() {
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
             <PrototypeNotes idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="👥" title="Team Collaboration" subtitle="Add team members, assign tasks, and share notes">
+  <TeamCollaboration idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
             <VersionHistory idea={idea} currentComponents={selectedComponents} />
