@@ -1,3 +1,4 @@
+import LearningRoadmap from '../components/LearningRoadmap'
 import ShoppingListGenerator from '../components/ShoppingListGenerator'
 import NameGenerator from '../components/NameGenerator'
 import PCBPlanner from '../components/PCBPlanner'
@@ -423,6 +424,10 @@ function Viewer() {
           <AccordionSection icon="📊" title="Difficulty & Build Time" subtitle="AI estimates how hard this is to build and how long it takes">
             <DifficultyPanel idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="🗺️" title="Learning Roadmap" subtitle="Step-by-step learning path to build this prototype successfully">
+  <LearningRoadmap idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🔍" title="Missing Components" subtitle="AI scans for missing resistors, capacitors, and protection circuits">
             <MissingComponents idea={idea} components={selectedComponents} />
