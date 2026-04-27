@@ -1,3 +1,4 @@
+import VideoScriptGenerator from '../components/VideoScriptGenerator'
 import DocumentationGenerator from '../components/DocumentationGenerator'
 import TeamCollaboration from '../components/TeamCollaboration'
 import LearningRoadmap from '../components/LearningRoadmap'
@@ -349,6 +350,10 @@ function Viewer() {
 
 <AccordionSection icon="✨" title="Brand Kit Generator" subtitle="AI creates product names, taglines, colors and pitch" badge="New">
   <NameGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
+  <VideoScriptGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
