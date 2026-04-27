@@ -1,3 +1,4 @@
+import PrototypeQuiz from '../components/PrototypeQuiz'
 import VideoScriptGenerator from '../components/VideoScriptGenerator'
 import DocumentationGenerator from '../components/DocumentationGenerator'
 import TeamCollaboration from '../components/TeamCollaboration'
@@ -442,6 +443,10 @@ function Viewer() {
 
           <AccordionSection icon="🗺️" title="Learning Roadmap" subtitle="Step-by-step learning path to build this prototype successfully">
   <LearningRoadmap idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🧠" title="Knowledge Quiz" subtitle="Test your understanding of your prototype's components and circuits">
+  <PrototypeQuiz idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="🔍" title="Missing Components" subtitle="AI scans for missing resistors, capacitors, and protection circuits">
