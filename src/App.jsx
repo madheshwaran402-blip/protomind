@@ -30,6 +30,7 @@ const ProgressReport = lazy(() => import('./pages/ProgressReport'))
 const Inventory = lazy(() => import('./pages/Inventory'))
 const CircuitSymbols = lazy(() => import('./pages/CircuitSymbols'))
 const ElectronicsCalculator = lazy(() => import('./pages/ElectronicsCalculator'))
+const ResistorCalculator = lazy(() => import('./pages/ResistorCalculator'))
 
 function PageLoader() {
   return (
@@ -72,6 +73,7 @@ function Navbar({ onOpenPalette }) {
     { label: '📦 Inventory', path: '/inventory' },
     { label: '⚡ Symbols', path: '/symbols' },
     { label: '🧮 Calculator', path: '/calculator' },
+    { label: '🎨 Resistor', path: '/resistor' },
     { label: 'Parts', path: '/parts' },
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
@@ -233,6 +235,7 @@ function App() {
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/symbols" element={<CircuitSymbols />} />
               <Route path="/calculator" element={<ElectronicsCalculator />} />
+              <Route path="/resistor" element={<ResistorCalculator />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
