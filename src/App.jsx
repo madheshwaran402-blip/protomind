@@ -28,6 +28,7 @@ const Help = lazy(() => import('./pages/Help'))
 const Showcase = lazy(() => import('./pages/Showcase'))
 const ProgressReport = lazy(() => import('./pages/ProgressReport'))
 const Inventory = lazy(() => import('./pages/Inventory'))
+const CircuitSymbols = lazy(() => import('./pages/CircuitSymbols'))
 
 function PageLoader() {
   return (
@@ -68,6 +69,7 @@ function Navbar({ onOpenPalette }) {
     { label: '📊 Dashboard', path: '/dashboard' },
     { label: '📈 Progress', path: '/progress' },
     { label: '📦 Inventory', path: '/inventory' },
+    { label: '⚡ Symbols', path: '/symbols' },
     { label: 'Parts', path: '/parts' },
     { label: 'Components', path: '/components' },
     { label: 'Layout', path: '/layout' },
@@ -227,6 +229,7 @@ function App() {
               <Route path="/showcase" element={<Showcase />} />
               <Route path="/progress" element={<ProgressReport />} />
               <Route path="/inventory" element={<Inventory />} />
+              <Route path="/symbols" element={<CircuitSymbols />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
