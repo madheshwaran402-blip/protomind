@@ -339,7 +339,9 @@ function Viewer() {
         )}
 
         <div className="mt-6">
-          <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">AI Analysis Tools — click to expand</p>
+<p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">
+  ⚡ {selectedComponents.length} Components · {20}+ AI Tools — click any to expand
+</p>
 
           <AccordionSection icon="🔍" title="Component Inspector" subtitle="Search, filter and highlight components" defaultOpen={true}>
             <ComponentSearch components={selectedComponents} onHighlight={(id) => console.log('Highlight:', id)} onSelect={(comp) => setSelectedComp(comp)} />

@@ -135,10 +135,13 @@ function Home() {
 
       <div className="flex gap-2 mt-6 mb-8 flex-wrap justify-center">
         {[
-          { label: '📂 History', path: '/history' },
-          { label: '🔧 Parts', path: '/parts' },
-          { label: '⚙️ Settings', path: '/settings' },
-        ].map(action => (
+  { label: '📂 History', path: '/history' },
+  { label: '📋 Templates', path: '/templates' },
+  { label: '📊 Dashboard', path: '/dashboard' },
+  { label: '📦 Inventory', path: '/inventory' },
+  { label: '📈 Progress', path: '/progress' },
+  { label: '🆘 Help', path: '/help' },
+].map(action => (
           <button
             key={action.path}
             onClick={() => navigate(action.path)}

@@ -3,204 +3,166 @@ import { useNavigate } from 'react-router-dom'
 function Landing() {
   const navigate = useNavigate()
 
-  return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-hidden">
+  const FEATURES = [
+    { icon: '🧠', title: 'AI Component Picker', desc: 'Describe your idea and AI instantly suggests the right components from a curated database of electronics parts.' },
+    { icon: '📐', title: '2D Layout Designer', desc: 'Drag and drop components into a clean 2D canvas. See how everything connects before soldering.' },
+    { icon: '🧊', title: '3D Prototype Viewer', desc: 'Real-time 3D model of your prototype with 6 environment themes, exploded view, and measurement annotations.' },
+    { icon: '💻', title: 'Code Generator', desc: 'AI writes complete Arduino and ESP32 code based on your components and pin assignments. Download and upload directly.' },
+    { icon: '🖨️', title: '3D Print Export', desc: 'Generate custom enclosures in 6 styles. Export STL files for JLCPCB, Shapeways, or your local 3D printer.' },
+    { icon: '📄', title: 'Documentation', desc: 'Auto-generate complete technical docs with wiring guide, code reference, troubleshooting, and Markdown export.' },
+    { icon: '🛒', title: 'Shopping List', desc: 'Get a prioritized shopping list with real prices from Amazon, AliExpress, and local stores. Share via WhatsApp.' },
+    { icon: '🎬', title: 'Video Script', desc: 'Write your complete YouTube or TikTok build video script with B-roll guide, thumbnail concept, and chapter markers.' },
+    { icon: '🗺️', title: 'Learning Roadmap', desc: 'Personalized step-by-step learning path based on your prototype complexity with practice projects and resources.' },
+    { icon: '👥', title: 'Team Collaboration', desc: 'Add team members, assign roles, manage tasks, and share notes. Perfect for school and university projects.' },
+    { icon: '📊', title: 'Dashboard & Stats', desc: 'Track your building streak, favourite components, project history, and personal progress over time.' },
+    { icon: '📦', title: 'Inventory Manager', desc: 'Track your physical component stock, get low stock alerts, and export your inventory as a CSV spreadsheet.' },
+  ]
 
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-16 py-5 border-b border-[#1e1e2e]">
-        <div className="text-xl font-bold text-indigo-400">⚡ ProtoMind</div>
-        <div className="flex gap-8 items-center">
-          <span className="text-slate-400 text-sm hover:text-white cursor-pointer transition">Features</span>
-          <span className="text-slate-400 text-sm hover:text-white cursor-pointer transition">How it Works</span>
-          <button
-            onClick={() => navigate('/')}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-          >
-            Launch App →
-          </button>
-        </div>
-      </nav>
+  const STATS = [
+    { value: '20+', label: 'AI Tools' },
+    { value: '100%', label: 'Local AI' },
+    { value: '8', label: 'Templates' },
+    { value: 'Free', label: 'Forever' },
+  ]
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
 
       {/* Hero */}
-      <div className="flex flex-col items-center text-center px-10 pt-24 pb-16 relative">
-        {/* Glow effect */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-900 rounded-full blur-3xl opacity-20 pointer-events-none" />
-
-        <div className="bg-indigo-950 text-indigo-400 text-xs px-4 py-1.5 rounded-full border border-indigo-800 mb-6">
-          🧠 Powered by Local AI — Free & Private
+      <div className="flex flex-col items-center text-center px-4 sm:px-8 pt-16 pb-20">
+        <div className="bg-indigo-950 text-indigo-400 text-xs sm:text-sm px-4 py-1.5 rounded-full border border-indigo-800 mb-6">
+          ⚡ AI-Powered Electronics Prototyping
         </div>
 
-        <h1 className="text-7xl font-black leading-tight mb-6 max-w-4xl">
-          Turn Any Idea Into a
-          <span className="text-indigo-400"> Real Prototype</span>
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight mb-6 max-w-4xl">
+          Build Real Prototypes
+          <span className="text-indigo-400"> with AI</span>
         </h1>
 
-        <p className="text-slate-400 text-xl max-w-2xl leading-relaxed mb-10">
-          Describe your idea in one sentence. ProtoMind uses AI to suggest components,
-          generate circuit diagrams, create 3D models, and export STL files for 3D printing.
+        <p className="text-slate-400 text-base sm:text-xl max-w-2xl leading-relaxed mb-8">
+          Describe your idea. AI picks components, designs the layout, generates
+          code, writes documentation, and creates your shopping list — all locally on your machine.
         </p>
 
-        <div className="flex gap-4 mb-16">
+        <div className="flex gap-4 flex-wrap justify-center mb-12">
           <button
             onClick={() => navigate('/')}
-            className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-base font-semibold transition"
+            className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl text-base font-bold transition shadow-lg shadow-indigo-900"
           >
-            ⚡ Start Building Free →
+            ⚡ Start Building Free
           </button>
           <button
-            onClick={() => navigate('/parts')}
-            className="px-8 py-4 bg-[#1e1e2e] hover:bg-[#2e2e4e] rounded-xl text-base font-semibold transition"
+            onClick={() => navigate('/templates')}
+            className="px-8 py-4 bg-[#1e1e2e] hover:bg-[#2e2e4e] border border-[#2e2e4e] rounded-2xl text-base font-bold transition"
           >
-            Browse Parts Database
+            📋 Browse Templates
           </button>
         </div>
 
-        {/* App Preview */}
-        <div className="w-full max-w-4xl bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-6 text-left">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-slate-600 text-xs ml-2">ProtoMind App</span>
-          </div>
-          <div className="bg-[#13131f] rounded-xl p-4 mb-3">
-            <p className="text-slate-500 text-xs mb-1">Your idea:</p>
-            <p className="text-indigo-300 text-sm">"A smart helmet with collision detection and SOS alert"</p>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { icon: '🧠', name: 'Arduino Uno', cat: 'Microcontroller', color: '#6366f1' },
-              { icon: '📡', name: 'MPU6050 Sensor', cat: 'Sensor', color: '#0ea5e9' },
-              { icon: '📶', name: 'GSM Module', cat: 'Communication', color: '#ef4444' },
-            ].map(c => (
-              <div key={c.name} className="bg-[#0d0d1a] border rounded-xl p-3" style={{ borderColor: c.color }}>
-                <div className="text-xl mb-1">{c.icon}</div>
-                <div className="text-xs text-white font-medium">{c.name}</div>
-                <div className="text-xs mt-0.5" style={{ color: c.color }}>{c.cat}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Features */}
-      <div className="px-16 py-20">
-        <h2 className="text-4xl font-bold text-center mb-4">Everything You Need to Build</h2>
-        <p className="text-slate-400 text-center mb-16 text-lg">From idea to 3D printed prototype in minutes</p>
-
-        <div className="grid grid-cols-3 gap-6">
-          {[
-            {
-              icon: '🧠',
-              title: 'AI Component Suggestions',
-              desc: 'Describe your idea and local AI instantly suggests the perfect components with reasons why each one is needed.',
-              color: '#6366f1',
-            },
-            {
-              icon: '📐',
-              title: '2D Layout Canvas',
-              desc: 'Drag and drop components on a visual canvas to design your circuit layout before building anything physical.',
-              color: '#0ea5e9',
-            },
-            {
-              icon: '🧊',
-              title: '3D Prototype Viewer',
-              desc: 'See your prototype in full 3D. Rotate, zoom, and hover over components to explore your design.',
-              color: '#22c55e',
-            },
-            {
-              icon: '⚡',
-              title: 'Circuit Diagram Generator',
-              desc: 'AI generates a complete wiring diagram showing how all components connect with color coded wires.',
-              color: '#f59e0b',
-            },
-            {
-              icon: '🖨️',
-              title: 'Smart 3D Print Detection',
-              desc: 'AI decides if your prototype needs a 3D printed enclosure and generates the exact STL file with cutouts.',
-              color: '#a855f7',
-            },
-            {
-              icon: '📄',
-              title: 'PDF Report Export',
-              desc: 'Export a professional PDF report with components list, wiring guide, and AI validation score to share with anyone.',
-              color: '#ef4444',
-            },
-          ].map(f => (
-            <div
-              key={f.title}
-              className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-6 hover:border-opacity-50 transition"
-              style={{ '--hover-color': f.color }}
-            >
-              <div className="text-4xl mb-4">{f.icon}</div>
-              <h3 className="text-lg font-semibold mb-2 text-white">{f.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* How it Works */}
-      <div className="px-16 py-20 bg-[#0d0d1a]">
-        <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
-        <div className="flex justify-center gap-8 flex-wrap">
-          {[
-            { step: '01', title: 'Describe Your Idea', desc: 'Type your prototype idea in plain English — one sentence is all you need' },
-            { step: '02', title: 'AI Picks Components', desc: 'Local AI analyses your idea and suggests the perfect components with reasons' },
-            { step: '03', title: 'Design the Layout', desc: 'Drag components on a canvas and generate a full circuit diagram automatically' },
-            { step: '04', title: 'Export & Build', desc: 'Download STL files, BOM spreadsheet, and a full PDF report to start building' },
-          ].map((item, i) => (
-            <div key={item.step} className="flex flex-col items-center text-center max-w-xs">
-              <div className="text-5xl font-black text-indigo-900 mb-4">{item.step}</div>
-              {i < 3 && (
-                <div className="hidden lg:block absolute text-slate-700 text-2xl mt-6">→</div>
-              )}
-              <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="px-16 py-16 border-t border-[#1e1e2e]">
-        <div className="flex justify-center gap-20 flex-wrap">
-          {[
-            { value: '100%', label: 'Free to use' },
-            { value: 'Local AI', label: 'No data sent online' },
-            { value: '< 30s', label: 'From idea to prototype' },
-            { value: 'STL + PDF', label: 'Export formats' },
-          ].map(stat => (
+        {/* Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl w-full">
+          {STATS.map(stat => (
             <div key={stat.label} className="text-center">
-              <div className="text-4xl font-black text-indigo-400 mb-1">{stat.value}</div>
-              <div className="text-slate-500 text-sm">{stat.label}</div>
+              <p className="text-3xl sm:text-4xl font-black text-indigo-400 mb-1">{stat.value}</p>
+              <p className="text-slate-500 text-sm">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Features Grid */}
+      <div className="px-4 sm:px-8 md:px-16 pb-20">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-4xl font-black mb-3">Everything You Need to Build</h2>
+          <p className="text-slate-400 text-base max-w-xl mx-auto">
+            20+ AI-powered tools built into one app. No subscriptions, no cloud AI costs — runs 100% locally.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {FEATURES.map(feature => (
+            <div
+              key={feature.title}
+              className="bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-800 rounded-2xl p-5 transition group cursor-pointer"
+              onClick={() => navigate('/')}
+            >
+              <div className="text-3xl mb-3">{feature.icon}</div>
+              <h3 className="text-white font-semibold text-sm mb-2 group-hover:text-indigo-400 transition">{feature.title}</h3>
+              <p className="text-slate-500 text-xs leading-relaxed">{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* How it works */}
+      <div className="px-4 sm:px-8 md:px-16 pb-20 bg-[#0d0d1a] py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-4xl font-black mb-3">How ProtoMind Works</h2>
+          <p className="text-slate-400 text-base">From idea to working prototype in 4 steps</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          {[
+            { step: '01', icon: '💡', title: 'Describe', desc: 'Type your prototype idea in plain English' },
+            { step: '02', icon: '🔧', title: 'AI Picks', desc: 'AI suggests the perfect components' },
+            { step: '03', icon: '🧊', title: 'Preview', desc: 'See your prototype in 3D' },
+            { step: '04', icon: '🚀', title: 'Build', desc: 'Get code, docs, and shopping list' },
+          ].map(item => (
+            <div key={item.step} className="text-center">
+              <div className="text-4xl sm:text-5xl font-black text-indigo-900 mb-2">{item.step}</div>
+              <div className="text-3xl mb-2">{item.icon}</div>
+              <h3 className="text-white font-semibold text-sm mb-1">{item.title}</h3>
+              <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* CTA */}
-      <div className="px-16 py-24 text-center border-t border-[#1e1e2e]">
-        <h2 className="text-5xl font-black mb-6">
-          Ready to Build Your
-          <span className="text-indigo-400"> First Prototype?</span>
-        </h2>
-        <p className="text-slate-400 text-lg mb-10 max-w-xl mx-auto">
-          Free, private, runs on your computer. No account needed.
+      <div className="px-4 sm:px-8 py-20 text-center">
+        <h2 className="text-2xl sm:text-4xl font-black mb-4">Ready to Build Your First Prototype?</h2>
+        <p className="text-slate-400 text-base mb-8 max-w-lg mx-auto">
+          Join makers, students, and engineers using ProtoMind to bring their ideas to life.
         </p>
         <button
           onClick={() => navigate('/')}
-          className="px-10 py-5 bg-indigo-600 hover:bg-indigo-500 rounded-2xl text-lg font-bold transition"
+          className="px-10 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl text-base font-bold transition shadow-lg shadow-indigo-900"
         >
-          ⚡ Launch ProtoMind Free →
+          ⚡ Start Building Now — It's Free
         </button>
+        <p className="text-slate-600 text-xs mt-4">
+          No account required · Runs locally · No AI subscription needed
+        </p>
       </div>
 
       {/* Footer */}
-      <div className="px-16 py-8 border-t border-[#1e1e2e] flex justify-between items-center">
-        <div className="text-indigo-400 font-bold">⚡ ProtoMind</div>
-        <p className="text-slate-600 text-xs">Built with React, Three.js, Ollama AI & Tauri</p>
-        <p className="text-slate-600 text-xs">©️ 2026 ProtoMind</p>
+      <div className="border-t border-[#1e1e2e] px-4 sm:px-8 py-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-indigo-400 font-bold">⚡ ProtoMind</span>
+          <span className="text-slate-600 text-xs">— AI Electronics Prototyping</span>
+        </div>
+        <div className="flex gap-6 text-xs text-slate-600">
+          <span
+            className="hover:text-slate-400 cursor-pointer transition"
+            onClick={() => navigate('/help')}
+          >
+            Help
+          </span>
+          <span
+            className="hover:text-slate-400 cursor-pointer transition"
+            onClick={() => navigate('/templates')}
+          >
+            Templates
+          </span>
+          <span
+            className="hover:text-slate-400 cursor-pointer transition"
+            onClick={() => navigate('/dashboard')}
+          >
+            Dashboard
+          </span>
+        </div>
+        <p className="text-slate-700 text-xs">
+          Built with ❤️ · Day 80 of 270
+        </p>
       </div>
     </div>
   )
