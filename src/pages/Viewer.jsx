@@ -1,3 +1,4 @@
+import ComplexityAnalyser from '../components/ComplexityAnalyser'
 import BudgetPlanner from '../components/BudgetPlanner'
 import FeedbackCollector from '../components/FeedbackCollector'
 import PrototypeQuiz from '../components/PrototypeQuiz'
@@ -351,6 +352,10 @@ function Viewer() {
 
           <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
   <ImprovementSuggester idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔬" title="Prototype Health Analyser" subtitle="AI grades your design across 5 engineering dimensions" badge="New">
+  <ComplexityAnalyser idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="✨" title="Brand Kit Generator" subtitle="AI creates product names, taglines, colors and pitch" badge="New">
