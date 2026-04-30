@@ -1,3 +1,4 @@
+import FeedbackCollector from '../components/FeedbackCollector'
 import PrototypeQuiz from '../components/PrototypeQuiz'
 import VideoScriptGenerator from '../components/VideoScriptGenerator'
 import DocumentationGenerator from '../components/DocumentationGenerator'
@@ -362,6 +363,10 @@ function Viewer() {
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
             <PrototypeRating idea={idea} />
           </AccordionSection>
+
+          <AccordionSection icon="💬" title="Prototype Feedback" subtitle="Log what worked, what didn't, and lessons learned">
+  <FeedbackCollector idea={idea} />
+</AccordionSection>
 
           <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
   <BuildTimeline idea={idea} />
