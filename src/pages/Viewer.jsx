@@ -1,3 +1,4 @@
+import BudgetPlanner from '../components/BudgetPlanner'
 import FeedbackCollector from '../components/FeedbackCollector'
 import PrototypeQuiz from '../components/PrototypeQuiz'
 import VideoScriptGenerator from '../components/VideoScriptGenerator'
@@ -415,6 +416,10 @@ function Viewer() {
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
             <CostEstimator idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="💰" title="Budget Planner" subtitle="Set a budget, track spending per component and supplier">
+  <BudgetPlanner idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🛒" title="Shopping List Generator" subtitle="Complete prioritized shopping list with buy links and prices">
   <ShoppingListGenerator idea={idea} components={selectedComponents} />
