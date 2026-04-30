@@ -34,6 +34,7 @@ const ResistorCalculator = lazy(() => import('./pages/ResistorCalculator'))
 const WireGauge = lazy(() => import('./pages/WireGauge'))
 const CapacitorReference = lazy(() => import('./pages/CapacitorReference'))
 const RatingWall = lazy(() => import('./pages/RatingWall'))
+const PinoutReference = lazy(() => import('./pages/PinoutReference'))
 
 function PageLoader() {
   return (
@@ -76,6 +77,7 @@ function Navbar({ onOpenPalette }) {
     { label: '📦 Inventory', path: '/inventory' },
     { label: '⭐ Rating Wall', path: '/ratings' },
     { label: '⚡ Symbols', path: '/symbols' },
+    { label: '📌 Pinouts', path: '/pinouts' },
     { label: '🧮 Calculator', path: '/calculator' },
     { label: '🎨 Resistor', path: '/resistor' },
     { label: '🔌 Wire Gauge', path: '/wire' },
@@ -131,7 +133,7 @@ function Navbar({ onOpenPalette }) {
               More {menuOpen ? '▲' : '▼'}
             </button>
             {menuOpen && (
-              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl">
+              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl max-h-96 overflow-y-auto">
                 {secondaryLinks.map(link => (
                   <div
                     key={link.path}
@@ -166,7 +168,7 @@ function Navbar({ onOpenPalette }) {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden border-t border-[#1e1e2e] bg-[#0d0d1a] py-2">
+        <div className="md:hidden border-t border-[#1e1e2e] bg-[#0d0d1a] py-2 max-h-96 overflow-y-auto">
           {[...primaryLinks, ...secondaryLinks].map(link => (
             <div
               key={link.path}
@@ -245,6 +247,7 @@ function App() {
               <Route path="/wire" element={<WireGauge />} />
               <Route path="/capacitor" element={<CapacitorReference />} />
               <Route path="/ratings" element={<RatingWall />} />
+              <Route path="/pinouts" element={<PinoutReference />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
