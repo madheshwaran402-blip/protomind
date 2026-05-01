@@ -35,6 +35,7 @@ const WireGauge = lazy(() => import('./pages/WireGauge'))
 const CapacitorReference = lazy(() => import('./pages/CapacitorReference'))
 const RatingWall = lazy(() => import('./pages/RatingWall'))
 const PinoutReference = lazy(() => import('./pages/PinoutReference'))
+const PrototypeComparator = lazy(() => import('./pages/PrototypeComparator'))
 
 function PageLoader() {
   return (
@@ -76,6 +77,7 @@ function Navbar({ onOpenPalette }) {
     { label: '📈 Progress', path: '/progress' },
     { label: '📦 Inventory', path: '/inventory' },
     { label: '⭐ Rating Wall', path: '/ratings' },
+    { label: '⚖️ Comparator', path: '/compare' },
     { label: '⚡ Symbols', path: '/symbols' },
     { label: '📌 Pinouts', path: '/pinouts' },
     { label: '🧮 Calculator', path: '/calculator' },
@@ -248,6 +250,7 @@ function App() {
               <Route path="/capacitor" element={<CapacitorReference />} />
               <Route path="/ratings" element={<RatingWall />} />
               <Route path="/pinouts" element={<PinoutReference />} />
+              <Route path="/compare" element={<PrototypeComparator />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
