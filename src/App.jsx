@@ -37,6 +37,7 @@ const RatingWall = lazy(() => import('./pages/RatingWall'))
 const PinoutReference = lazy(() => import('./pages/PinoutReference'))
 const PrototypeComparator = lazy(() => import('./pages/PrototypeComparator'))
 const VersionDiff = lazy(() => import('./pages/VersionDiff'))
+const ComponentRecommender = lazy(() => import('./pages/ComponentRecommender'))
 
 function PageLoader() {
   return (
@@ -80,6 +81,7 @@ function Navbar({ onOpenPalette }) {
     { label: '⭐ Rating Wall', path: '/ratings' },
     { label: '⚖️ Comparator', path: '/compare' },
     { label: '🔀 Version Diff', path: '/diff' },
+    { label: '🎯 Recommender', path: '/recommend' },
     { label: '⚡ Symbols', path: '/symbols' },
     { label: '📌 Pinouts', path: '/pinouts' },
     { label: '🧮 Calculator', path: '/calculator' },
@@ -254,6 +256,7 @@ function App() {
               <Route path="/pinouts" element={<PinoutReference />} />
               <Route path="/compare" element={<PrototypeComparator />} />
               <Route path="/diff" element={<VersionDiff />} />
+              <Route path="/recommend" element={<ComponentRecommender />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
