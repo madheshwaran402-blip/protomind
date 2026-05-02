@@ -1,3 +1,4 @@
+import BuildLog from '../components/BuildLog'
 import ComplexityAnalyser from '../components/ComplexityAnalyser'
 import BudgetPlanner from '../components/BudgetPlanner'
 import FeedbackCollector from '../components/FeedbackCollector'
@@ -376,6 +377,10 @@ function Viewer() {
 
           <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
   <BuildTimeline idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📔" title="Build Log Journal" subtitle="Document your daily build progress with mood, tags and milestones">
+  <BuildLog idea={idea} />
 </AccordionSection>
 
           <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
