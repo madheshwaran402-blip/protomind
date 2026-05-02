@@ -38,6 +38,7 @@ const PinoutReference = lazy(() => import('./pages/PinoutReference'))
 const PrototypeComparator = lazy(() => import('./pages/PrototypeComparator'))
 const VersionDiff = lazy(() => import('./pages/VersionDiff'))
 const ComponentRecommender = lazy(() => import('./pages/ComponentRecommender'))
+const IdeaGenerator = lazy(() => import('./pages/IdeaGenerator'))
 
 function PageLoader() {
   return (
@@ -75,13 +76,14 @@ function Navbar({ onOpenPalette }) {
   ]
 
   const secondaryLinks = [
+    { label: '💡 Idea Generator', path: '/ideas' },
+    { label: '🎯 Recommender', path: '/recommend' },
     { label: '📊 Dashboard', path: '/dashboard' },
     { label: '📈 Progress', path: '/progress' },
     { label: '📦 Inventory', path: '/inventory' },
     { label: '⭐ Rating Wall', path: '/ratings' },
     { label: '⚖️ Comparator', path: '/compare' },
     { label: '🔀 Version Diff', path: '/diff' },
-    { label: '🎯 Recommender', path: '/recommend' },
     { label: '⚡ Symbols', path: '/symbols' },
     { label: '📌 Pinouts', path: '/pinouts' },
     { label: '🧮 Calculator', path: '/calculator' },
@@ -139,7 +141,7 @@ function Navbar({ onOpenPalette }) {
               More {menuOpen ? '▲' : '▼'}
             </button>
             {menuOpen && (
-              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-44 z-50 shadow-xl max-h-96 overflow-y-auto">
+              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-48 z-50 shadow-xl max-h-96 overflow-y-auto">
                 {secondaryLinks.map(link => (
                   <div
                     key={link.path}
@@ -257,6 +259,7 @@ function App() {
               <Route path="/compare" element={<PrototypeComparator />} />
               <Route path="/diff" element={<VersionDiff />} />
               <Route path="/recommend" element={<ComponentRecommender />} />
+              <Route path="/ideas" element={<IdeaGenerator />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
