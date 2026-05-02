@@ -1,3 +1,4 @@
+import PrototypeTroubleshooter from '../components/PrototypeTroubleshooter'
 import BuildLog from '../components/BuildLog'
 import ComplexityAnalyser from '../components/ComplexityAnalyser'
 import BudgetPlanner from '../components/BudgetPlanner'
@@ -454,6 +455,10 @@ function Viewer() {
           <AccordionSection icon="🛡️" title="Safety Checklist" subtitle="AI identifies risks and generates a pre-build safety checklist">
             <SafetyChecklist idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe a problem and AI diagnoses causes with step-by-step fixes">
+  <PrototypeTroubleshooter idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🔋" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
             <PowerCalculator idea={idea} components={selectedComponents} />
