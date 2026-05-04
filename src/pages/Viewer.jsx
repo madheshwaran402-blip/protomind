@@ -1,3 +1,5 @@
+import SpecSheetGenerator from '../components/SpecSheetGenerator'
+import StockChecker from '../components/StockChecker'
 import PrototypeTroubleshooter from '../components/PrototypeTroubleshooter'
 import BuildLog from '../components/BuildLog'
 import ComplexityAnalyser from '../components/ComplexityAnalyser'
@@ -436,6 +438,10 @@ function Viewer() {
   <ShoppingListGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="📦" title="Stock Checker" subtitle="AI checks component availability, lead times and suggests alternatives">
+  <StockChecker components={selectedComponents} />
+</AccordionSection>              
+
           <AccordionSection icon="💬" title="Prototype Explainer" subtitle="Explain your prototype in simple language for any audience">
             <PrototypeExplainer idea={idea} components={selectedComponents} />
           </AccordionSection>
@@ -446,6 +452,10 @@ function Viewer() {
 
           <AccordionSection icon="📄" title="Documentation Generator" subtitle="AI writes complete technical docs with wiring guide and troubleshooting">
   <DocumentationGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📋" title="Technical Spec Sheet" subtitle="Generate a professional engineering specification document">
+  <SpecSheetGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="🔄" title="Component Substitution" subtitle="Find alternatives for any unavailable or expensive component">
