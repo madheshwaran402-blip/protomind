@@ -39,6 +39,7 @@ const PrototypeComparator = lazy(() => import('./pages/PrototypeComparator'))
 const VersionDiff = lazy(() => import('./pages/VersionDiff'))
 const ComponentRecommender = lazy(() => import('./pages/ComponentRecommender'))
 const IdeaGenerator = lazy(() => import('./pages/IdeaGenerator'))
+const ComponentSearchPage = lazy(() => import('./pages/ComponentSearch'))
 
 function PageLoader() {
   return (
@@ -78,6 +79,7 @@ function Navbar({ onOpenPalette }) {
   const secondaryLinks = [
     { label: '💡 Idea Generator', path: '/ideas' },
     { label: '🎯 Recommender', path: '/recommend' },
+    { label: '🔍 Component Search', path: '/search' },
     { label: '📊 Dashboard', path: '/dashboard' },
     { label: '📈 Progress', path: '/progress' },
     { label: '📦 Inventory', path: '/inventory' },
@@ -141,7 +143,7 @@ function Navbar({ onOpenPalette }) {
               More {menuOpen ? '▲' : '▼'}
             </button>
             {menuOpen && (
-              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-48 z-50 shadow-xl max-h-96 overflow-y-auto">
+              <div className="absolute top-10 left-0 bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl py-2 w-52 z-50 shadow-xl max-h-96 overflow-y-auto">
                 {secondaryLinks.map(link => (
                   <div
                     key={link.path}
@@ -260,6 +262,7 @@ function App() {
               <Route path="/diff" element={<VersionDiff />} />
               <Route path="/recommend" element={<ComponentRecommender />} />
               <Route path="/ideas" element={<IdeaGenerator />} />
+              <Route path="/search" element={<ComponentSearchPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
