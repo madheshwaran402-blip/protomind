@@ -57,3 +57,30 @@ export async function generateQuickSuggestions(idea, components, lastMessage) {
   } catch {/* ignore suggestion errors */}
   return ['Will this work?', 'What voltage do I need?', 'Suggest improvements']
 }
+export async function chat(idea, components) {
+  const settings = localStorage.getItem('protomind_settings')
+  const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
+  const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
+
+  const componentNames = components.map(c => c.name + ' (' + c.category + ')').join(', ')
+
+  const response = await fetch(ollamaUrl + '/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model,
+      prompt: 'You are an expert electronics engineer. Select the best components for this prototype idea from the available list.\n\nIdea: "' + idea + '"\n\nAvailable components: ' + componentNames + '\n\nSelect 4-8 components that best match this idea. Reply ONLY with a JSON array of component names: ["Component Name 1", "Component Name 2"]',
+      stream: false,
+    }),
+  })
+
+  const data = await response.json()
+  const text = data.response
+  const jsonMatch = text.match(/\[[\s\S]*\]/)
+  if (!jsonMatch) throw new Error('No JSON found')
+  const selectedNames = JSON.parse(jsonMatch[0])
+  return components.filter(c => selectedNames.some(name =>
+    c.name.toLowerCase().includes(name.toLowerCase()) ||
+    name.toLowerCase().includes(c.name.toLowerCase())
+  ))
+}
