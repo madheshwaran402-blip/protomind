@@ -96,7 +96,6 @@ function SpecSheetGenerator({ idea, components }) {
 
       {spec && !loading && (
         <>
-          {/* Header */}
           <div className="bg-[#13131f] border border-[#2e2e4e] rounded-2xl p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -127,7 +126,6 @@ function SpecSheetGenerator({ idea, components }) {
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex gap-1 bg-[#13131f] rounded-xl p-1 overflow-x-auto">
             {TABS.map(tab => (
               <button
@@ -142,7 +140,6 @@ function SpecSheetGenerator({ idea, components }) {
             ))}
           </div>
 
-          {/* Electrical tab */}
           {activeTab === 'electrical' && spec.electrical && (
             <div className="space-y-3">
               <SpecTable
@@ -165,7 +162,6 @@ function SpecSheetGenerator({ idea, components }) {
             </div>
           )}
 
-          {/* Mechanical tab */}
           {activeTab === 'mechanical' && spec.mechanical && (
             <div className="space-y-3">
               <SpecTable
@@ -192,7 +188,6 @@ function SpecSheetGenerator({ idea, components }) {
             </div>
           )}
 
-          {/* Performance tab */}
           {activeTab === 'performance' && spec.performance && (
             <div className="space-y-3">
               <SpecTable
@@ -205,7 +200,6 @@ function SpecSheetGenerator({ idea, components }) {
                   ['Digital I/O', spec.performance.digitalIO],
                 ]}
               />
-
               {spec.compliance?.length > 0 && (
                 <div>
                   <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Compliance</h4>
@@ -218,7 +212,6 @@ function SpecSheetGenerator({ idea, components }) {
                   </div>
                 </div>
               )}
-
               {spec.limitations?.length > 0 && (
                 <div className="bg-orange-950 border border-orange-800 rounded-xl p-4">
                   <h4 className="text-xs font-semibold text-orange-400 uppercase tracking-wide mb-2">⚠️ Known Limitations</h4>
@@ -234,7 +227,6 @@ function SpecSheetGenerator({ idea, components }) {
             </div>
           )}
 
-          {/* Interfaces tab */}
           {activeTab === 'interfaces' && (
             <div className="space-y-3">
               {spec.interfaces?.map((iface, i) => (
@@ -258,7 +250,6 @@ function SpecSheetGenerator({ idea, components }) {
                   </div>
                 </div>
               ))}
-
               {spec.revision?.length > 0 && (
                 <div className="bg-[#13131f] border border-[#2e2e4e] rounded-xl overflow-hidden">
                   <div className="px-4 py-2 border-b border-[#2e2e4e]">
