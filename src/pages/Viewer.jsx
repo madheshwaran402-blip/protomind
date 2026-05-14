@@ -1,3 +1,4 @@
+import BOMOptimizer from '../components/BOMOptimizer'
 import ReadmeGenerator from '../components/ReadmeGenerator'
 import SpecSheetGenerator from '../components/SpecSheetGenerator'
 import StockChecker from '../components/StockChecker'
@@ -430,6 +431,10 @@ function Viewer() {
           <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
             <CostEstimator idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="💰" title="BOM Cost Optimizer" subtitle="Compare AliExpress, Amazon and local prices for every component">
+  <BOMOptimizer components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="💰" title="Budget Planner" subtitle="Set a budget, track spending per component and supplier">
   <BudgetPlanner idea={idea} components={selectedComponents} />
