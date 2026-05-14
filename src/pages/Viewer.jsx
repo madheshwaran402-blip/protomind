@@ -1,3 +1,4 @@
+import ReadmeGenerator from '../components/ReadmeGenerator'
 import SpecSheetGenerator from '../components/SpecSheetGenerator'
 import StockChecker from '../components/StockChecker'
 import PrototypeTroubleshooter from '../components/PrototypeTroubleshooter'
@@ -452,6 +453,10 @@ function Viewer() {
 
           <AccordionSection icon="📄" title="Documentation Generator" subtitle="AI writes complete technical docs with wiring guide and troubleshooting">
   <DocumentationGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📝" title="GitHub README Generator" subtitle="Generate a professional README.md for your GitHub repository">
+  <ReadmeGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📋" title="Technical Spec Sheet" subtitle="Generate a professional engineering specification document">
