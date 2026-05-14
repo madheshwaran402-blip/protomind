@@ -1,3 +1,4 @@
+import SimulationRunner from '../components/SimulationRunner'
 import BOMOptimizer from '../components/BOMOptimizer'
 import ReadmeGenerator from '../components/ReadmeGenerator'
 import SpecSheetGenerator from '../components/SpecSheetGenerator'
@@ -503,6 +504,11 @@ function Viewer() {
           <AccordionSection icon="🔧" title="Change Validator" subtitle="Validate proposed changes before implementing them">
             <ChangeValidator idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="🔬" title="Virtual Simulation" subtitle="Run a virtual test of your prototype to catch issues before building" badge="New">
+  <SimulationRunner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
         </div>
 
         <div className="mt-6">
