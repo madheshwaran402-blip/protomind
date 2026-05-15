@@ -1,3 +1,4 @@
+import EnergyAudit from '../components/EnergyAudit'
 import SimulationRunner from '../components/SimulationRunner'
 import BOMOptimizer from '../components/BOMOptimizer'
 import ReadmeGenerator from '../components/ReadmeGenerator'
@@ -484,6 +485,10 @@ function Viewer() {
           <AccordionSection icon="🔋" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
             <PowerCalculator idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="⚡" title="Energy Audit" subtitle="Calculate exact power consumption and battery life estimates">
+  <EnergyAudit idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="📊" title="Difficulty & Build Time" subtitle="AI estimates how hard this is to build and how long it takes">
             <DifficultyPanel idea={idea} components={selectedComponents} />
