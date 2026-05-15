@@ -1,3 +1,4 @@
+import RiskAssessment from '../components/RiskAssessment'
 import EnergyAudit from '../components/EnergyAudit'
 import SimulationRunner from '../components/SimulationRunner'
 import BOMOptimizer from '../components/BOMOptimizer'
@@ -477,6 +478,10 @@ function Viewer() {
           <AccordionSection icon="🛡️" title="Safety Checklist" subtitle="AI identifies risks and generates a pre-build safety checklist">
             <SafetyChecklist idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="🛡️" title="Risk Assessment" subtitle="AI identifies technical, safety and regulatory risks with mitigations">
+  <RiskAssessment idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe a problem and AI diagnoses causes with step-by-step fixes">
   <PrototypeTroubleshooter idea={idea} components={selectedComponents} />
