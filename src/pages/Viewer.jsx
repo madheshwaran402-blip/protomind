@@ -1,3 +1,4 @@
+import LaunchReadiness from '../components/LaunchReadiness'
 import RiskAssessment from '../components/RiskAssessment'
 import EnergyAudit from '../components/EnergyAudit'
 import SimulationRunner from '../components/SimulationRunner'
@@ -361,6 +362,10 @@ function Viewer() {
 
           <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
   <ImprovementSuggester idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🚀" title="Launch Readiness" subtitle="Get a Go/No-Go verdict with a complete deployment checklist">
+  <LaunchReadiness idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🔬" title="Prototype Health Analyser" subtitle="AI grades your design across 5 engineering dimensions" badge="New">
