@@ -1,3 +1,4 @@
+import TeamReportGenerator from '../components/TeamReportGenerator'
 import LaunchReadiness from '../components/LaunchReadiness'
 import RiskAssessment from '../components/RiskAssessment'
 import EnergyAudit from '../components/EnergyAudit'
@@ -406,6 +407,10 @@ function Viewer() {
 
           <AccordionSection icon="👥" title="Team Collaboration" subtitle="Add team members, assign tasks, and share notes">
   <TeamCollaboration idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📋" title="Team Report Generator" subtitle="Generate a professional project status report for your team or supervisor">
+  <TeamReportGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
