@@ -1,3 +1,4 @@
+import CompatibilityChecker from '../components/CompatibilityChecker'
 import TeamReportGenerator from '../components/TeamReportGenerator'
 import LaunchReadiness from '../components/LaunchReadiness'
 import RiskAssessment from '../components/RiskAssessment'
@@ -360,6 +361,10 @@ function Viewer() {
           <AccordionSection icon="🔍" title="Component Inspector" subtitle="Search, filter and highlight components" defaultOpen={true}>
             <ComponentSearch components={selectedComponents} onHighlight={(id) => console.log('Highlight:', id)} onSelect={(comp) => setSelectedComp(comp)} />
           </AccordionSection>
+
+          <AccordionSection icon="🔗" title="Compatibility Checker" subtitle="Check voltage, protocol and pin conflicts between all components">
+  <CompatibilityChecker idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
   <ImprovementSuggester idea={idea} components={selectedComponents} />
