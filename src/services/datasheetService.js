@@ -1,16 +1,32 @@
-export async function generateDatasheet(component) {
+export async function getComponentDatasheet(componentName) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
   const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
 
+  const prompt = [
+    'You are an expert electronics engineer with deep knowledge of component datasheets.',
+    'Provide a comprehensive quick reference for this component: ' + componentName,
+    'Reply ONLY with valid JSON with exactly these keys:',
+    'name (string),',
+    'fullName (string, full official name),',
+    'manufacturer (string),',
+    'category (string),',
+    'description (string, 2-3 sentences),',
+    'keySpecs (array of objects with: parameter, value, notes),',
+    'pinout (array of objects with: pin, name, type, description),',
+    'operatingConditions (object with: minVoltage, maxVoltage, typVoltage, minTemp, maxTemp, maxCurrent),',
+    'interfaces (array of strings),',
+    'codeExample (object with: language, code, description),',
+    'commonIssues (array of objects with: issue, cause, fix),',
+    'alternatives (array of objects with: name, pros, cons),',
+    'datasheetUrl (string, best guess URL or empty string),',
+    'buyLinks (array of objects with: supplier, searchTerm)',
+  ].join('\n')
+
   const response = await fetch(ollamaUrl + '/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model,
-      prompt: 'You are an expert electronics engineer. Generate a detailed technical datasheet for this component.\n\nComponent: ' + component.name + '\nCategory: ' + component.category + '\n\nReply ONLY with this exact JSON:\n\n{"overview": "2 sentence technical overview", "specs": {"voltage": "3.3V - 5V", "current": "20mA typical", "frequency": "N/A", "temperature": "-40°C to 85°C", "package": "DIP-8", "interface": "I2C / SPI"}, "pins": [{"number": 1, "name": "VCC", "description": "Power supply 3.3V-5V"}, {"number": 2, "name": "GND", "description": "Ground reference"}], "applications": ["Temperature monitoring", "Weather station", "Industrial automation"], "features": ["Low power consumption", "High accuracy", "Wide voltage range"], "warnings": ["Do not exceed 5.5V", "Avoid reverse polarity"], "buyLinks": [{"store": "Amazon", "search": "component name amazon"}, {"store": "AliExpress", "search": "component name aliexpress"}, {"store": "Adafruit", "search": "component name adafruit"}], "codeExample": "// Basic usage example\\nvoid setup() {\\n  Serial.begin(9600);\\n  // Initialize component\\n}\\n\\nvoid loop() {\\n  // Read data\\n}"}',
-      stream: false,
-    }),
+    body: JSON.stringify({ model, prompt, stream: false }),
   })
 
   const data = await response.json()
@@ -20,21 +36,19 @@ export async function generateDatasheet(component) {
   return JSON.parse(jsonMatch[0])
 }
 
-const DATASHEET_CACHE_KEY = 'protomind_datasheets'
-
-export function getCachedDatasheet(componentName) {
+export function saveDatasheet(componentName, data) {
   try {
-    const cache = JSON.parse(localStorage.getItem(DATASHEET_CACHE_KEY) || '{}')
-    return cache[componentName] || null
-  } catch {
-    return null
-  }
+    const saved = getSavedDatasheets()
+    saved[componentName] = { data, savedAt: new Date().toISOString() }
+    localStorage.setItem('protomind_datasheets', JSON.stringify(saved))
+  } catch {}
 }
 
-export function cacheDatasheet(componentName, data) {
+export function getSavedDatasheets() {
   try {
-    const cache = JSON.parse(localStorage.getItem(DATASHEET_CACHE_KEY) || '{}')
-    cache[componentName] = data
-    localStorage.setItem(DATASHEET_CACHE_KEY, JSON.stringify(cache))
-  } catch { /* ignore */ }
+    const raw = localStorage.getItem('protomind_datasheets')
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
 }

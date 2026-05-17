@@ -363,6 +363,10 @@ function Viewer() {
             <ComponentSearch components={selectedComponents} onHighlight={(id) => console.log('Highlight:', id)} onSelect={(comp) => setSelectedComp(comp)} />
           </AccordionSection>
 
+          <AccordionSection icon="📄" title="Datasheet Viewer" subtitle="Look up specs, pinout and code examples for any component">
+  <DatasheetViewer components={selectedComponents} />
+</AccordionSection>
+
           <AccordionSection icon="🔗" title="Compatibility Checker" subtitle="Check voltage, protocol and pin conflicts between all components">
   <CompatibilityChecker idea={idea} components={selectedComponents} />
 </AccordionSection>
