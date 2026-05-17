@@ -1,3 +1,4 @@
+import WiringGuide from '../components/WiringGuide'
 import CompatibilityChecker from '../components/CompatibilityChecker'
 import TeamReportGenerator from '../components/TeamReportGenerator'
 import LaunchReadiness from '../components/LaunchReadiness'
@@ -433,6 +434,10 @@ function Viewer() {
           <AccordionSection icon="🔌" title="Breadboard View" subtitle="Visual wiring guide for physical breadboard building">
             <BreadboardView idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="📐" title="Wiring Guide" subtitle="Step-by-step wiring with exact pin connections and wire colours">
+  <WiringGuide idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🖥️" title="PCB Layout Planner" subtitle="AI designs PCB component placement and trace routing">
   <PCBPlanner idea={idea} components={selectedComponents} />
