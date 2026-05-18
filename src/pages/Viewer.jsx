@@ -1,3 +1,4 @@
+import TimelinePlanner from '../components/TimelinePlanner'
 import WiringGuide from '../components/WiringGuide'
 import CompatibilityChecker from '../components/CompatibilityChecker'
 import TeamReportGenerator from '../components/TeamReportGenerator'
@@ -401,6 +402,10 @@ function Viewer() {
 
           <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
   <BuildTimeline idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📅" title="Timeline Planner" subtitle="AI generates a Gantt chart with phases, tasks and milestones">
+  <TimelinePlanner idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📔" title="Build Log Journal" subtitle="Document your daily build progress with mood, tags and milestones">
