@@ -41,6 +41,7 @@ const ComponentRecommender = lazy(() => import('./pages/ComponentRecommender'))
 const IdeaGenerator = lazy(() => import('./pages/IdeaGenerator'))
 const ComponentSearchPage = lazy(() => import('./pages/ComponentSearch'))
 const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
+const ShareView = lazy(() => import('./pages/ShareView'))
 
 function PageLoader() {
   return (
@@ -105,6 +106,7 @@ function Navbar({ onOpenPalette }) {
   ]
 
   if (location.pathname === '/showcase') return null
+  if (location.pathname.startsWith('/share/')) return null
 
   return (
     <nav className="border-b border-[#1e1e2e] bg-[#0d0d1a] relative" role="navigation" aria-label="Main navigation">
@@ -266,6 +268,7 @@ function App() {
               <Route path="/ideas" element={<IdeaGenerator />} />
               <Route path="/search" element={<ComponentSearchPage />} />
               <Route path="/kb" element={<KnowledgeBase />} />
+              <Route path="/share/:shareId" element={<ShareView />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
