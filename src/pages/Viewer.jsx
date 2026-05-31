@@ -1,3 +1,4 @@
+import EnclosureDesigner from '../components/EnclosureDesigner'
 import PCBHelper from '../components/PCBHelper'
 import TimelinePlanner from '../components/TimelinePlanner'
 import WiringGuide from '../components/WiringGuide'
@@ -436,6 +437,10 @@ function Viewer() {
           <AccordionSection icon="🖨️" title="Custom Enclosure Builder" subtitle="Choose enclosure type, color, material and export STL" badge="3D Print">
             <EnclosureCustomizer components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
           </AccordionSection>
+
+          <AccordionSection icon="📦" title="Enclosure Designer" subtitle="AI designs a custom enclosure with dimensions, cutouts and 3D print settings">
+  <EnclosureDesigner idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF or estimate 3D print cost">
             <ModelExportPanel components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
