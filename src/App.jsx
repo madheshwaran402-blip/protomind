@@ -40,6 +40,7 @@ const VersionDiff = lazy(() => import('./pages/VersionDiff'))
 const ComponentRecommender = lazy(() => import('./pages/ComponentRecommender'))
 const IdeaGenerator = lazy(() => import('./pages/IdeaGenerator'))
 const ComponentSearchPage = lazy(() => import('./pages/ComponentSearch'))
+const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
 
 function PageLoader() {
   return (
@@ -80,6 +81,7 @@ function Navbar({ onOpenPalette }) {
     { label: '💡 Idea Generator', path: '/ideas' },
     { label: '🎯 Recommender', path: '/recommend' },
     { label: '🔍 Component Search', path: '/search' },
+    { label: '📚 Knowledge Base', path: '/kb' },
     { label: '📊 Dashboard', path: '/dashboard' },
     { label: '📈 Progress', path: '/progress' },
     { label: '📦 Inventory', path: '/inventory' },
@@ -263,6 +265,7 @@ function App() {
               <Route path="/recommend" element={<ComponentRecommender />} />
               <Route path="/ideas" element={<IdeaGenerator />} />
               <Route path="/search" element={<ComponentSearchPage />} />
+              <Route path="/kb" element={<KnowledgeBase />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
