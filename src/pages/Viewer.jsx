@@ -1,3 +1,4 @@
+import PCBHelper from '../components/PCBHelper'
 import TimelinePlanner from '../components/TimelinePlanner'
 import WiringGuide from '../components/WiringGuide'
 import CompatibilityChecker from '../components/CompatibilityChecker'
@@ -450,6 +451,10 @@ function Viewer() {
 
           <AccordionSection icon="🖥️" title="PCB Layout Planner" subtitle="AI designs PCB component placement and trace routing">
   <PCBPlanner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📐" title="PCB Design Guide" subtitle="Complete checklist and ordering guide for taking your design to PCB">
+  <PCBHelper idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
