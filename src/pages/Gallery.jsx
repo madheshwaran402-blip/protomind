@@ -1,3 +1,4 @@
+import CommentSystem from '../components/CommentSystem'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getPublicProjects, likeProject } from '../services/supabase'
@@ -104,26 +105,29 @@ const DEMO_PROJECTS = [
   },
 ]
 
-function ProjectCard({ project, onLoad, onLike, isLocal }) {
+function ProjectCard({ project, onLoad, onLike, isLocal, onSelect, isSelected }) {
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(project.likes || 0)
-  const primaryTag = project.tags?.[0]
-  const tagColors = CATEGORY_COLORS[primaryTag] || CATEGORY_COLORS.Other
 
   function handleLike(e) {
     e.stopPropagation()
     if (liked || isLocal) return
     setLiked(true)
-    setLikeCount(prev => prev + 1)
+    setLikeCount(function(prev) { return prev + 1 })
     onLike && onLike(project.id)
+  }
+
+  function handleCardClick() {
+    onSelect && onSelect(project)
   }
 
   return (
     <div
-      onClick={() => onLoad && onLoad(project)}
-      className="bg-[#0d0d1a] border border-[#1e1e2e] hover:border-indigo-800 rounded-2xl p-4 sm:p-5 transition cursor-pointer group"
+      onClick={handleCardClick}
+      className={'bg-[#0d0d1a] border rounded-2xl p-4 sm:p-5 transition cursor-pointer group ' + (
+        isSelected ? 'border-indigo-600' : 'border-[#1e1e2e] hover:border-indigo-800'
+      )}
     >
-      {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="text-3xl sm:text-4xl">{project.thumbnail || '🔧'}</div>
         <div className="flex items-center gap-2">
@@ -134,41 +138,38 @@ function ProjectCard({ project, onLoad, onLike, isLocal }) {
           )}
           <button
             onClick={handleLike}
-            className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition ${
-              liked
-                ? 'bg-red-950 text-red-400'
-                : 'bg-[#1e1e2e] text-slate-500 hover:text-red-400'
-            }`}
+            className={'flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition ' + (
+              liked ? 'bg-red-950 text-red-400' : 'bg-[#1e1e2e] text-slate-500 hover:text-red-400'
+            )}
           >
             {liked ? '❤️' : '🤍'} {likeCount}
           </button>
         </div>
       </div>
 
-      {/* Idea */}
       <p className="text-white text-sm font-medium leading-relaxed mb-3 line-clamp-2 group-hover:text-indigo-300 transition">
         {project.idea}
       </p>
 
-      {/* Tags */}
       <div className="flex flex-wrap gap-1 mb-3">
-        {(project.tags || []).slice(0, 2).map(tag => {
+        {(project.tags || []).slice(0, 2).map(function(tag) {
           const colors = CATEGORY_COLORS[tag] || CATEGORY_COLORS.Other
           return (
-            <span key={tag} className={`text-xs px-2 py-0.5 rounded-full border ${colors.text} ${colors.bg} ${colors.border}`}>
+            <span key={tag} className={'text-xs px-2 py-0.5 rounded-full border ' + colors.text + ' ' + colors.bg + ' ' + colors.border}>
               {tag}
             </span>
           )
         })}
       </div>
 
-      {/* Components */}
       <div className="flex flex-wrap gap-1 mb-3">
-        {(project.components || []).slice(0, 3).map((comp, i) => (
-          <span key={i} className="text-xs bg-[#1e1e2e] text-slate-400 px-2 py-0.5 rounded-full">
-            {comp.icon} {comp.name?.split(' ')[0]}
-          </span>
-        ))}
+        {(project.components || []).slice(0, 3).map(function(comp, i) {
+          return (
+            <span key={i} className="text-xs bg-[#1e1e2e] text-slate-400 px-2 py-0.5 rounded-full">
+              {comp.icon} {comp.name?.split(' ')[0]}
+            </span>
+          )
+        })}
         {(project.components || []).length > 3 && (
           <span className="text-xs text-slate-600 px-1 py-0.5">
             +{project.components.length - 3} more
@@ -178,7 +179,9 @@ function ProjectCard({ project, onLoad, onLike, isLocal }) {
 
       <div className="flex items-center justify-between">
         <span className="text-slate-600 text-xs">{(project.components || []).length} components</span>
-        <span className="text-indigo-400 text-xs group-hover:text-indigo-300 transition">Load →</span>
+        <span className="text-indigo-400 text-xs group-hover:text-indigo-300 transition">
+          {isSelected ? 'Selected ✓' : 'View →'}
+        </span>
       </div>
     </div>
   )
@@ -193,10 +196,11 @@ function Gallery() {
   const [selectedTag, setSelectedTag] = useState('All')
   const [sortBy, setSortBy] = useState('likes')
   const [activeSource, setActiveSource] = useState('community')
+  const [selectedProject, setSelectedProject] = useState(null)
 
   const ALL_TAGS = ['All', 'IoT', 'Robotics', 'Health', 'Wearable', 'Agriculture', 'Home Automation', 'Security', 'Display', 'Vehicle']
 
-  useEffect(() => {
+  useEffect(function() {
     async function load() {
       setLoading(true)
       try {
@@ -205,7 +209,7 @@ function Gallery() {
       } catch {
         setCloudProjects(DEMO_PROJECTS)
       }
-      setLocalProjects(getAllProjects().filter(p => p.components?.length > 0))
+      setLocalProjects(getAllProjects().filter(function(p) { return p.components?.length > 0 }))
       setLoading(false)
     }
     load()
@@ -228,23 +232,28 @@ function Gallery() {
     }
   }
 
+  function handleSelect(project) {
+    setSelectedProject(function(prev) {
+      return prev && prev.id === project.id ? null : project
+    })
+  }
+
   const sourceProjects = activeSource === 'community' ? cloudProjects : localProjects
 
-  const filtered = sourceProjects.filter(p => {
+  const filtered = sourceProjects.filter(function(p) {
     const matchSearch = !search.trim() ||
       p.idea.toLowerCase().includes(search.toLowerCase()) ||
-      (p.components || []).some(c => c.name?.toLowerCase().includes(search.toLowerCase()))
-    const matchTag = selectedTag === 'All' ||
-      (p.tags || []).includes(selectedTag)
+      (p.components || []).some(function(c) { return c.name?.toLowerCase().includes(search.toLowerCase()) })
+    const matchTag = selectedTag === 'All' || (p.tags || []).includes(selectedTag)
     return matchSearch && matchTag
-  }).sort((a, b) => {
+  }).sort(function(a, b) {
     if (sortBy === 'likes') return (b.likes || 0) - (a.likes || 0)
     if (sortBy === 'components') return (b.components?.length || 0) - (a.components?.length || 0)
     if (sortBy === 'newest') return new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
     return 0
   })
 
-  const featuredProject = cloudProjects.sort((a, b) => (b.likes || 0) - (a.likes || 0))[0]
+  const featuredProject = [...cloudProjects].sort(function(a, b) { return (b.likes || 0) - (a.likes || 0) })[0]
 
   return (
     <div className="min-h-screen page-enter px-4 sm:px-8 md:px-16 py-8 sm:py-12">
@@ -253,25 +262,21 @@ function Gallery() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold mb-1">🌐 Community Gallery</h2>
-          <p className="text-slate-400 text-sm">
-            Discover prototypes built by the ProtoMind community
-          </p>
+          <p className="text-slate-400 text-sm">Discover prototypes built by the ProtoMind community</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => navigate('/')}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-          >
-            + Share Your Prototype
-          </button>
-        </div>
+        <button
+          onClick={function() { navigate('/') }}
+          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
+        >
+          + Share Your Prototype
+        </button>
       </div>
 
       {/* Featured project */}
       {featuredProject && !loading && (
         <div
           className="bg-gradient-to-br from-indigo-950 to-[#0d0d1a] border border-indigo-800 rounded-2xl p-5 mb-6 cursor-pointer hover:border-indigo-600 transition"
-          onClick={() => handleLoad(featuredProject)}
+          onClick={function() { handleLoad(featuredProject) }}
         >
           <div className="flex items-center gap-2 mb-3">
             <span className="text-yellow-400 text-sm">⭐</span>
@@ -280,16 +285,16 @@ function Gallery() {
           <div className="flex items-start gap-4">
             <span className="text-5xl">{featuredProject.thumbnail || '🔧'}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-bold text-base leading-tight mb-2">
-                {featuredProject.idea}
-              </p>
+              <p className="text-white font-bold text-base leading-tight mb-2">{featuredProject.idea}</p>
               <div className="flex flex-wrap gap-2 items-center">
                 <div className="flex flex-wrap gap-1">
-                  {(featuredProject.components || []).slice(0, 4).map((comp, i) => (
-                    <span key={i} className="text-xs bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded-full">
-                      {comp.icon} {comp.name?.split(' ')[0]}
-                    </span>
-                  ))}
+                  {(featuredProject.components || []).slice(0, 4).map(function(comp, i) {
+                    return (
+                      <span key={i} className="text-xs bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded-full">
+                        {comp.icon} {comp.name?.split(' ')[0]}
+                      </span>
+                    )
+                  })}
                 </div>
                 <span className="text-indigo-400 text-xs ml-auto">❤️ {featuredProject.likes || 0} likes</span>
               </div>
@@ -303,17 +308,19 @@ function Gallery() {
         {[
           { id: 'community', label: '🌐 Community' },
           { id: 'mine', label: '🔧 My Projects' },
-        ].map(source => (
-          <button
-            key={source.id}
-            onClick={() => setActiveSource(source.id)}
-            className={`flex-1 py-2 rounded-lg text-xs font-medium transition ${
-              activeSource === source.id ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white'
-            }`}
-          >
-            {source.label}
-          </button>
-        ))}
+        ].map(function(source) {
+          return (
+            <button
+              key={source.id}
+              onClick={function() { setActiveSource(source.id); setSelectedProject(null) }}
+              className={'flex-1 py-2 rounded-lg text-xs font-medium transition ' + (
+                activeSource === source.id ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white'
+              )}
+            >
+              {source.label}
+            </button>
+          )
+        })}
       </div>
 
       {/* Search and filters */}
@@ -322,17 +329,17 @@ function Gallery() {
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🔍</span>
           <input
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={function(e) { setSearch(e.target.value) }}
             placeholder="Search prototypes or components..."
             className="w-full bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none focus:border-indigo-500 transition placeholder-slate-600"
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs">✕</button>
+            <button onClick={function() { setSearch('') }} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs">✕</button>
           )}
         </div>
         <select
           value={sortBy}
-          onChange={e => setSortBy(e.target.value)}
+          onChange={function(e) { setSortBy(e.target.value) }}
           className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-xl px-4 py-3 text-sm text-white outline-none"
         >
           <option value="likes">Most Liked</option>
@@ -343,19 +350,19 @@ function Gallery() {
 
       {/* Tag filters */}
       <div className="flex gap-2 flex-wrap mb-4">
-        {ALL_TAGS.map(tag => {
+        {ALL_TAGS.map(function(tag) {
           const colors = CATEGORY_COLORS[tag] || { text: 'text-indigo-400', bg: 'bg-indigo-950', border: 'border-indigo-800' }
           return (
             <button
               key={tag}
-              onClick={() => setSelectedTag(tag)}
-              className={`text-xs px-3 py-1.5 rounded-xl border transition ${
+              onClick={function() { setSelectedTag(tag) }}
+              className={'text-xs px-3 py-1.5 rounded-xl border transition ' + (
                 selectedTag === tag
                   ? tag === 'All'
                     ? 'bg-indigo-600 text-white border-indigo-600'
                     : colors.bg + ' ' + colors.text + ' ' + colors.border
                   : 'bg-[#0d0d1a] text-slate-400 border-[#1e1e2e] hover:border-indigo-800'
-              }`}
+              )}
             >
               {tag}
             </button>
@@ -367,6 +374,7 @@ function Gallery() {
         Showing {filtered.length} prototype{filtered.length !== 1 ? 's' : ''}
         {selectedTag !== 'All' && <span> · Tag: <span className="text-indigo-400">{selectedTag}</span></span>}
         {search && <span> · "{search}"</span>}
+        {selectedProject && <span className="text-indigo-400"> · Click card again to collapse comments</span>}
       </p>
 
       {/* Loading */}
@@ -380,9 +388,7 @@ function Gallery() {
       {/* Empty state */}
       {!loading && filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="text-6xl mb-4">
-            {activeSource === 'mine' ? '🔧' : '🌐'}
-          </div>
+          <div className="text-6xl mb-4">{activeSource === 'mine' ? '🔧' : '🌐'}</div>
           <h3 className="text-xl font-semibold mb-2">
             {activeSource === 'mine' ? 'No saved projects yet' : 'No results found'}
           </h3>
@@ -392,7 +398,7 @@ function Gallery() {
               : 'Try a different search or tag filter'}
           </p>
           <button
-            onClick={() => activeSource === 'mine' ? navigate('/') : setSelectedTag('All')}
+            onClick={function() { activeSource === 'mine' ? navigate('/') : setSelectedTag('All') }}
             className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
           >
             {activeSource === 'mine' ? 'Start Building' : 'Clear Filters'}
@@ -402,37 +408,94 @@ function Gallery() {
 
       {/* Grid */}
       {!loading && filtered.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {filtered.map(project => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onLoad={handleLoad}
-              onLike={handleLike}
-              isLocal={activeSource === 'mine'}
-            />
-          ))}
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {filtered.map(function(project) {
+              return (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onLoad={handleLoad}
+                  onLike={handleLike}
+                  isLocal={activeSource === 'mine'}
+                  onSelect={handleSelect}
+                  isSelected={selectedProject?.id === project.id}
+                />
+              )
+            })}
+          </div>
+
+          {/* Expanded project detail with comments */}
+          {selectedProject && (
+            <div className="bg-[#0d0d1a] border border-indigo-700 rounded-2xl p-5 mt-2">
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-4xl">{selectedProject.thumbnail || '🔧'}</span>
+                  <div>
+                    <p className="text-white font-bold text-base leading-tight">{selectedProject.idea}</p>
+                    <p className="text-slate-500 text-xs mt-1">{(selectedProject.components || []).length} components</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={function() { handleLoad(selectedProject) }}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-semibold transition"
+                  >
+                    ⚡ Load →
+                  </button>
+                  <button
+                    onClick={function() { setSelectedProject(null) }}
+                    className="px-3 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Component list */}
+              <div className="flex flex-wrap gap-2 mb-5">
+                {(selectedProject.components || []).map(function(comp, i) {
+                  return (
+                    <span key={i} className="text-xs bg-[#13131f] border border-[#2e2e4e] text-slate-300 px-2 py-1 rounded-lg flex items-center gap-1">
+                      <span>{comp.icon}</span>
+                      <span>{comp.name}</span>
+                    </span>
+                  )
+                })}
+              </div>
+
+              {/* Comment system */}
+              <div className="border-t border-[#2e2e4e] pt-5">
+                <CommentSystem
+                  projectId={selectedProject.id}
+                  projectTitle={selectedProject.idea}
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Day 90 celebration */}
+      {/* Day 90 celebration banner */}
       <div className="mt-10 bg-gradient-to-br from-indigo-950 to-purple-950 border border-indigo-800 rounded-2xl p-6 text-center">
         <div className="text-5xl mb-3">🎊</div>
-        <h3 className="text-white font-black text-xl mb-2">Day 90 — One Third Complete!</h3>
+        <h3 className="text-white font-black text-xl mb-2">Day 120 — Month 4 Complete!</h3>
         <p className="text-indigo-300 text-sm mb-4">
-          90 days of building · 25+ pages · 30+ AI tools · 90 features shipped!
+          120 days of building · 30+ pages · 40+ AI tools · Community features live!
         </p>
         <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
           {[
-            { value: '90', label: 'Days Built' },
-            { value: '25+', label: 'Pages' },
-            { value: '30+', label: 'AI Tools' },
-          ].map(stat => (
-            <div key={stat.label}>
-              <p className="text-2xl font-black text-indigo-400">{stat.value}</p>
-              <p className="text-slate-500 text-xs">{stat.label}</p>
-            </div>
-          ))}
+            { value: '120', label: 'Days Built' },
+            { value: '30+', label: 'Pages' },
+            { value: '40+', label: 'AI Tools' },
+          ].map(function(stat) {
+            return (
+              <div key={stat.label}>
+                <p className="text-2xl font-black text-indigo-400">{stat.value}</p>
+                <p className="text-slate-500 text-xs">{stat.label}</p>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

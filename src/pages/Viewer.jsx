@@ -1,3 +1,4 @@
+import CommentSystem from '../components/CommentSystem'
 import EnclosureDesigner from '../components/EnclosureDesigner'
 import PCBHelper from '../components/PCBHelper'
 import TimelinePlanner from '../components/TimelinePlanner'
@@ -497,6 +498,10 @@ function Viewer() {
           <AccordionSection icon="⚖️" title="Prototype Comparison" subtitle="Compare your prototype against an AI-generated alternative">
             <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="💬" title="Community Comments" subtitle="Leave feedback and discuss this prototype with the community">
+  <CommentSystem projectId={idea} projectTitle={idea} />
+</AccordionSection>
 
           <AccordionSection icon="📄" title="Documentation Generator" subtitle="AI writes complete technical docs with wiring guide and troubleshooting">
   <DocumentationGenerator idea={idea} components={selectedComponents} />
