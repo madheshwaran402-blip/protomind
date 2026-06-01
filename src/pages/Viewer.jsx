@@ -1,3 +1,4 @@
+import ChangelogGenerator from '../components/ChangelogGenerator'
 import CommentSystem from '../components/CommentSystem'
 import EnclosureDesigner from '../components/EnclosureDesigner'
 import PCBHelper from '../components/PCBHelper'
@@ -529,6 +530,10 @@ function Viewer() {
 
           <AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe a problem and AI diagnoses causes with step-by-step fixes">
   <PrototypeTroubleshooter idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📋" title="Changelog Generator" subtitle="AI writes professional release notes from your version history">
+  <ChangelogGenerator idea={idea} />
 </AccordionSection>
 
           <AccordionSection icon="🔋" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
