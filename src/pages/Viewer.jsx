@@ -1,3 +1,4 @@
+import SlidesGenerator from '../components/SlidesGenerator'
 import ChangelogGenerator from '../components/ChangelogGenerator'
 import CommentSystem from '../components/CommentSystem'
 import EnclosureDesigner from '../components/EnclosureDesigner'
@@ -394,6 +395,10 @@ function Viewer() {
 
 <AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
   <VideoScriptGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🎯" title="Slide Deck Generator" subtitle="AI creates a complete presentation with speaker notes and interactive HTML export">
+  <SlidesGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
