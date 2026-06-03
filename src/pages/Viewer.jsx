@@ -1,3 +1,4 @@
+import CodeGenerator2 from '../components/CodeGenerator2'
 import SlidesGenerator from '../components/SlidesGenerator'
 import ChangelogGenerator from '../components/ChangelogGenerator'
 import CommentSystem from '../components/CommentSystem'
@@ -528,6 +529,10 @@ function Viewer() {
           <AccordionSection icon="🛡️" title="Safety Checklist" subtitle="AI identifies risks and generates a pre-build safety checklist">
             <SafetyChecklist idea={idea} components={selectedComponents} />
           </AccordionSection>
+
+          <AccordionSection icon="💻" title="Code Generator 2.0" subtitle="Generate code in 5 languages — Arduino, MicroPython, CircuitPython, Raspberry Pi, JavaScript">
+  <CodeGenerator2 idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="🛡️" title="Risk Assessment" subtitle="AI identifies technical, safety and regulatory risks with mitigations">
   <RiskAssessment idea={idea} components={selectedComponents} />
