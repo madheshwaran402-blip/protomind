@@ -1,3 +1,4 @@
+import TestSuite from '../components/TestSuite'
 import CodeGenerator2 from '../components/CodeGenerator2'
 import SlidesGenerator from '../components/SlidesGenerator'
 import ChangelogGenerator from '../components/ChangelogGenerator'
@@ -576,6 +577,10 @@ function Viewer() {
 
           <AccordionSection icon="🔬" title="Virtual Simulation" subtitle="Run a virtual test of your prototype to catch issues before building" badge="New">
   <SimulationRunner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🧪" title="Test Suite" subtitle="AI generates hardware and software tests with pass/fail tracking">
+  <TestSuite idea={idea} components={selectedComponents} />
 </AccordionSection>
 
         </div>
