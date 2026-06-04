@@ -1,3 +1,4 @@
+import SubstitutionFinder from '../components/SubstitutionFinder'
 import TestSuite from '../components/TestSuite'
 import CodeGenerator2 from '../components/CodeGenerator2'
 import SlidesGenerator from '../components/SlidesGenerator'
@@ -545,6 +546,10 @@ function Viewer() {
 
 <AccordionSection icon="📋" title="Changelog Generator" subtitle="AI writes professional release notes from your version history">
   <ChangelogGenerator idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="🔄" title="Substitution Finder 2.0" subtitle="AI finds the best alternative components with compatibility scores and pin mapping">
+  <SubstitutionFinder components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="🔋" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
