@@ -1,3 +1,4 @@
+import PowerSupplyDesigner from '../components/PowerSupplyDesigner'
 import CalibrationTool from '../components/CalibrationTool'
 import SubstitutionFinder from '../components/SubstitutionFinder'
 import TestSuite from '../components/TestSuite'
@@ -519,6 +520,10 @@ function Viewer() {
 
           <AccordionSection icon="📄" title="Documentation Generator" subtitle="AI writes complete technical docs with wiring guide and troubleshooting">
   <DocumentationGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="⚡" title="Power Supply Designer" subtitle="Design power circuits with voltage divider, regulator and battery life calculators">
+  <PowerSupplyDesigner idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📝" title="GitHub README Generator" subtitle="Generate a professional README.md for your GitHub repository">
