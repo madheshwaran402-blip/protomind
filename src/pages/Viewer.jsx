@@ -1,3 +1,4 @@
+import CalibrationTool from '../components/CalibrationTool'
 import SubstitutionFinder from '../components/SubstitutionFinder'
 import TestSuite from '../components/TestSuite'
 import CodeGenerator2 from '../components/CodeGenerator2'
@@ -427,6 +428,10 @@ function Viewer() {
           <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
             <ComponentComparison components={selectedComponents} idea={idea} />
           </AccordionSection>
+
+          <AccordionSection icon="📊" title="Sensor Calibration" subtitle="Enter sensor readings and AI validates calibration with step-by-step fixes">
+  <CalibrationTool components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
             <PrototypeNotes idea={idea} components={selectedComponents} />
