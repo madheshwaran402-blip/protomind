@@ -3,6 +3,7 @@ import ToastContainer from './components/ToastContainer'
 import OfflineDetector from './components/OfflineDetector'
 import InstallPrompt from './components/InstallPrompt'
 import AccessibilityPanel from './components/AccessibilityPanel'
+import QuickActions from './components/QuickActions'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings, applyFontSize } from './services/settings'
@@ -273,6 +274,7 @@ function App() {
             </Routes>
           </Suspense>
         </main>
+        <QuickActions />
       </div>
     </BrowserRouter>
   )
