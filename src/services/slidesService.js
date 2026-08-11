@@ -62,7 +62,7 @@ export function buildHTMLPresentation(deck, idea, components) {
     '.content { font-size: clamp(14px, 2vw, 20px); color: #94a3b8; text-align: center; max-width: 800px; line-height: 1.8; margin-bottom: 20px; }',
     'ul { list-style: none; max-width: 700px; width: 100%; }',
     'ul li { font-size: clamp(13px, 1.8vw, 18px); color: #cbd5e1; padding: 10px 0; border-bottom: 1px solid #1e1e2e; display: flex; align-items: center; gap: 12px; }',
-    'ul li::before { content: "\2192"; color: #6366f1; font-weight: bold; flex-shrink: 0; }',
+    'ul li::before { content: ">"; color: #6366f1; font-weight: bold; flex-shrink: 0; }',
     '.highlight { background: #1e1b4b; border: 1px solid #4338ca; border-radius: 16px; padding: 20px 40px; font-size: clamp(16px, 2.5vw, 28px); font-weight: 900; color: #a5b4fc; margin-top: 20px; text-align: center; }',
     '.controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 100; }',
     '.btn { background: #1e1e2e; border: 1px solid #2e2e4e; color: white; padding: 12px 28px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; }',
