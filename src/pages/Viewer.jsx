@@ -1,3 +1,4 @@
+import NotesEditor from '../components/NotesEditor'
 import PowerSupplyDesigner from '../components/PowerSupplyDesigner'
 import CalibrationTool from '../components/CalibrationTool'
 import SubstitutionFinder from '../components/SubstitutionFinder'
@@ -456,6 +457,10 @@ function Viewer() {
 
           <AccordionSection icon="📦" title="Enclosure Designer" subtitle="AI designs a custom enclosure with dimensions, cutouts and 3D print settings">
   <EnclosureDesigner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📝" title="Notes 2.0" subtitle="Rich text notes with categories, tags, colors, pinning and search">
+  <NotesEditor idea={idea} />
 </AccordionSection>
 
           <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF or estimate 3D print cost">
