@@ -1,3 +1,4 @@
+import ProgressTracker from '../components/ProgressTracker'
 import NotesEditor from '../components/NotesEditor'
 import PowerSupplyDesigner from '../components/PowerSupplyDesigner'
 import CalibrationTool from '../components/CalibrationTool'
@@ -433,6 +434,10 @@ function Viewer() {
 
           <AccordionSection icon="📊" title="Sensor Calibration" subtitle="Enter sensor readings and AI validates calibration with step-by-step fixes">
   <CalibrationTool components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🎯" title="Progress Tracker" subtitle="Track your prototype journey with milestones and AI encouragement">
+  <ProgressTracker idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
