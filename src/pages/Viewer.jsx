@@ -1,3 +1,4 @@
+import ComponentComparisonTable from '../components/ComponentComparisonTable'
 import ProgressTracker from '../components/ProgressTracker'
 import NotesEditor from '../components/NotesEditor'
 import PowerSupplyDesigner from '../components/PowerSupplyDesigner'
@@ -450,6 +451,10 @@ function Viewer() {
 
 <AccordionSection icon="📋" title="Team Report Generator" subtitle="Generate a professional project status report for your team or supervisor">
   <TeamReportGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📊" title="Component Comparison Table" subtitle="Side-by-side spec comparison of any components with winners and CSV export">
+  <ComponentComparisonTable />
 </AccordionSection>
 
           <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
