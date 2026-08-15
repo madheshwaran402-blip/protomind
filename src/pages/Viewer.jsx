@@ -1,3 +1,4 @@
+import WordDocGenerator from '../components/WordDocGenerator'
 import ComponentComparisonTable from '../components/ComponentComparisonTable'
 import ProgressTracker from '../components/ProgressTracker'
 import NotesEditor from '../components/NotesEditor'
@@ -444,6 +445,9 @@ function Viewer() {
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
             <PrototypeNotes idea={idea} components={selectedComponents} />
           </AccordionSection>
+          <AccordionSection icon="📝" title="Word Document Generator" subtitle="Generate a professional .docx report for Word, Google Docs or LibreOffice">
+  <WordDocGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
 
           <AccordionSection icon="👥" title="Team Collaboration" subtitle="Add team members, assign tasks, and share notes">
   <TeamCollaboration idea={idea} components={selectedComponents} />
