@@ -1,268 +1,471 @@
 import { useState, useEffect } from 'react'
-import { getFeedback, saveFeedback } from '../services/feedbackService'
+import {
+  createSurvey,
+  getSurvey,
+  getSurveysForProject,
+  submitResponse,
+  getResponses,
+  getSurveyAnalytics,
+  deleteSurvey,
+  QUESTION_TEMPLATES,
+} from '../services/feedbackCollectorService'
 import { notify } from '../services/toast'
 
-const ASPECTS = [
-  { id: 'design', label: 'Circuit Design', icon: '📐' },
-  { id: 'code', label: 'Code Quality', icon: '💻' },
-  { id: 'assembly', label: 'Assembly', icon: '🔧' },
-  { id: 'performance', label: 'Performance', icon: '⚡' },
+const QUESTION_TYPES = [
+  { value: 'rating', label: '⭐ Rating (1-5)', icon: '⭐' },
+  { value: 'text', label: '📝 Text Answer', icon: '📝' },
+  { value: 'multiple', label: '☑️ Multiple Choice', icon: '☑️' },
 ]
 
-function StarPicker({ value, onChange, size = 'md' }) {
-  const [hovered, setHovered] = useState(0)
-  const sizeClass = size === 'lg' ? 'text-3xl' : 'text-xl'
-
+function StarRating({ value, onChange, readOnly }) {
   return (
     <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map(star => (
-        <button
-          key={star}
-          onMouseEnter={() => setHovered(star)}
-          onMouseLeave={() => setHovered(0)}
-          onClick={() => onChange(star)}
-          className={`${sizeClass} transition`}
-        >
-          <span style={{ color: star <= (hovered || value) ? '#f59e0b' : '#374151' }}>★</span>
-        </button>
-      ))}
+      {[1, 2, 3, 4, 5].map(function(star) {
+        return (
+          <button
+            key={star}
+            onClick={function() { if (!readOnly) onChange(star) }}
+            className={'text-2xl transition ' + (
+              readOnly ? 'cursor-default' : 'hover:scale-110'
+            ) + ' ' + (star <= value ? 'text-yellow-400' : 'text-slate-700')}
+          >
+            ★
+          </button>
+        )
+      })}
     </div>
   )
 }
 
-function FeedbackCollector({ idea }) {
-  const [feedback, setFeedback] = useState(null)
-  const [editing, setEditing] = useState(false)
-  const [form, setForm] = useState({
-    overallRating: 0,
-    aspectRatings: {},
-    whatWorked: '',
-    whatDidnt: '',
-    lessonsLearned: '',
-    wouldRebuild: null,
-    timeSpent: '',
-    difficulty: '',
-  })
+function SurveyForm({ survey, onSubmit, onClose }) {
+  const [answers, setAnswers] = useState({})
+  const [name, setName] = useState('')
+  const [overallRating, setOverallRating] = useState(0)
 
-  useEffect(() => {
-    const existing = getFeedback(idea)
-    if (existing) {
-      setFeedback(existing)
-      setForm(existing)
-    }
-  }, [idea])
+  function setAnswer(qId, value) {
+    setAnswers(function(prev) {
+      const next = Object.assign({}, prev)
+      next[qId] = value
+      return next
+    })
+  }
 
-  function handleSave() {
-    if (form.overallRating === 0) {
-      notify.warning('Please add an overall rating')
+  function handleSubmit() {
+    const required = (survey.questions || []).filter(function(q) { return q.required })
+    const missing = required.find(function(q) { return !answers[q.id] })
+    if (missing) {
+      notify.warning('Please answer: ' + missing.text)
       return
     }
-    const saved = saveFeedback(idea, form)
-    setFeedback(saved)
-    setEditing(false)
-    notify.success('Feedback saved!')
-  }
-
-  function update(key, value) {
-    setForm(prev => ({ ...prev, [key]: value }))
-  }
-
-  function updateAspect(id, value) {
-    setForm(prev => ({
-      ...prev,
-      aspectRatings: { ...prev.aspectRatings, [id]: value },
-    }))
-  }
-
-  if (feedback && !editing) {
-    return (
-      <div className="space-y-4">
-        {/* Overall rating display */}
-        <div className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-4 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-slate-500 mb-1">Overall Rating</p>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map(s => (
-                <span key={s} className="text-2xl" style={{ color: s <= feedback.overallRating ? '#f59e0b' : '#374151' }}>★</span>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={() => setEditing(true)}
-            className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
-          >
-            ✏️ Edit
-          </button>
-        </div>
-
-        {/* Aspect ratings */}
-        {Object.keys(feedback.aspectRatings || {}).length > 0 && (
-          <div className="grid grid-cols-2 gap-2">
-            {ASPECTS.filter(a => feedback.aspectRatings?.[a.id]).map(aspect => (
-              <div key={aspect.id} className="bg-[#13131f] border border-[#2e2e4e] rounded-lg p-3">
-                <p className="text-slate-500 text-xs mb-1">{aspect.icon} {aspect.label}</p>
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map(s => (
-                    <span key={s} className="text-sm" style={{ color: s <= (feedback.aspectRatings[aspect.id] || 0) ? '#f59e0b' : '#374151' }}>★</span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Text feedback */}
-        <div className="space-y-2">
-          {feedback.whatWorked && (
-            <div className="bg-green-950 border border-green-900 rounded-xl p-3">
-              <p className="text-green-400 text-xs font-semibold mb-1">✅ What Worked</p>
-              <p className="text-slate-300 text-sm">{feedback.whatWorked}</p>
-            </div>
-          )}
-          {feedback.whatDidnt && (
-            <div className="bg-red-950 border border-red-900 rounded-xl p-3">
-              <p className="text-red-400 text-xs font-semibold mb-1">❌ What Didn't Work</p>
-              <p className="text-slate-300 text-sm">{feedback.whatDidnt}</p>
-            </div>
-          )}
-          {feedback.lessonsLearned && (
-            <div className="bg-indigo-950 border border-indigo-900 rounded-xl p-3">
-              <p className="text-indigo-400 text-xs font-semibold mb-1">💡 Lessons Learned</p>
-              <p className="text-slate-300 text-sm">{feedback.lessonsLearned}</p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex gap-3 text-xs text-slate-500">
-          {feedback.wouldRebuild !== null && (
-            <span>{feedback.wouldRebuild ? '🔁 Would rebuild' : '⏭️ Would not rebuild'}</span>
-          )}
-          {feedback.timeSpent && <span>⏱️ {feedback.timeSpent} hours</span>}
-          {feedback.difficulty && <span>📊 {feedback.difficulty} difficulty</span>}
-        </div>
-      </div>
-    )
+    onSubmit({ answers, respondentName: name || 'Anonymous', rating: overallRating })
   }
 
   return (
-    <div className="space-y-4">
-      {/* Overall rating */}
-      <div className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-4">
-        <p className="text-xs text-slate-500 mb-2">Overall Rating *</p>
-        <StarPicker value={form.overallRating} onChange={v => update('overallRating', v)} size="lg" />
-      </div>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto"
+      style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+    >
+      <div className="w-full max-w-lg bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl my-4">
+        <div className="px-5 py-4 border-b border-[#1e1e2e] flex items-center justify-between">
+          <div>
+            <p className="text-white font-bold">{survey.title}</p>
+            {survey.description && <p className="text-slate-500 text-xs">{survey.description}</p>}
+          </div>
+          <button onClick={onClose} className="text-slate-500 hover:text-white">✕</button>
+        </div>
 
-      {/* Aspect ratings */}
-      <div className="grid grid-cols-2 gap-2">
-        {ASPECTS.map(aspect => (
-          <div key={aspect.id} className="bg-[#13131f] border border-[#2e2e4e] rounded-lg p-3">
-            <p className="text-slate-500 text-xs mb-1">{aspect.icon} {aspect.label}</p>
-            <StarPicker
-              value={form.aspectRatings?.[aspect.id] || 0}
-              onChange={v => updateAspect(aspect.id, v)}
+        <div className="p-5 space-y-4 max-h-96 overflow-y-auto">
+          <div>
+            <p className="text-xs text-slate-500 mb-1">Your name (optional)</p>
+            <input
+              value={name}
+              onChange={function(e) { setName(e.target.value) }}
+              placeholder="Anonymous"
+              className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-indigo-500"
             />
           </div>
-        ))}
-      </div>
 
-      {/* Text fields */}
-      <div>
-        <p className="text-xs text-slate-500 mb-1">✅ What Worked Well?</p>
-        <textarea
-          value={form.whatWorked}
-          onChange={e => update('whatWorked', e.target.value)}
-          placeholder="e.g. The sensor readings were very accurate..."
-          className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-green-600 resize-none placeholder-slate-600"
-          rows={2}
-        />
-      </div>
+          <div>
+            <p className="text-xs text-slate-500 mb-1">Overall rating</p>
+            <StarRating value={overallRating} onChange={setOverallRating} />
+          </div>
 
-      <div>
-        <p className="text-xs text-slate-500 mb-1">❌ What Didn't Work?</p>
-        <textarea
-          value={form.whatDidnt}
-          onChange={e => update('whatDidnt', e.target.value)}
-          placeholder="e.g. WiFi connection was unstable..."
-          className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-red-600 resize-none placeholder-slate-600"
-          rows={2}
-        />
-      </div>
-
-      <div>
-        <p className="text-xs text-slate-500 mb-1">💡 Lessons Learned</p>
-        <textarea
-          value={form.lessonsLearned}
-          onChange={e => update('lessonsLearned', e.target.value)}
-          placeholder="e.g. Always add decoupling capacitors..."
-          className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-indigo-500 resize-none placeholder-slate-600"
-          rows={2}
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <p className="text-xs text-slate-500 mb-1">⏱️ Time Spent (hours)</p>
-          <input
-            type="number"
-            value={form.timeSpent}
-            onChange={e => update('timeSpent', e.target.value)}
-            placeholder="e.g. 8"
-            className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-indigo-500"
-          />
+          {(survey.questions || []).map(function(q) {
+            return (
+              <div key={q.id}>
+                <p className="text-white text-sm font-medium mb-2">
+                  {q.text}
+                  {q.required && <span className="text-red-400 ml-1">*</span>}
+                </p>
+                {q.type === 'rating' && (
+                  <StarRating value={parseInt(answers[q.id]) || 0} onChange={function(v) { setAnswer(q.id, String(v)) }} />
+                )}
+                {q.type === 'text' && (
+                  <textarea
+                    value={answers[q.id] || ''}
+                    onChange={function(e) { setAnswer(q.id, e.target.value) }}
+                    placeholder="Your answer..."
+                    className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none resize-none"
+                    rows={3}
+                  />
+                )}
+                {q.type === 'multiple' && (
+                  <div className="space-y-1">
+                    {(q.options || []).map(function(opt) {
+                      return (
+                        <button
+                          key={opt}
+                          onClick={function() { setAnswer(q.id, opt) }}
+                          className={'w-full text-left px-3 py-2 rounded-xl border text-sm transition ' + (
+                            answers[q.id] === opt
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-[#13131f] text-slate-400 border-[#2e2e4e] hover:border-indigo-600'
+                          )}
+                        >
+                          {opt}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
-        <div>
-          <p className="text-xs text-slate-500 mb-1">📊 Difficulty</p>
-          <select
-            value={form.difficulty}
-            onChange={e => update('difficulty', e.target.value)}
-            className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none"
+
+        <div className="p-4 border-t border-[#1e1e2e] flex gap-2">
+          <button onClick={onClose} className="flex-1 py-2.5 bg-[#1e1e2e] text-slate-400 rounded-xl text-sm">Cancel</button>
+          <button
+            onClick={handleSubmit}
+            className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition"
           >
-            <option value="">Select...</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-            <option value="Expert">Expert</option>
-          </select>
+            Submit Feedback
+          </button>
         </div>
       </div>
+    </div>
+  )
+}
 
-      {/* Would rebuild */}
-      <div>
-        <p className="text-xs text-slate-500 mb-2">🔁 Would you rebuild this?</p>
-        <div className="flex gap-2">
-          {[
-            { value: true, label: '✅ Yes, definitely' },
-            { value: false, label: '❌ No, move on' },
-          ].map(opt => (
+function AnalyticsView({ survey, surveyId }) {
+  const analytics = getSurveyAnalytics(surveyId, survey)
+  const responses = getResponses(surveyId)
+
+  if (!analytics) return (
+    <div className="text-center py-6 text-slate-600 text-sm">No responses yet</div>
+  )
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          { label: 'Responses', value: analytics.totalResponses, icon: '👥' },
+          { label: 'Avg Rating', value: analytics.avgRating ? analytics.avgRating + '/5' : 'N/A', icon: '⭐' },
+          { label: 'Questions', value: survey.questions?.length || 0, icon: '❓' },
+        ].map(function(stat) {
+          return (
+            <div key={stat.label} className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-3 text-center">
+              <p className="text-lg mb-0.5">{stat.icon}</p>
+              <p className="text-white font-bold text-base">{stat.value}</p>
+              <p className="text-slate-600 text-xs">{stat.label}</p>
+            </div>
+          )
+        })}
+      </div>
+
+      {analytics.questionAnalytics.map(function(qa, i) {
+        return (
+          <div key={i} className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-4">
+            <p className="text-white text-sm font-medium mb-2">{qa.question}</p>
+            {qa.type === 'rating' && (
+              <div className="flex items-center gap-3">
+                <StarRating value={Math.round(parseFloat(qa.average) || 0)} readOnly />
+                <span className="text-yellow-400 font-bold">{qa.average}/5</span>
+                <span className="text-slate-500 text-xs">({qa.count} ratings)</span>
+              </div>
+            )}
+            {qa.type === 'multiple' && (
+              <div className="space-y-1">
+                {Object.entries(qa.counts || {}).map(function(entry) {
+                  const opt = entry[0]
+                  const count = entry[1]
+                  const pct = Math.round((count / analytics.totalResponses) * 100)
+                  return (
+                    <div key={opt} className="flex items-center gap-2">
+                      <p className="text-slate-400 text-xs w-24 truncate">{opt}</p>
+                      <div className="flex-1 bg-[#1e1e2e] rounded-full h-1.5">
+                        <div className="h-1.5 bg-indigo-600 rounded-full" style={{ width: pct + '%' }} />
+                      </div>
+                      <span className="text-xs text-slate-500">{pct}%</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+            {qa.type === 'text' && (
+              <div className="space-y-1">
+                {qa.responses.slice(0, 3).map(function(text, j) {
+                  return (
+                    <p key={j} className="text-slate-300 text-xs bg-[#0d0d1a] rounded-lg p-2 italic">
+                      "{text}"
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      {responses.length > 0 && (
+        <div className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-4">
+          <p className="text-xs text-slate-500 font-semibold mb-2">Recent Respondents</p>
+          <div className="space-y-1">
+            {responses.slice(0, 5).map(function(resp) {
+              return (
+                <div key={resp.id} className="flex items-center gap-2 text-xs">
+                  <span className="text-lg">👤</span>
+                  <span className="text-slate-300">{resp.respondentName}</span>
+                  {resp.rating > 0 && (
+                    <span className="text-yellow-400">{'★'.repeat(resp.rating)}</span>
+                  )}
+                  <span className="text-slate-600 ml-auto">
+                    {new Date(resp.submittedAt).toLocaleDateString()}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function FeedbackCollector({ idea, components }) {
+  const projectId = 'feedback_' + idea.slice(0, 20).replace(/[^a-zA-Z0-9]/g, '_')
+  const [surveys, setSurveys] = useState(getSurveysForProject(projectId))
+  const [activeSurvey, setActiveSurvey] = useState(null)
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+  const [showAnalytics, setShowAnalytics] = useState(null)
+  const [activeTab, setActiveTab] = useState('surveys')
+  const [newSurvey, setNewSurvey] = useState({
+    title: 'Prototype Feedback',
+    description: '',
+    questions: [],
+  })
+  const [selectedTemplates, setSelectedTemplates] = useState([])
+
+  function refresh() {
+    setSurveys(getSurveysForProject(projectId))
+  }
+
+  function toggleTemplate(template) {
+    setSelectedTemplates(function(prev) {
+      if (prev.find(function(t) { return t.id === template.id })) {
+        return prev.filter(function(t) { return t.id !== template.id })
+      }
+      return prev.concat([template])
+    })
+  }
+
+  function handleCreate() {
+    if (!newSurvey.title.trim()) {
+      notify.warning('Add a survey title')
+      return
+    }
+    const survey = createSurvey(projectId, {
+      title: newSurvey.title,
+      description: newSurvey.description,
+      questions: selectedTemplates.map(function(t) {
+        return Object.assign({}, t, { id: t.id + '_' + Date.now() })
+      }),
+    })
+    if (survey) {
+      refresh()
+      setShowCreateForm(false)
+      setSelectedTemplates([])
+      setNewSurvey({ title: 'Prototype Feedback', description: '', questions: [] })
+      notify.success('Survey created!')
+    }
+  }
+
+  function handleSubmitFeedback(response) {
+    if (!activeSurvey) return
+    submitResponse(activeSurvey.id, response)
+    setShowFeedbackForm(false)
+    refresh()
+    notify.success('Feedback submitted! Thank you!')
+  }
+
+  function handleDelete(surveyId) {
+    deleteSurvey(surveyId)
+    refresh()
+    notify.success('Survey deleted')
+  }
+
+  const TABS = [
+    { id: 'surveys', label: '📋 Surveys' },
+    { id: 'create', label: '+ Create' },
+  ]
+
+  return (
+    <div className="space-y-4">
+
+      {/* Tabs */}
+      <div className="flex gap-1 bg-[#13131f] rounded-xl p-1 max-w-xs">
+        {TABS.map(function(tab) {
+          return (
             <button
-              key={String(opt.value)}
-              onClick={() => update('wouldRebuild', opt.value)}
-              className={`flex-1 py-2 rounded-xl text-xs font-medium transition ${
-                form.wouldRebuild === opt.value
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-[#13131f] border border-[#2e2e4e] text-slate-400 hover:text-white'
-              }`}
+              key={tab.id}
+              onClick={function() { setActiveTab(tab.id) }}
+              className={'flex-1 py-2 rounded-lg text-xs font-medium transition ' + (
+                activeTab === tab.id ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white'
+              )}
             >
-              {opt.label}
+              {tab.label}
             </button>
-          ))}
-        </div>
+          )
+        })}
       </div>
 
-      <button
-        onClick={handleSave}
-        className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-      >
-        💾 Save Feedback
-      </button>
+      {/* Surveys tab */}
+      {activeTab === 'surveys' && (
+        <div className="space-y-3">
+          {surveys.length === 0 ? (
+            <div className="text-center py-10 bg-[#13131f] border border-[#2e2e4e] rounded-xl">
+              <div className="text-4xl mb-2">📋</div>
+              <p className="text-white font-semibold mb-1">No surveys yet</p>
+              <p className="text-slate-500 text-sm mb-3">Create a survey to collect feedback from testers</p>
+              <button
+                onClick={function() { setActiveTab('create') }}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition"
+              >
+                + Create Survey
+              </button>
+            </div>
+          ) : (
+            surveys.map(function(survey) {
+              const responses = getResponses(survey.id)
+              return (
+                <div key={survey.id} className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-4">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div>
+                      <p className="text-white font-semibold text-sm">{survey.title}</p>
+                      <p className="text-slate-500 text-xs">
+                        {survey.questions?.length || 0} questions · {responses.length} responses
+                      </p>
+                    </div>
+                    <button
+                      onClick={function() { handleDelete(survey.id) }}
+                      className="text-slate-600 hover:text-red-400 text-xs transition"
+                    >
+                      🗑
+                    </button>
+                  </div>
 
-      {feedback && (
-        <button
-          onClick={() => { setEditing(false) }}
-          className="w-full py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-xs transition"
-        >
-          Cancel
-        </button>
+                  <div className="flex gap-2 flex-wrap">
+                    <button
+                      onClick={function() { setActiveSurvey(survey); setShowFeedbackForm(true) }}
+                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition"
+                    >
+                      ✍️ Fill Survey
+                    </button>
+                    {responses.length > 0 && (
+                      <button
+                        onClick={function() { setShowAnalytics(showAnalytics === survey.id ? null : survey.id) }}
+                        className="px-3 py-1.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-lg text-xs transition"
+                      >
+                        📊 {showAnalytics === survey.id ? 'Hide' : 'View'} Analytics
+                      </button>
+                    )}
+                  </div>
+
+                  {showAnalytics === survey.id && (
+                    <div className="mt-3 border-t border-[#2e2e4e] pt-3">
+                      <AnalyticsView survey={survey} surveyId={survey.id} />
+                    </div>
+                  )}
+                </div>
+              )
+            })
+          )}
+        </div>
+      )}
+
+      {/* Create tab */}
+      {activeTab === 'create' && (
+        <div className="space-y-3">
+          <div className="bg-[#13131f] border border-[#2e2e4e] rounded-xl p-4 space-y-3">
+            <div>
+              <p className="text-xs text-slate-500 mb-1">Survey Title</p>
+              <input
+                value={newSurvey.title}
+                onChange={function(e) { setNewSurvey(function(prev) { return Object.assign({}, prev, { title: e.target.value }) }) }}
+                className="w-full bg-[#0d0d1a] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <p className="text-xs text-slate-500 mb-1">Description (optional)</p>
+              <input
+                value={newSurvey.description}
+                onChange={function(e) { setNewSurvey(function(prev) { return Object.assign({}, prev, { description: e.target.value }) }) }}
+                placeholder="Tell testers what this is about..."
+                className="w-full bg-[#0d0d1a] border border-[#2e2e4e] rounded-xl px-3 py-2 text-white text-sm outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">
+              Select Questions ({selectedTemplates.length} selected)
+            </p>
+            <div className="space-y-2">
+              {QUESTION_TEMPLATES.map(function(template) {
+                const selected = selectedTemplates.find(function(t) { return t.id === template.id })
+                const typeInfo = QUESTION_TYPES.find(function(t) { return t.value === template.type })
+                return (
+                  <div
+                    key={template.id}
+                    onClick={function() { toggleTemplate(template) }}
+                    className={'flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition ' + (
+                      selected
+                        ? 'bg-indigo-950 border-indigo-700'
+                        : 'bg-[#13131f] border-[#2e2e4e] hover:border-indigo-700'
+                    )}
+                  >
+                    <div className={'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ' + (
+                      selected ? 'bg-indigo-600 border-indigo-500' : 'border-slate-600'
+                    )}>
+                      {selected && <span className="text-white text-xs">✓</span>}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-white text-xs font-medium">{template.text}</p>
+                      <p className="text-slate-500 text-xs">{typeInfo?.label} {template.required ? '· Required' : ''}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <button
+            onClick={handleCreate}
+            disabled={selectedTemplates.length === 0 || !newSurvey.title}
+            className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+          >
+            Create Survey ({selectedTemplates.length} questions)
+          </button>
+        </div>
+      )}
+
+      {showFeedbackForm && activeSurvey && (
+        <SurveyForm
+          survey={activeSurvey}
+          onSubmit={handleSubmitFeedback}
+          onClose={function() { setShowFeedbackForm(false) }}
+        />
       )}
     </div>
   )

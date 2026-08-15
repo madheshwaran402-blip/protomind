@@ -1,3 +1,4 @@
+import FeedbackCollector from '../components/FeedbackCollector'
 import WordDocGenerator from '../components/WordDocGenerator'
 import ComponentComparisonTable from '../components/ComponentComparisonTable'
 import ProgressTracker from '../components/ProgressTracker'
@@ -451,6 +452,10 @@ function Viewer() {
 
           <AccordionSection icon="👥" title="Team Collaboration" subtitle="Add team members, assign tasks, and share notes">
   <TeamCollaboration idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📋" title="Feedback Collector" subtitle="Create surveys to collect structured feedback from prototype testers">
+  <FeedbackCollector idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📋" title="Team Report Generator" subtitle="Generate a professional project status report for your team or supervisor">
