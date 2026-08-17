@@ -1,3 +1,4 @@
+import ContextChat from '../components/ContextChat'
 import FeedbackCollector from '../components/FeedbackCollector'
 import WordDocGenerator from '../components/WordDocGenerator'
 import ComponentComparisonTable from '../components/ComponentComparisonTable'
@@ -440,6 +441,10 @@ function Viewer() {
 
 <AccordionSection icon="🎯" title="Progress Tracker" subtitle="Track your prototype journey with milestones and AI encouragement">
   <ProgressTracker idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🤖" title="AI Assistant" subtitle="Context-aware chat that knows your prototype components and idea">
+  <ContextChat idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
