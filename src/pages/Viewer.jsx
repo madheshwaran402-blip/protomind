@@ -25,6 +25,7 @@ import EnergyAudit from '../components/EnergyAudit'
 import SimulationRunner from '../components/SimulationRunner'
 import BOMOptimizer from '../components/BOMOptimizer'
 import ReadmeGenerator from '../components/ReadmeGenerator'
+import VersionHistory from '../components/VersionHistory'
 import SpecSheetGenerator from '../components/SpecSheetGenerator'
 import StockChecker from '../components/StockChecker'
 import PrototypeTroubleshooter from '../components/PrototypeTroubleshooter'
@@ -473,6 +474,10 @@ function Viewer() {
 
 <AccordionSection icon="📊" title="Component Comparison Table" subtitle="Side-by-side spec comparison of any components with winners and CSV export">
   <ComponentComparisonTable />
+</AccordionSection>
+
+<AccordionSection icon="📅" title="Version History Timeline" subtitle="Visual timeline of all saved versions with diff comparison">
+  <VersionHistory idea={idea} />
 </AccordionSection>
 
           <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
