@@ -1,3 +1,4 @@
+import ExportBundle from '../components/ExportBundle'
 import ContextChat from '../components/ContextChat'
 import FeedbackCollector from '../components/FeedbackCollector'
 import WordDocGenerator from '../components/WordDocGenerator'
@@ -417,6 +418,10 @@ function Viewer() {
 
           <AccordionSection icon="💬" title="Prototype Feedback" subtitle="Log what worked, what didn't, and lessons learned">
   <FeedbackCollector idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📦" title="Export Bundle" subtitle="Download a complete ZIP with README, BOM, wiring guide, code and specs">
+  <ExportBundle idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
