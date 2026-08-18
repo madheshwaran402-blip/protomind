@@ -1,3 +1,8 @@
+import DatasheetGenerator from '../components/DatasheetGenerator'
+import CodeReviewer from '../components/CodeReviewer'
+import TeamCollaboration from '../components/TeamCollaboration'
+import AIMentor from '../components/AIMentor'
+import HealthMonitor from '../components/HealthMonitor'
 import ChallengeGenerator from '../components/ChallengeGenerator'
 import GreenAdvisor from '../components/GreenAdvisor'
 import PitchBuilder from '../components/PitchBuilder'
@@ -413,6 +418,14 @@ function Viewer() {
   <NameGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="👥" title="Team Collaboration" subtitle="Share updates, assign tasks and manage your build team">
+  <TeamCollaboration idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="🧑‍🏫" title="AI Mentor" subtitle="Structured lessons with analogies, deep dives and common mistakes">
+  <AIMentor idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
   <VideoScriptGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -457,6 +470,10 @@ function Viewer() {
   <BuildLog idea={idea} />
 </AccordionSection>
 
+<AccordionSection icon="💊" title="Component Health Monitor" subtitle="Analyse component lifespan, failure modes and maintenance schedule">
+  <HealthMonitor idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="💰" title="Cost Optimizer" subtitle="Set a budget and AI finds savings opportunities with priority ranking">
   <CostOptimizer idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -471,6 +488,10 @@ function Viewer() {
 
           <AccordionSection icon="📊" title="Sensor Calibration" subtitle="Enter sensor readings and AI validates calibration with step-by-step fixes">
   <CalibrationTool components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔍" title="AI Code Reviewer" subtitle="Paste your code for AI review — issues, grade, improvements and optimized snippets">
+  <CodeReviewer idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🎯" title="Pitch Builder" subtitle="Build a compelling elevator pitch and practice interview Q&A">
@@ -522,6 +543,10 @@ function Viewer() {
 
 <AccordionSection icon="📅" title="Version History Timeline" subtitle="Visual timeline of all saved versions with diff comparison">
   <VersionHistory idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📄" title="Datasheet Generator" subtitle="Generate full AI datasheets with pinout, electrical specs and application notes">
+  <DatasheetGenerator components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">

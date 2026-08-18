@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getGreenAdvice as fetchGreenAdvice, saveGreenAdvice, getGreenAdvice } from '../services/greenAdvisorService'
+import { fetchGreenAdvice, saveGreenAdvice, getSavedGreenAdvice } from '../services/greenAdvisorService'
 import { notify } from '../services/toast'
 
 const FEASIBILITY_STYLES = {
@@ -52,7 +52,7 @@ function GreenScoreMeter({ score }) {
 }
 
 function GreenAdvisor({ idea, components }) {
-  const [result, setResult] = useState(getGreenAdvice(idea))
+  const [result, setResult] = useState(getSavedGreenAdvice(idea))
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
 
