@@ -1,4 +1,4 @@
-export async function assessRisks(idea, components) {
+export async function generateDeploymentChecklist(idea, components) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
   const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
@@ -6,16 +6,13 @@ export async function assessRisks(idea, components) {
   const componentList = components.map(function(c) { return c.name + ' (' + c.category + ')' }).join(', ')
 
   const prompt = [
-    'You are an electronics safety engineer.',
-    'Assess the risks for this prototype.',
+    'You are an electronics deployment engineer.',
+    'Create a deployment readiness checklist for this prototype.',
     'Prototype: ' + idea,
     'Components: ' + componentList,
     'Reply ONLY with valid JSON with exactly these keys:',
-    'overallRisk (string: Low, Medium, High, Critical),',
-    'safetyScore (number 0-100),',
-    'risks (array of objects with: id, title, severity, category, description, mitigation),',
-    'safetyChecklist (array of objects with: item, critical boolean),',
-    'recommendations (array of strings)',
+    'readinessScore (number 0-100, initial guess),',
+    'phases (array of objects with: name, icon, items array of objects with: id, text, critical boolean, category)',
   ].join('\n')
 
   const response = await fetch(ollamaUrl + '/api/generate', {
@@ -31,22 +28,22 @@ export async function assessRisks(idea, components) {
   return JSON.parse(jsonMatch[0])
 }
 
-const RISK_KEY = 'protomind_risk_assessments'
+const DEPLOY_KEY = 'protomind_deployment'
 
-export function saveAssessment(idea, result) {
+export function saveDeploymentState(idea, data) {
   try {
-    const raw = localStorage.getItem(RISK_KEY)
+    const raw = localStorage.getItem(DEPLOY_KEY)
     const all = raw ? JSON.parse(raw) : {}
-    all[idea] = { result, savedAt: new Date().toISOString() }
-    localStorage.setItem(RISK_KEY, JSON.stringify(all))
+    all[idea] = data
+    localStorage.setItem(DEPLOY_KEY, JSON.stringify(all))
   } catch {}
 }
 
-export function getAssessment(idea) {
+export function getDeploymentState(idea) {
   try {
-    const raw = localStorage.getItem(RISK_KEY)
+    const raw = localStorage.getItem(DEPLOY_KEY)
     const all = raw ? JSON.parse(raw) : {}
-    return all[idea]?.result || null
+    return all[idea] || null
   } catch {
     return null
   }

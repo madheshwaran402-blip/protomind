@@ -1,3 +1,7 @@
+import DeploymentChecklist from '../components/DeploymentChecklist'
+import ConnectionDiagram from '../components/ConnectionDiagram'
+import LibraryFinder from '../components/LibraryFinder'
+import LabelMaker from '../components/LabelMaker'
 import ExportBundle from '../components/ExportBundle'
 import ContextChat from '../components/ContextChat'
 import FeedbackCollector from '../components/FeedbackCollector'
@@ -412,12 +416,24 @@ function Viewer() {
   <SlidesGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🔌" title="Connection Diagram" subtitle="AI generates pin-by-pin wiring with wire colors and communication buses">
+  <ConnectionDiagram idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🚀" title="Deployment Checklist" subtitle="AI generates launch readiness checklist with critical items and progress tracking">
+  <DeploymentChecklist idea={idea} components={selectedComponents} />
+</AccordionSection>
+
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
             <PrototypeRating idea={idea} />
           </AccordionSection>
 
           <AccordionSection icon="💬" title="Prototype Feedback" subtitle="Log what worked, what didn't, and lessons learned">
   <FeedbackCollector idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📦" title="Library Finder" subtitle="Find all Arduino libraries with install commands for your prototype">
+  <LibraryFinder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📦" title="Export Bundle" subtitle="Download a complete ZIP with README, BOM, wiring guide, code and specs">
@@ -450,6 +466,10 @@ function Viewer() {
 
 <AccordionSection icon="🤖" title="AI Assistant" subtitle="Context-aware chat that knows your prototype components and idea">
   <ContextChat idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🛡️" title="Risk Assessment" subtitle="AI identifies electrical, thermal and safety risks with mitigation steps">
+  <RiskAssessment idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
@@ -493,6 +513,10 @@ function Viewer() {
 
 <AccordionSection icon="📝" title="Notes 2.0" subtitle="Rich text notes with categories, tags, colors, pinning and search">
   <NotesEditor idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="🏷️" title="Label Maker" subtitle="Design and print labels with QR codes for your prototype enclosure">
+  <LabelMaker idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF or estimate 3D print cost">
