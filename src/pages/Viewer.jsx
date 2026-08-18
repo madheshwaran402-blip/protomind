@@ -1,3 +1,8 @@
+import ChallengeGenerator from '../components/ChallengeGenerator'
+import GreenAdvisor from '../components/GreenAdvisor'
+import PitchBuilder from '../components/PitchBuilder'
+import PCBFootprintFinder from '../components/PCBFootprintFinder'
+import CostOptimizer from '../components/CostOptimizer'
 import DeploymentChecklist from '../components/DeploymentChecklist'
 import ConnectionDiagram from '../components/ConnectionDiagram'
 import LibraryFinder from '../components/LibraryFinder'
@@ -452,12 +457,24 @@ function Viewer() {
   <BuildLog idea={idea} />
 </AccordionSection>
 
+<AccordionSection icon="💰" title="Cost Optimizer" subtitle="Set a budget and AI finds savings opportunities with priority ranking">
+  <CostOptimizer idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🌿" title="Green Build Advisor" subtitle="Analyse power consumption and get eco-friendly design recommendations">
+  <GreenAdvisor idea={idea} components={selectedComponents} />
+</AccordionSection>
+
           <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
             <ComponentComparison components={selectedComponents} idea={idea} />
           </AccordionSection>
 
           <AccordionSection icon="📊" title="Sensor Calibration" subtitle="Enter sensor readings and AI validates calibration with step-by-step fixes">
   <CalibrationTool components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🎯" title="Pitch Builder" subtitle="Build a compelling elevator pitch and practice interview Q&A">
+  <PitchBuilder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🎯" title="Progress Tracker" subtitle="Track your prototype journey with milestones and AI encouragement">
@@ -472,11 +489,19 @@ function Viewer() {
   <RiskAssessment idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🎯" title="Challenge Generator" subtitle="Generate upgrade challenges to level up your prototype skills and earn XP">
+  <ChallengeGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
             <PrototypeNotes idea={idea} components={selectedComponents} />
           </AccordionSection>
           <AccordionSection icon="📝" title="Word Document Generator" subtitle="Generate a professional .docx report for Word, Google Docs or LibreOffice">
   <WordDocGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔍" title="PCB Footprint Finder" subtitle="Find KiCad and Altium footprints for all components with one-click copy">
+  <PCBFootprintFinder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="👥" title="Team Collaboration" subtitle="Add team members, assign tasks, and share notes">
