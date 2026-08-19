@@ -1,4 +1,5 @@
-export async function getGreenAdvice(idea, components) {
+cat > src/services/greenAdvisorService.js << 'ENDOFFILE'
+export async function fetchGreenAdvice(idea, components) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
   const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
@@ -42,7 +43,7 @@ export function saveGreenAdvice(idea, result) {
   } catch {}
 }
 
-export function getGreenAdvice(idea) {
+export function getSavedGreenAdvice(idea) {
   try {
     const key = 'protomind_green'
     const raw = localStorage.getItem(key)
@@ -52,3 +53,5 @@ export function getGreenAdvice(idea) {
     return null
   }
 }
+ENDOFFILE
+echo "greenAdvisorService.js fixed!"

@@ -549,9 +549,7 @@ function Viewer() {
   <PCBFootprintFinder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
-          <AccordionSection icon="👥" title="Team Collaboration" subtitle="Add team members, assign tasks, and share notes">
-  <TeamCollaboration idea={idea} components={selectedComponents} />
-</AccordionSection>
+          
 
 <AccordionSection icon="📋" title="Feedback Collector" subtitle="Create surveys to collect structured feedback from prototype testers">
   <FeedbackCollector idea={idea} components={selectedComponents} />
