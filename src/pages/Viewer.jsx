@@ -1,3 +1,8 @@
+import LearningPath from '../components/LearningPath'
+import SimulationMode from '../components/SimulationMode'
+import HackathonPack from '../components/HackathonPack'
+import APIPlanner from '../components/APIPlanner'
+import NamingGenerator from '../components/NamingGenerator'
 import DatasheetGenerator from '../components/DatasheetGenerator'
 import CodeReviewer from '../components/CodeReviewer'
 import TeamCollaboration from '../components/TeamCollaboration'
@@ -437,6 +442,10 @@ function Viewer() {
   <ConnectionDiagram idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="📚" title="Learning Path" subtitle="Personalised learning roadmap based on your skill level with XP tracking">
+  <LearningPath idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🚀" title="Deployment Checklist" subtitle="AI generates launch readiness checklist with critical items and progress tracking">
   <DeploymentChecklist idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -457,6 +466,10 @@ function Viewer() {
   <ExportBundle idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🏆" title="Hackathon Pack" subtitle="Generate complete hackathon submission with pitch, timeline, judge Q&A and team roles">
+  <HackathonPack idea={idea} components={selectedComponents} />
+</AccordionSection>
+
           <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
   <BuildTimeline idea={idea} />
 </AccordionSection>
@@ -471,6 +484,10 @@ function Viewer() {
 
 <AccordionSection icon="💊" title="Component Health Monitor" subtitle="Analyse component lifespan, failure modes and maintenance schedule">
   <HealthMonitor idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="⚡" title="Simulation Mode" subtitle="Simulate power-on, fault, thermal and other scenarios step by step">
+  <SimulationMode idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="💰" title="Cost Optimizer" subtitle="Set a budget and AI finds savings opportunities with priority ranking">
@@ -489,6 +506,10 @@ function Viewer() {
   <CalibrationTool components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🔌" title="API Integration Planner" subtitle="Find cloud APIs and IoT platforms with code snippets for your prototype">
+  <APIPlanner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🔍" title="AI Code Reviewer" subtitle="Paste your code for AI review — issues, grade, improvements and optimized snippets">
   <CodeReviewer idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -499,6 +520,10 @@ function Viewer() {
 
 <AccordionSection icon="🎯" title="Progress Tracker" subtitle="Track your prototype journey with milestones and AI encouragement">
   <ProgressTracker idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="✨" title="AI Naming Generator" subtitle="Generate creative product names with taglines and domain availability scores">
+  <NamingGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🤖" title="AI Assistant" subtitle="Context-aware chat that knows your prototype components and idea">
