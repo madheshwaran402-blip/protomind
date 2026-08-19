@@ -1,3 +1,8 @@
+import ManufacturingGuide from '../components/ManufacturingGuide'
+import ComplianceChecker from '../components/ComplianceChecker'
+import PatentResearch from '../components/PatentResearch'
+import AccessibilityChecker from '../components/AccessibilityChecker'
+import AITroubleshooter from '../components/AITroubleshooter'
 import SocialContentGenerator from '../components/SocialContentGenerator'
 import CompetitionResearch from '../components/CompetitionResearch'
 import InventorySync from '../components/InventorySync'
@@ -443,6 +448,10 @@ function Viewer() {
   <SlidesGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="♿" title="Accessibility Checker" subtitle="Check your prototype for inclusive design issues with improvement suggestions">
+  <AccessibilityChecker idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🔄" title="Inventory Sync" subtitle="Check stock levels and deduct components from inventory when building">
   <InventorySync idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -463,12 +472,20 @@ function Viewer() {
   <DeploymentChecklist idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🏭" title="Manufacturing Guide" subtitle="Get scaling options, process steps, quality checks and supplier recommendations">
+  <ManufacturingGuide idea={idea} components={selectedComponents} />
+</AccordionSection>
+
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
             <PrototypeRating idea={idea} />
           </AccordionSection>
 
           <AccordionSection icon="💬" title="Prototype Feedback" subtitle="Log what worked, what didn't, and lessons learned">
   <FeedbackCollector idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📋" title="Regulatory Compliance" subtitle="Check CE, FCC, RoHS and other certifications required for your target region">
+  <ComplianceChecker idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📊" title="IoT Dashboard Builder" subtitle="Design a monitoring dashboard with live simulated sensor data">
@@ -481,6 +498,14 @@ function Viewer() {
 
 <AccordionSection icon="📦" title="Library Finder" subtitle="Find all Arduino libraries with install commands for your prototype">
   <LibraryFinder idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📜" title="Patent Research" subtitle="Research patentability, potential claims and prior art for your prototype">
+  <PatentResearch idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe any problem and AI diagnoses root causes with step-by-step fixes">
+  <AITroubleshooter idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📦" title="Export Bundle" subtitle="Download a complete ZIP with README, BOM, wiring guide, code and specs">
