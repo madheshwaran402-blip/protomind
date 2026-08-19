@@ -1,3 +1,8 @@
+import SocialContentGenerator from '../components/SocialContentGenerator'
+import CompetitionResearch from '../components/CompetitionResearch'
+import InventorySync from '../components/InventorySync'
+import IoTDashboard from '../components/IoTDashboard'
+import CostTracker from '../components/CostTracker'
 import LearningPath from '../components/LearningPath'
 import SimulationMode from '../components/SimulationMode'
 import HackathonPack from '../components/HackathonPack'
@@ -438,6 +443,14 @@ function Viewer() {
   <SlidesGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🔄" title="Inventory Sync" subtitle="Check stock levels and deduct components from inventory when building">
+  <InventorySync idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="💰" title="Cost Tracker" subtitle="Track actual spending with purchase status, categories and budget alerts">
+  <CostTracker idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🔌" title="Connection Diagram" subtitle="AI generates pin-by-pin wiring with wire colors and communication buses">
   <ConnectionDiagram idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -456,6 +469,14 @@ function Viewer() {
 
           <AccordionSection icon="💬" title="Prototype Feedback" subtitle="Log what worked, what didn't, and lessons learned">
   <FeedbackCollector idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📊" title="IoT Dashboard Builder" subtitle="Design a monitoring dashboard with live simulated sensor data">
+  <IoTDashboard idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📱" title="Social Content Generator" subtitle="Generate ready-to-post content for Twitter, Instagram, Reddit, LinkedIn and YouTube">
+  <SocialContentGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📦" title="Library Finder" subtitle="Find all Arduino libraries with install commands for your prototype">
@@ -536,6 +557,10 @@ function Viewer() {
 
 <AccordionSection icon="🎯" title="Challenge Generator" subtitle="Generate upgrade challenges to level up your prototype skills and earn XP">
   <ChallengeGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔍" title="Competition Research" subtitle="AI researches similar products, market gaps and your competitive advantages">
+  <CompetitionResearch idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
