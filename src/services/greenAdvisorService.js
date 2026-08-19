@@ -1,4 +1,3 @@
-cat > src/services/greenAdvisorService.js << 'ENDOFFILE'
 export async function fetchGreenAdvice(idea, components) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
@@ -53,5 +52,3 @@ export function getSavedGreenAdvice(idea) {
     return null
   }
 }
-ENDOFFILE
-echo "greenAdvisorService.js fixed!"
