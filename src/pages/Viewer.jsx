@@ -1,3 +1,8 @@
+import InvestorPitch from '../components/InvestorPitch'
+import ReviewGenerator from '../components/ReviewGenerator'
+import CodeTranslator from '../components/CodeTranslator'
+import ErrorDecoder from '../components/ErrorDecoder'
+import DocumentationWriter from '../components/DocumentationWriter'
 import ThermalManagement from '../components/ThermalManagement'
 import CrowdfundingBuilder from '../components/CrowdfundingBuilder'
 import OTAPlanner from '../components/OTAPlanner'
@@ -441,6 +446,10 @@ function Viewer() {
   <NameGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="⇄" title="Code Translator" subtitle="Translate code between Arduino, MicroPython, CircuitPython and 6 languages">
+  <CodeTranslator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="👥" title="Team Collaboration" subtitle="Share updates, assign tasks and manage your build team">
   <TeamCollaboration idea={idea} />
 </AccordionSection>
@@ -477,6 +486,10 @@ function Viewer() {
   <LearningPath idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="💼" title="Investor Pitch" subtitle="Generate complete investor pitch with financials, market size and use of funds breakdown">
+  <InvestorPitch idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🗓️" title="Sprint Planner" subtitle="AI generates a day-by-day sprint plan with task tracking and progress">
   <SprintPlanner idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -489,8 +502,20 @@ function Viewer() {
   <DeploymentChecklist idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="📝" title="Documentation Writer" subtitle="Generate README, API docs, user manual and assembly guide with one click">
+  <DocumentationWriter idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🏭" title="Manufacturing Guide" subtitle="Get scaling options, process steps, quality checks and supplier recommendations">
   <ManufacturingGuide idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="⭐" title="AI Review Generator" subtitle="Generate realistic product reviews to understand user perception of your prototype">
+  <ReviewGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🐛" title="Error Code Decoder" subtitle="Paste any Arduino or compiler error to get instant explanation and fixes">
+  <ErrorDecoder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
           <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
