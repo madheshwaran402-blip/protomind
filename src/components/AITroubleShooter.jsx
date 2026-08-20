@@ -23,14 +23,8 @@ function AITroubleshooter({ idea, components }) {
 
   async function handleTroubleshoot(p) {
     const text = p || problem
-    if (!text.trim()) {
-      notify.warning('Describe your problem first')
-      return
-    }
-    if (components.length === 0) {
-      notify.warning('Add components first')
-      return
-    }
+    if (!text.trim()) { notify.warning('Describe your problem first'); return }
+    if (components.length === 0) { notify.warning('Add components first'); return }
     setLoading(true)
     setResult(null)
     setCompletedSteps({})
@@ -43,7 +37,7 @@ function AITroubleshooter({ idea, components }) {
       setActiveTab('diagnosis')
       notify.success('Diagnosis complete!')
     } catch {
-      notify.error('Troubleshooter failed — is Ollama running?')
+      notify.error('Troubleshooter failed - is Ollama running?')
     } finally {
       setLoading(false)
     }
@@ -65,12 +59,11 @@ function AITroubleshooter({ idea, components }) {
 
   return (
     <div className="space-y-4">
-      {/* Problem input */}
       <div className="space-y-3">
         <textarea
           value={problem}
           onChange={function(e) { setProblem(e.target.value) }}
-          placeholder="Describe your problem in detail... e.g. My DHT22 sensor always shows 0°C and humidity is stuck at 100%"
+          placeholder="Describe your problem... e.g. My DHT22 always shows 0C"
           className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-red-500 resize-none placeholder-slate-600"
           rows={3}
         />
@@ -121,30 +114,23 @@ function AITroubleshooter({ idea, components }) {
                 <p className="text-red-400 text-xs font-semibold mb-1">🔍 Diagnosis</p>
                 <p className="text-white text-sm">{result.diagnosis}</p>
               </div>
-
-              <p className="text-xs text-slate-500 uppercase tracking-wide">Root Causes</p>
               {(result.rootCauses || []).map(function(cause, i) {
                 const probStyle = PROBABILITY_STYLES[cause.probability] || PROBABILITY_STYLES.Medium
                 return (
                   <div key={i} className={'rounded-xl border p-4 ' + probStyle.bg + ' ' + probStyle.border}>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-1">
                       <span className={'text-xs px-2 py-0.5 rounded-full border ' + probStyle.color + ' ' + probStyle.bg + ' ' + probStyle.border}>
-                        {cause.probability} probability
+                        {cause.probability}
                       </span>
                       <p className={'font-semibold text-sm ' + probStyle.color}>{cause.cause}</p>
-                    </div>
-                    <div className="w-full bg-[#1e1e2e] rounded-full h-1.5 mb-2">
-                      <div className={'h-1.5 rounded-full ' + (cause.probability === 'High' ? 'bg-red-500' : cause.probability === 'Medium' ? 'bg-yellow-500' : 'bg-green-500')}
-                        style={{ width: probStyle.width }} />
                     </div>
                     <p className="text-slate-300 text-xs">{cause.explanation}</p>
                   </div>
                 )
               })}
-
               {result.quickFixes && result.quickFixes.length > 0 && (
                 <div className="bg-green-950 border border-green-800 rounded-xl p-4">
-                  <p className="text-green-400 text-xs font-semibold mb-2">⚡ Quick Fixes (Try These First)</p>
+                  <p className="text-green-400 text-xs font-semibold mb-2">⚡ Quick Fixes</p>
                   <ul className="space-y-1">
                     {result.quickFixes.map(function(fix, i) {
                       return <li key={i} className="text-slate-300 text-xs flex gap-2"><span className="text-green-400 shrink-0">{i+1}.</span>{fix}</li>
@@ -157,38 +143,26 @@ function AITroubleshooter({ idea, components }) {
 
           {activeTab === 'steps' && result && (
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <p className="text-slate-500">Step-by-step fix guide</p>
-                <span className="text-indigo-400">
-                  {Object.values(completedSteps).filter(Boolean).length}/{(result.steps || []).length} done
-                </span>
-              </div>
               {(result.steps || []).map(function(step, i) {
                 const done = !!completedSteps[i]
                 return (
-                  <div key={i}
-                    className={'rounded-xl border p-4 transition ' + (done ? 'bg-green-950 border-green-900 opacity-60' : 'bg-[#13131f] border-[#2e2e4e]')}>
+                  <div key={i} onClick={function() { toggleStep(i) }}
+                    className={'rounded-xl border p-4 cursor-pointer transition ' + (done ? 'bg-green-950 border-green-900 opacity-60' : 'bg-[#13131f] border-[#2e2e4e]')}>
                     <div className="flex items-start gap-3">
-                      <button onClick={function() { toggleStep(i) }}
-                        className={'w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition text-xs font-bold ' + (
-                          done ? 'bg-green-600 border-green-500 text-white' : 'border-[#2e2e4e] text-slate-500'
-                        )}>
+                      <div className={'w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 text-xs font-bold ' + (
+                        done ? 'bg-green-600 border-green-500 text-white' : 'border-[#2e2e4e] text-slate-500'
+                      )}>
                         {done ? '✓' : i + 1}
-                      </button>
-                      <div className="flex-1">
-                        <p className={'text-sm font-semibold ' + (done ? 'text-green-400 line-through' : 'text-white')}>
-                          {step.action}
-                        </p>
-                        {step.tool && <p className="text-slate-500 text-xs mt-0.5">🔧 Tool: {step.tool}</p>}
-                        {step.expected && (
-                          <p className="text-indigo-400 text-xs mt-1">✓ Expected: {step.expected}</p>
-                        )}
+                      </div>
+                      <div>
+                        <p className={'text-sm font-semibold ' + (done ? 'line-through text-slate-500' : 'text-white')}>{step.action}</p>
+                        {step.tool && <p className="text-slate-500 text-xs">🔧 {step.tool}</p>}
+                        {step.expected && <p className="text-indigo-400 text-xs">Expected: {step.expected}</p>}
                       </div>
                     </div>
                   </div>
                 )
               })}
-
               {result.preventionTips && result.preventionTips.length > 0 && (
                 <div className="bg-indigo-950 border border-indigo-900 rounded-xl p-4">
                   <p className="text-indigo-400 text-xs font-semibold mb-2">🛡️ Prevention Tips</p>
@@ -205,18 +179,14 @@ function AITroubleshooter({ idea, components }) {
           {activeTab === 'history' && (
             <div className="space-y-2">
               {history.length === 0 ? (
-                <p className="text-slate-600 text-sm text-center py-4">No troubleshoot history yet</p>
+                <p className="text-slate-600 text-sm text-center py-4">No history yet</p>
               ) : (
                 history.map(function(session, i) {
                   return (
-                    <div key={i}
-                      onClick={function() { setResult(session); setActiveTab('diagnosis') }}
+                    <div key={i} onClick={function() { setResult(session); setActiveTab('diagnosis') }}
                       className="bg-[#13131f] border border-[#2e2e4e] hover:border-red-700 rounded-xl p-3 cursor-pointer transition">
                       <p className="text-white text-xs font-medium">{session.problem}</p>
                       <p className="text-slate-500 text-xs line-clamp-1">{session.diagnosis}</p>
-                      {session.timestamp && (
-                        <p className="text-slate-700 text-xs mt-1">{new Date(session.timestamp).toLocaleDateString()}</p>
-                      )}
                     </div>
                   )
                 })

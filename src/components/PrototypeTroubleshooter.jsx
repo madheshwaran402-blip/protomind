@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { diagnoseProblem } from '../services/troubleshooterService'
+import { troubleshootProblem as diagnoseProblem } from '../services/troubleshooterService'
 import { notify } from '../services/toast'
 
 const SEVERITY_COLORS = {

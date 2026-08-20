@@ -1,3 +1,8 @@
+import ThermalManagement from '../components/ThermalManagement'
+import CrowdfundingBuilder from '../components/CrowdfundingBuilder'
+import OTAPlanner from '../components/OTAPlanner'
+import BatteryManagement from '../components/BatteryManagement'
+import SprintPlanner from '../components/SprintPlanner'
 import ManufacturingGuide from '../components/ManufacturingGuide'
 import ComplianceChecker from '../components/ComplianceChecker'
 import PatentResearch from '../components/PatentResearch'
@@ -424,6 +429,10 @@ function Viewer() {
   <LaunchReadiness idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🚀" title="Crowdfunding Campaign" subtitle="Build a complete Kickstarter campaign with reward tiers, story and platform recommendations">
+  <CrowdfundingBuilder idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🔬" title="Prototype Health Analyser" subtitle="AI grades your design across 5 engineering dimensions" badge="New">
   <ComplexityAnalyser idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -468,6 +477,14 @@ function Viewer() {
   <LearningPath idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🗓️" title="Sprint Planner" subtitle="AI generates a day-by-day sprint plan with task tracking and progress">
+  <SprintPlanner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🌡️" title="Thermal Management" subtitle="Identify thermal hotspots and design cooling solutions with PCB layout tips">
+  <ThermalManagement idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="🚀" title="Deployment Checklist" subtitle="AI generates launch readiness checklist with critical items and progress tracking">
   <DeploymentChecklist idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -502,6 +519,14 @@ function Viewer() {
 
 <AccordionSection icon="📜" title="Patent Research" subtitle="Research patentability, potential claims and prior art for your prototype">
   <PatentResearch idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📡" title="OTA Update Planner" subtitle="Plan over-the-air firmware updates with security features and rollback strategy">
+  <OTAPlanner idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔋" title="Battery Management System" subtitle="Design complete BMS with battery selection, charging circuit and runtime estimates">
+  <BatteryManagement idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe any problem and AI diagnoses root causes with step-by-step fixes">

@@ -1,21 +1,18 @@
-export async function researchPatents(idea, components) {
+export async function generateSprint(idea, components, duration) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
   const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
   const componentList = components.map(function(c) { return c.name }).join(', ')
   const prompt = [
-    'You are a patent research assistant for electronics.',
-    'Research patent landscape for this prototype.',
+    'You are an agile project manager for electronics prototyping.',
+    'Create a sprint plan for this prototype.',
     'Prototype: ' + idea,
     'Components: ' + componentList,
+    'Sprint duration: ' + (duration || '2 weeks'),
     'Reply ONLY with valid JSON with exactly these keys:',
-    'patentability (string: High, Medium, or Low),',
-    'noveltyScore (number 0-100),',
-    'relatedPatentAreas (array of strings),',
-    'potentialClaims (array of objects with: claim, type, strength),',
-    'priorArt (array of objects with: area, description, impact),',
-    'recommendations (array of strings),',
-    'disclaimer (string)',
+    'sprintName (string),',
+    'goal (string),',
+    'days (array of objects with: day, tasks array of objects with: id, title, type, estimate, priority)',
   ].join('\n')
   const response = await fetch(ollamaUrl + '/api/generate', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -27,20 +24,22 @@ export async function researchPatents(idea, components) {
   if (!jsonMatch) throw new Error('No JSON found')
   return JSON.parse(jsonMatch[0])
 }
-export function savePatentResearch(idea, result) {
+
+const SPRINT_KEY = 'protomind_sprints'
+
+export function saveSprint(idea, result, completed) {
   try {
-    const key = 'protomind_patents'
-    const raw = localStorage.getItem(key)
+    const raw = localStorage.getItem(SPRINT_KEY)
     const all = raw ? JSON.parse(raw) : {}
-    all[idea] = { result, savedAt: new Date().toISOString() }
-    localStorage.setItem(key, JSON.stringify(all))
+    all[idea] = { result, completed: completed || {}, savedAt: new Date().toISOString() }
+    localStorage.setItem(SPRINT_KEY, JSON.stringify(all))
   } catch {}
 }
-export function getPatentResearch(idea) {
+
+export function getSprint(idea) {
   try {
-    const key = 'protomind_patents'
-    const raw = localStorage.getItem(key)
+    const raw = localStorage.getItem(SPRINT_KEY)
     const all = raw ? JSON.parse(raw) : {}
-    return all[idea]?.result || null
+    return all[idea] || null
   } catch { return null }
 }
