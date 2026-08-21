@@ -12,7 +12,6 @@ import ManufacturingGuide from '../components/ManufacturingGuide'
 import ComplianceChecker from '../components/ComplianceChecker'
 import PatentResearch from '../components/PatentResearch'
 import AccessibilityChecker from '../components/AccessibilityChecker'
-import AITroubleshooter from '../components/AITroubleshooter'
 import SocialContentGenerator from '../components/SocialContentGenerator'
 import CompetitionResearch from '../components/CompetitionResearch'
 import InventorySync from '../components/InventorySync'
@@ -554,9 +553,7 @@ function Viewer() {
   <BatteryManagement idea={idea} components={selectedComponents} />
 </AccordionSection>
 
-<AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe any problem and AI diagnoses root causes with step-by-step fixes">
-  <AITroubleshooter idea={idea} components={selectedComponents} />
-</AccordionSection>
+
 
 <AccordionSection icon="📦" title="Export Bundle" subtitle="Download a complete ZIP with README, BOM, wiring guide, code and specs">
   <ExportBundle idea={idea} components={selectedComponents} />
