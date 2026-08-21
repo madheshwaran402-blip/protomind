@@ -1,16 +1,11 @@
 import { useState } from 'react'
-import {
-  troubleshootProblem,
-  COMMON_PROBLEMS,
-  saveTroubleshootHistory,
-  getTroubleshootHistory,
-} from '../services/troubleshooterService'
+import { troubleshootProblem, COMMON_PROBLEMS, saveTroubleshootHistory, getTroubleshootHistory } from '../services/troubleshooterService'
 import { notify } from '../services/toast'
 
 const PROBABILITY_STYLES = {
-  High: { color: 'text-red-400', bg: 'bg-red-950', border: 'border-red-800', width: '80%' },
-  Medium: { color: 'text-yellow-400', bg: 'bg-yellow-950', border: 'border-yellow-800', width: '50%' },
-  Low: { color: 'text-green-400', bg: 'bg-green-950', border: 'border-green-800', width: '25%' },
+  High: { color: 'text-red-400', bg: 'bg-red-950', border: 'border-red-800' },
+  Medium: { color: 'text-yellow-400', bg: 'bg-yellow-950', border: 'border-yellow-800' },
+  Low: { color: 'text-green-400', bg: 'bg-green-950', border: 'border-green-800' },
 }
 
 function AITroubleshooter({ idea, components }) {
@@ -36,11 +31,8 @@ function AITroubleshooter({ idea, components }) {
       setHistory(getTroubleshootHistory(idea))
       setActiveTab('diagnosis')
       notify.success('Diagnosis complete!')
-    } catch {
-      notify.error('Troubleshooter failed - is Ollama running?')
-    } finally {
-      setLoading(false)
-    }
+    } catch { notify.error('Troubleshooter failed - is Ollama running?') }
+    finally { setLoading(false) }
   }
 
   function toggleStep(index) {
@@ -52,9 +44,9 @@ function AITroubleshooter({ idea, components }) {
   }
 
   const TABS = [
-    { id: 'diagnosis', label: '🔍 Diagnosis' },
-    { id: 'steps', label: '🛠️ Fix Steps' },
-    { id: 'history', label: '📋 History' },
+    { id: 'diagnosis', label: 'Diagnosis' },
+    { id: 'steps', label: 'Fix Steps' },
+    { id: 'history', label: 'History' },
   ]
 
   return (
@@ -63,7 +55,7 @@ function AITroubleshooter({ idea, components }) {
         <textarea
           value={problem}
           onChange={function(e) { setProblem(e.target.value) }}
-          placeholder="Describe your problem... e.g. My DHT22 always shows 0C"
+          placeholder="Describe your problem..."
           className="w-full bg-[#13131f] border border-[#2e2e4e] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-red-500 resize-none placeholder-slate-600"
           rows={3}
         />
@@ -82,7 +74,7 @@ function AITroubleshooter({ idea, components }) {
           disabled={loading || !problem.trim() || components.length === 0}
           className="w-full py-3 bg-red-700 hover:bg-red-600 rounded-xl text-sm font-semibold transition disabled:opacity-50"
         >
-          {loading ? '🔍 Diagnosing...' : '🔍 Diagnose Problem'}
+          {loading ? 'Diagnosing...' : 'Diagnose Problem'}
         </button>
       </div>
 
@@ -99,9 +91,7 @@ function AITroubleshooter({ idea, components }) {
             {TABS.map(function(tab) {
               return (
                 <button key={tab.id} onClick={function() { setActiveTab(tab.id) }}
-                  className={'flex-1 py-2 rounded-lg text-xs font-medium transition ' + (
-                    activeTab === tab.id ? 'bg-red-700 text-white' : 'text-slate-500 hover:text-white'
-                  )}>
+                  className={'flex-1 py-2 rounded-lg text-xs font-medium transition ' + (activeTab === tab.id ? 'bg-red-700 text-white' : 'text-slate-500 hover:text-white')}>
                   {tab.label}
                 </button>
               )
@@ -111,29 +101,24 @@ function AITroubleshooter({ idea, components }) {
           {activeTab === 'diagnosis' && result && (
             <div className="space-y-3">
               <div className="bg-red-950 border border-red-800 rounded-xl p-4">
-                <p className="text-red-400 text-xs font-semibold mb-1">🔍 Diagnosis</p>
+                <p className="text-red-400 text-xs font-semibold mb-1">Diagnosis</p>
                 <p className="text-white text-sm">{result.diagnosis}</p>
               </div>
               {(result.rootCauses || []).map(function(cause, i) {
                 const probStyle = PROBABILITY_STYLES[cause.probability] || PROBABILITY_STYLES.Medium
                 return (
                   <div key={i} className={'rounded-xl border p-4 ' + probStyle.bg + ' ' + probStyle.border}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={'text-xs px-2 py-0.5 rounded-full border ' + probStyle.color + ' ' + probStyle.bg + ' ' + probStyle.border}>
-                        {cause.probability}
-                      </span>
-                      <p className={'font-semibold text-sm ' + probStyle.color}>{cause.cause}</p>
-                    </div>
+                    <p className={'font-semibold text-sm mb-1 ' + probStyle.color}>{cause.cause} ({cause.probability})</p>
                     <p className="text-slate-300 text-xs">{cause.explanation}</p>
                   </div>
                 )
               })}
               {result.quickFixes && result.quickFixes.length > 0 && (
                 <div className="bg-green-950 border border-green-800 rounded-xl p-4">
-                  <p className="text-green-400 text-xs font-semibold mb-2">⚡ Quick Fixes</p>
+                  <p className="text-green-400 text-xs font-semibold mb-2">Quick Fixes</p>
                   <ul className="space-y-1">
                     {result.quickFixes.map(function(fix, i) {
-                      return <li key={i} className="text-slate-300 text-xs flex gap-2"><span className="text-green-400 shrink-0">{i+1}.</span>{fix}</li>
+                      return <li key={i} className="text-slate-300 text-xs flex gap-2"><span className="text-green-400">{i+1}.</span>{fix}</li>
                     })}
                   </ul>
                 </div>
@@ -149,14 +134,12 @@ function AITroubleshooter({ idea, components }) {
                   <div key={i} onClick={function() { toggleStep(i) }}
                     className={'rounded-xl border p-4 cursor-pointer transition ' + (done ? 'bg-green-950 border-green-900 opacity-60' : 'bg-[#13131f] border-[#2e2e4e]')}>
                     <div className="flex items-start gap-3">
-                      <div className={'w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 text-xs font-bold ' + (
-                        done ? 'bg-green-600 border-green-500 text-white' : 'border-[#2e2e4e] text-slate-500'
-                      )}>
-                        {done ? '✓' : i + 1}
+                      <div className={'w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 text-xs font-bold ' + (done ? 'bg-green-600 border-green-500 text-white' : 'border-[#2e2e4e] text-slate-500')}>
+                        {done ? 'v' : i + 1}
                       </div>
                       <div>
                         <p className={'text-sm font-semibold ' + (done ? 'line-through text-slate-500' : 'text-white')}>{step.action}</p>
-                        {step.tool && <p className="text-slate-500 text-xs">🔧 {step.tool}</p>}
+                        {step.tool && <p className="text-slate-500 text-xs">Tool: {step.tool}</p>}
                         {step.expected && <p className="text-indigo-400 text-xs">Expected: {step.expected}</p>}
                       </div>
                     </div>
@@ -165,10 +148,10 @@ function AITroubleshooter({ idea, components }) {
               })}
               {result.preventionTips && result.preventionTips.length > 0 && (
                 <div className="bg-indigo-950 border border-indigo-900 rounded-xl p-4">
-                  <p className="text-indigo-400 text-xs font-semibold mb-2">🛡️ Prevention Tips</p>
+                  <p className="text-indigo-400 text-xs font-semibold mb-2">Prevention Tips</p>
                   <ul className="space-y-1">
                     {result.preventionTips.map(function(tip, i) {
-                      return <li key={i} className="text-slate-300 text-xs flex gap-2"><span className="text-indigo-400">→</span>{tip}</li>
+                      return <li key={i} className="text-slate-300 text-xs flex gap-2"><span className="text-indigo-400">-</span>{tip}</li>
                     })}
                   </ul>
                 </div>
@@ -200,7 +183,7 @@ function AITroubleshooter({ idea, components }) {
         <div className="text-center py-8 bg-[#13131f] border border-[#2e2e4e] rounded-xl">
           <div className="text-4xl mb-2">🔍</div>
           <p className="text-white font-semibold mb-1">AI Troubleshooter</p>
-          <p className="text-slate-500 text-sm">Describe any problem and AI diagnoses root causes with step-by-step fixes</p>
+          <p className="text-slate-500 text-sm">Describe any problem to get diagnosis and step-by-step fixes</p>
         </div>
       )}
     </div>

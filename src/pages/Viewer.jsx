@@ -1,4 +1,5 @@
 import InvestorPitch from '../components/InvestorPitch'
+import AITroubleshooter from '../components/AITroubleshooter'
 import ReviewGenerator from '../components/ReviewGenerator'
 import CodeTranslator from '../components/CodeTranslator'
 import ErrorDecoder from '../components/ErrorDecoder'
