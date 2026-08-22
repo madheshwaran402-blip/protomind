@@ -1,37 +1,20 @@
-export async function calibrateSensor(sensorName, readings, options) {
+export async function generateCalibrationGuide(idea, components) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
   const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
-
-  const readingStr = readings.map(function(r, i) {
-    return 'Reading ' + (i + 1) + ': ' + r.value + ' ' + (r.unit || '')
-  }).join(', ')
-
+  const componentList = components.map(function(c) { return c.name + ' (' + c.category + ')' }).join(', ')
   const prompt = [
-    'You are an expert electronics sensor calibration engineer.',
-    'Analyse these sensor readings and provide calibration advice.',
-    'Sensor: ' + sensorName,
-    'Readings: ' + readingStr,
-    'Environment: ' + (options.environment || 'room temperature'),
-    'Expected range: ' + (options.expectedRange || 'unknown'),
+    'You are a precision measurement and calibration engineer.',
+    'Create calibration procedures for this prototype.',
+    'Prototype: ' + idea,
+    'Components: ' + componentList,
     'Reply ONLY with valid JSON with exactly these keys:',
-    'sensorName (string),',
-    'status (string: Good, Needs Calibration, Faulty, or Drifting),',
-    'accuracy (number 0-100),',
-    'analysis (string, 2 sentences),',
-    'issues (array of strings),',
-    'calibrationSteps (array of objects with: step, description, code),',
-    'expectedRange (object with: min, max, unit),',
-    'drift (object with: detected boolean, amount string, direction string),',
-    'recommendations (array of strings)',
-  ].join('\n')
-
+    'components (array of objects with: name, calibrationNeeded boolean, procedure array of strings, equipment, frequency, code)',
+  ].join("\n")
   const response = await fetch(ollamaUrl + '/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model, prompt, stream: false }),
   })
-
   const data = await response.json()
   const text = data.response
   const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -39,28 +22,19 @@ export async function calibrateSensor(sensorName, readings, options) {
   return JSON.parse(jsonMatch[0])
 }
 
-const CAL_HISTORY_KEY = 'protomind_calibrations'
-
-export function saveCalibration(sensorName, result) {
+export function saveCalibrationGuide(idea, result) {
   try {
-    const raw = localStorage.getItem(CAL_HISTORY_KEY)
+    const raw = localStorage.getItem('protomind_calibration')
     const all = raw ? JSON.parse(raw) : {}
-    if (!all[sensorName]) all[sensorName] = []
-    all[sensorName].unshift({
-      result,
-      timestamp: new Date().toISOString(),
-    })
-    all[sensorName] = all[sensorName].slice(0, 5)
-    localStorage.setItem(CAL_HISTORY_KEY, JSON.stringify(all))
+    all[idea] = { result, savedAt: new Date().toISOString() }
+    localStorage.setItem('protomind_calibration', JSON.stringify(all))
   } catch {}
 }
 
-export function getCalibrationHistory(sensorName) {
+export function getCalibrationGuide(idea) {
   try {
-    const raw = localStorage.getItem(CAL_HISTORY_KEY)
+    const raw = localStorage.getItem('protomind_calibration')
     const all = raw ? JSON.parse(raw) : {}
-    return all[sensorName] || []
-  } catch {
-    return []
-  }
+    return all[idea]?.result || null
+  } catch { return null }
 }

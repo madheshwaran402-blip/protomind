@@ -1,3 +1,4 @@
+import CalibrationGuide from '../components/CalibrationGuide'
 import SensorFusionPlanner from '../components/SensorFusionPlanner'
 import SecurityAudit from '../components/SecurityAudit'
 import MemoryStoragePlanner from '../components/MemoryStoragePlanner'
@@ -445,6 +446,10 @@ function Viewer() {
 
 <AccordionSection icon="🚀" title="Crowdfunding Campaign" subtitle="Build a complete Kickstarter campaign with reward tiers, story and platform recommendations">
   <CrowdfundingBuilder idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🎯" title="Calibration Guide" subtitle="Step-by-step calibration procedures for every sensor with code snippets">
+  <CalibrationGuide idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🔬" title="Prototype Health Analyser" subtitle="AI grades your design across 5 engineering dimensions" badge="New">
