@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { generateCalibrationGuide, saveCalibrationGuideGuide, getCalibrationGuide } from '../services/calibrationService'
+import { generateCalibrationGuide, saveCalibrationGuide, getCalibrationGuide } from '../services/calibrationService'
 import { notify } from '../services/toast'
 
 const STATUS_STYLES = {
