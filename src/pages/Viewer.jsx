@@ -1,3 +1,4 @@
+import PowerBudget from '../components/PowerBudget'
 import InvestorPitch from '../components/InvestorPitch'
 import ReviewGenerator from '../components/ReviewGenerator'
 import CodeTranslator from '../components/CodeTranslator'
@@ -605,6 +606,10 @@ function Viewer() {
 
 <AccordionSection icon="🔍" title="AI Code Reviewer" subtitle="Paste your code for AI review — issues, grade, improvements and optimized snippets">
   <CodeReviewer idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="⚡" title="Power Budget Calculator" subtitle="Calculate current and power draw for every component with voltage rail breakdown">
+  <PowerBudget idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🎯" title="Pitch Builder" subtitle="Build a compelling elevator pitch and practice interview Q&A">
