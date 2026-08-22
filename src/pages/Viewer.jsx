@@ -1,5 +1,6 @@
 import PowerBudget from '../components/PowerBudget'
 import InvestorPitch from '../components/InvestorPitch'
+import SignalIntegrityChecker from '../components/SignalIntegrityChecker'
 import ReviewGenerator from '../components/ReviewGenerator'
 import CodeTranslator from '../components/CodeTranslator'
 import ErrorDecoder from '../components/ErrorDecoder'
@@ -428,6 +429,10 @@ function Viewer() {
 
           <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
   <ImprovementSuggester idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📡" title="Signal Integrity Checker" subtitle="Check SPI, I2C, UART signals for integrity issues with PCB layout tips">
+  <SignalIntegrityChecker idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🚀" title="Launch Readiness" subtitle="Get a Go/No-Go verdict with a complete deployment checklist">
