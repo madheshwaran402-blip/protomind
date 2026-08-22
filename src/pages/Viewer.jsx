@@ -1,3 +1,4 @@
+import SecurityAudit from '../components/SecurityAudit'
 import MemoryStoragePlanner from '../components/MemoryStoragePlanner'
 import WirelessRangeCalculator from '../components/WirelessRangeCalculator'
 import PowerBudget from '../components/PowerBudget'
@@ -559,6 +560,10 @@ function Viewer() {
 
 <AccordionSection icon="📜" title="Patent Research" subtitle="Research patentability, potential claims and prior art for your prototype">
   <PatentResearch idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔒" title="Security Audit" subtitle="Find IoT security vulnerabilities and get hardening recommendations">
+  <SecurityAudit idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📡" title="OTA Update Planner" subtitle="Plan over-the-air firmware updates with security features and rollback strategy">
