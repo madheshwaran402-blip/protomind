@@ -1,3 +1,4 @@
+import MemoryStoragePlanner from '../components/MemoryStoragePlanner'
 import WirelessRangeCalculator from '../components/WirelessRangeCalculator'
 import PowerBudget from '../components/PowerBudget'
 import InvestorPitch from '../components/InvestorPitch'
@@ -550,6 +551,10 @@ function Viewer() {
 
 <AccordionSection icon="📦" title="Library Finder" subtitle="Find all Arduino libraries with install commands for your prototype">
   <LibraryFinder idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="💾" title="Memory & Storage Planner" subtitle="Plan RAM, Flash and storage layout with usage breakdown and optimisation tips">
+  <MemoryStoragePlanner idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📜" title="Patent Research" subtitle="Research patentability, potential claims and prior art for your prototype">
