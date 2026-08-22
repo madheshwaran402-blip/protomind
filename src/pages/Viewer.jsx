@@ -1,3 +1,6 @@
+import CustomerPersonas from '../components/CustomerPersonas'
+import FeatureRoadmap from '../components/FeatureRoadmap'
+import ProtocolDecoder from '../components/ProtocolDecoder'
 import CalibrationGuide from '../components/CalibrationGuide'
 import SensorFusionPlanner from '../components/SensorFusionPlanner'
 import SecurityAudit from '../components/SecurityAudit'
@@ -500,6 +503,10 @@ function Viewer() {
   <ConnectionDiagram idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🔌" title="Protocol Decoder" subtitle="Decode I2C, SPI, UART protocols with pinout tables and timing diagrams">
+  <ProtocolDecoder idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="📚" title="Learning Path" subtitle="Personalised learning roadmap based on your skill level with XP tracking">
   <LearningPath idea={idea} components={selectedComponents} />
 </AccordionSection>
@@ -532,8 +539,16 @@ function Viewer() {
   <ManufacturingGuide idea={idea} components={selectedComponents} />
 </AccordionSection>
 
+<AccordionSection icon="🗺️" title="Feature Roadmap" subtitle="Build a phased product roadmap with priorities and effort estimates">
+  <FeatureRoadmap idea={idea} components={selectedComponents} />
+</AccordionSection>
+
 <AccordionSection icon="⭐" title="AI Review Generator" subtitle="Generate realistic product reviews to understand user perception of your prototype">
   <ReviewGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="👥" title="Customer Personas" subtitle="Generate realistic user personas with goals, pain points and willingness to pay">
+  <CustomerPersonas idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🐛" title="Error Code Decoder" subtitle="Paste any Arduino or compiler error to get instant explanation and fixes">
