@@ -1,3 +1,4 @@
+import UserStoryGenerator from '../components/UserStoryGenerator'
 import DependencyMapper from '../components/DependencyMapper'
 import UnitTestGenerator from '../components/UnitTestGenerator'
 import CustomerPersonas from '../components/CustomerPersonas'
@@ -543,6 +544,10 @@ function Viewer() {
 
 <AccordionSection icon="🏭" title="Manufacturing Guide" subtitle="Get scaling options, process steps, quality checks and supplier recommendations">
   <ManufacturingGuide idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📋" title="User Story Generator" subtitle="Generate agile user stories with acceptance criteria and story point estimates">
+  <UserStoryGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🗺️" title="Feature Roadmap" subtitle="Build a phased product roadmap with priorities and effort estimates">
