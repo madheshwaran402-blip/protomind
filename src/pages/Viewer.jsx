@@ -1,3 +1,4 @@
+import ChangelogGenerator from '../components/ChangelogGenerator'
 import UserStoryGenerator from '../components/UserStoryGenerator'
 import DependencyMapper from '../components/DependencyMapper'
 import UnitTestGenerator from '../components/UnitTestGenerator'
@@ -588,6 +589,10 @@ function Viewer() {
 
 <AccordionSection icon="📱" title="Social Content Generator" subtitle="Generate ready-to-post content for Twitter, Instagram, Reddit, LinkedIn and YouTube">
   <SocialContentGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📝" title="Changelog Generator" subtitle="Track version history with AI-generated entries and export to CHANGELOG.md">
+  <ChangelogGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📦" title="Library Finder" subtitle="Find all Arduino libraries with install commands for your prototype">

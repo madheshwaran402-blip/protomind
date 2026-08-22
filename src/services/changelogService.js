@@ -1,45 +1,61 @@
-import { getAllVersions } from './storage'
+const CHANGELOG_KEY = 'protomind_changelog'
 
-export async function generateChangelog(idea, versions) {
-  if (!versions || versions.length < 2) {
-    throw new Error('Need at least 2 versions to generate changelog')
+export function getChangelog(projectId) {
+  try {
+    const raw = localStorage.getItem(CHANGELOG_KEY)
+    const all = raw ? JSON.parse(raw) : {}
+    return all[projectId] || { versions: [] }
+  } catch { return { versions: [] } }
+}
+
+export function saveChangelog(projectId, data) {
+  try {
+    const raw = localStorage.getItem(CHANGELOG_KEY)
+    const all = raw ? JSON.parse(raw) : {}
+    all[projectId] = data
+    localStorage.setItem(CHANGELOG_KEY, JSON.stringify(all))
+  } catch {}
+}
+
+export function addVersion(projectId, version) {
+  const data = getChangelog(projectId)
+  const newVersion = {
+    id: 'v_' + Date.now(),
+    version: version.version,
+    date: version.date || new Date().toISOString().split('T')[0],
+    type: version.type || 'minor',
+    changes: {
+      added: version.added || [],
+      changed: version.changed || [],
+      fixed: version.fixed || [],
+      removed: version.removed || [],
+    },
+    notes: version.notes || '',
   }
+  data.versions = [newVersion].concat(data.versions || [])
+  saveChangelog(projectId, data)
+  return newVersion
+}
 
-  const versionSummaries = versions
-    .slice(0, 6)
-    .map(function(v) {
-      return 'v' + v.version + ': ' + (v.components || []).map(function(c) {
-        return c.name
-      }).join(', ')
-    }).join('\n')
-
+export async function generateVersionNotes(idea, components, versionNum) {
   const settings = localStorage.getItem('protomind_settings')
   const model = settings ? (JSON.parse(settings).aiModel || 'llama3.2') : 'llama3.2'
   const ollamaUrl = settings ? (JSON.parse(settings).ollamaUrl || 'http://localhost:11434') : 'http://localhost:11434'
-
+  const componentList = components.map(function(c) { return c.name }).join(', ')
   const prompt = [
-    'You are a professional technical writer.',
-    'Generate a comprehensive changelog for this electronics prototype.',
-    'Project: ' + idea,
-    'Version history:',
-    versionSummaries,
+    'You are a technical writer creating a changelog.',
+    'Generate changelog entries for version ' + versionNum + ' of this prototype.',
+    'Prototype: ' + idea,
+    'Components: ' + componentList,
     'Reply ONLY with valid JSON with exactly these keys:',
-    'projectName (string),',
-    'latestVersion (string),',
-    'releaseDate (string),',
-    'summary (string, 1-2 sentences about the overall project evolution),',
-    'versions (array of objects with: version, date, type, headline, added, changed, removed, fixed, notes),',
-    'highlights (array of strings, top 3 most significant changes overall),',
-    'breakingChanges (array of strings),',
-    'contributors (array of strings)',
-  ].join('\n')
-
+    'added (array of strings),',
+    'changed (array of strings),',
+    'fixed (array of strings)',
+  ].join("\n")
   const response = await fetch(ollamaUrl + '/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model, prompt, stream: false }),
   })
-
   const data = await response.json()
   const text = data.response
   const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -47,101 +63,4 @@ export async function generateChangelog(idea, versions) {
   return JSON.parse(jsonMatch[0])
 }
 
-export function buildMarkdownChangelog(changelog, idea) {
-  if (!changelog) return ''
-
-  const lines = [
-    '# Changelog — ' + (changelog.projectName || idea),
-    '',
-    'All notable changes to this project are documented here.',
-    '',
-    '> ' + (changelog.summary || ''),
-    '',
-  ]
-
-  if (changelog.highlights && changelog.highlights.length > 0) {
-    lines.push('## ✨ Highlights')
-    lines.push('')
-    changelog.highlights.forEach(function(h) {
-      lines.push('- ' + h)
-    })
-    lines.push('')
-  }
-
-  if (changelog.breakingChanges && changelog.breakingChanges.length > 0) {
-    lines.push('## ⚠️ Breaking Changes')
-    lines.push('')
-    changelog.breakingChanges.forEach(function(b) {
-      lines.push('- ' + b)
-    })
-    lines.push('')
-  }
-
-  ;(changelog.versions || []).forEach(function(v) {
-    const typeEmoji = v.type === 'major' ? '🚀' : v.type === 'minor' ? '✨' : '🔧'
-    lines.push('## ' + typeEmoji + ' [' + v.version + '] — ' + (v.date || ''))
-    lines.push('')
-
-    if (v.headline) {
-      lines.push('> ' + v.headline)
-      lines.push('')
-    }
-
-    if (v.added && v.added.length > 0) {
-      lines.push('### Added')
-      v.added.forEach(function(item) { lines.push('- ' + item) })
-      lines.push('')
-    }
-
-    if (v.changed && v.changed.length > 0) {
-      lines.push('### Changed')
-      v.changed.forEach(function(item) { lines.push('- ' + item) })
-      lines.push('')
-    }
-
-    if (v.removed && v.removed.length > 0) {
-      lines.push('### Removed')
-      v.removed.forEach(function(item) { lines.push('- ' + item) })
-      lines.push('')
-    }
-
-    if (v.fixed && v.fixed.length > 0) {
-      lines.push('### Fixed')
-      v.fixed.forEach(function(item) { lines.push('- ' + item) })
-      lines.push('')
-    }
-
-    if (v.notes) {
-      lines.push('_' + v.notes + '_')
-      lines.push('')
-    }
-  })
-
-  lines.push('---')
-  lines.push('')
-  lines.push('*Generated by ProtoMind — protomind-ten.vercel.app*')
-
-  return lines.join('\n')
-}
-
-export function saveChangelog(idea, changelog) {
-  try {
-    const key = 'protomind_changelogs'
-    const raw = localStorage.getItem(key)
-    const all = raw ? JSON.parse(raw) : {}
-    all[idea] = { changelog, generatedAt: new Date().toISOString() }
-    localStorage.setItem(key, JSON.stringify(all))
-  } catch {}
-}
-
-export function getChangelog(idea) {
-  try {
-    const key = 'protomind_changelogs'
-    const raw = localStorage.getItem(key)
-    if (!raw) return null
-    const all = JSON.parse(raw)
-    return all[idea] ? all[idea].changelog : null
-  } catch {
-    return null
-  }
-}
+export const VERSION_TYPES = ['major', 'minor', 'patch', 'alpha', 'beta']
