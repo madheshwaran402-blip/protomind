@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { calibrateSensor, saveCalibration, getCalibrationHistory } from '../services/calibrationService'
+import { generateCalibrationGuide, saveCalibrationGuideGuide, getCalibrationGuide } from '../services/calibrationService'
 import { notify } from '../services/toast'
 
 const STATUS_STYLES = {
@@ -93,7 +93,7 @@ function CalibrationTool({ components }) {
   const sensorName = customSensor.trim() || selectedSensor
 
   useEffect(function() {
-    setHistory(getCalibrationHistory(sensorName))
+    setHistory(getCalibrationGuide(sensorName))
     const preset = COMMON_SENSORS.find(function(s) { return s.name === sensorName })
     if (preset) {
       setUnit(preset.unit)
@@ -128,10 +128,10 @@ function CalibrationTool({ components }) {
     setLoading(true)
     setResult(null)
     try {
-      const data = await calibrateSensor(sensorName, validReadings, { environment, expectedRange })
+      const data = await generateCalibrationGuide(sensorName, validReadings, { environment, expectedRange })
       setResult(data)
-      saveCalibration(sensorName, data)
-      setHistory(getCalibrationHistory(sensorName))
+      saveCalibrationGuide(sensorName, data)
+      setHistory(getCalibrationGuide(sensorName))
       notify.success('Calibration analysis complete — ' + data.status)
     } catch {
       notify.error('Calibration failed — is Ollama running?')
