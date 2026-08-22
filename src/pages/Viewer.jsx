@@ -1,3 +1,4 @@
+import SensorFusionPlanner from '../components/SensorFusionPlanner'
 import SecurityAudit from '../components/SecurityAudit'
 import MemoryStoragePlanner from '../components/MemoryStoragePlanner'
 import WirelessRangeCalculator from '../components/WirelessRangeCalculator'
@@ -508,6 +509,10 @@ function Viewer() {
 
 <AccordionSection icon="🌡️" title="Thermal Management" subtitle="Identify thermal hotspots and design cooling solutions with PCB layout tips">
   <ThermalManagement idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔬" title="Sensor Fusion Planner" subtitle="Plan Kalman filter and other algorithms to combine multiple sensor streams">
+  <SensorFusionPlanner idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🚀" title="Deployment Checklist" subtitle="AI generates launch readiness checklist with critical items and progress tracking">
