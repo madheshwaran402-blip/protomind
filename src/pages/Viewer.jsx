@@ -1,3 +1,4 @@
+import DependencyMapper from '../components/DependencyMapper'
 import UnitTestGenerator from '../components/UnitTestGenerator'
 import CustomerPersonas from '../components/CustomerPersonas'
 import FeatureRoadmap from '../components/FeatureRoadmap'
@@ -570,6 +571,10 @@ function Viewer() {
 
 <AccordionSection icon="📋" title="Regulatory Compliance" subtitle="Check CE, FCC, RoHS and other certifications required for your target region">
   <ComplianceChecker idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🗂️" title="Dependency Mapper" subtitle="Map all libraries and dependencies with install commands and license info">
+  <DependencyMapper idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📊" title="IoT Dashboard Builder" subtitle="Design a monitoring dashboard with live simulated sensor data">
