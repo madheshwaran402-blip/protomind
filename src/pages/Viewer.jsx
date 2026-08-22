@@ -1,3 +1,4 @@
+import UnitTestGenerator from '../components/UnitTestGenerator'
 import CustomerPersonas from '../components/CustomerPersonas'
 import FeatureRoadmap from '../components/FeatureRoadmap'
 import ProtocolDecoder from '../components/ProtocolDecoder'
@@ -477,6 +478,10 @@ function Viewer() {
 
 <AccordionSection icon="🧑‍🏫" title="AI Mentor" subtitle="Structured lessons with analogies, deep dives and common mistakes">
   <AIMentor idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🧪" title="Unit Test Generator" subtitle="Generate unit tests for your prototype code with pass/fail tracking">
+  <UnitTestGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
