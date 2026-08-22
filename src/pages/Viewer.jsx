@@ -1,3 +1,4 @@
+import GlossaryBuilder from '../components/GlossaryBuilder'
 import ChangelogGenerator from '../components/ChangelogGenerator'
 import UserStoryGenerator from '../components/UserStoryGenerator'
 import DependencyMapper from '../components/DependencyMapper'
@@ -513,6 +514,10 @@ function Viewer() {
 
 <AccordionSection icon="🔌" title="Protocol Decoder" subtitle="Decode I2C, SPI, UART protocols with pinout tables and timing diagrams">
   <ProtocolDecoder idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📖" title="Glossary Builder" subtitle="Build a searchable technical glossary with categories and related terms">
+  <GlossaryBuilder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📚" title="Learning Path" subtitle="Personalised learning roadmap based on your skill level with XP tracking">
