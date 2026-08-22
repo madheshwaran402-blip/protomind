@@ -1,3 +1,4 @@
+import WirelessRangeCalculator from '../components/WirelessRangeCalculator'
 import PowerBudget from '../components/PowerBudget'
 import InvestorPitch from '../components/InvestorPitch'
 import SignalIntegrityChecker from '../components/SignalIntegrityChecker'
@@ -457,6 +458,10 @@ function Viewer() {
 
 <AccordionSection icon="👥" title="Team Collaboration" subtitle="Share updates, assign tasks and manage your build team">
   <TeamCollaboration idea={idea} />
+</AccordionSection>
+
+<AccordionSection icon="📶" title="Wireless Range Calculator" subtitle="Compare WiFi, Bluetooth, LoRa range and performance for your prototype">
+  <WirelessRangeCalculator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🧑‍🏫" title="AI Mentor" subtitle="Structured lessons with analogies, deep dives and common mistakes">
