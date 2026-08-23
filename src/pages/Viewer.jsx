@@ -1,3 +1,4 @@
+import ProductChecklist from '../components/ProductChecklist'
 import PartsSubstitutionFinder from '../components/PartsSubstitutionFinder'
 import WiringDiagramDescriber from '../components/WiringDiagramDescriber'
 import GlossaryBuilder from '../components/GlossaryBuilder'
@@ -495,6 +496,10 @@ function Viewer() {
 
 <AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
   <VideoScriptGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🚀" title="Product Launch Checklist" subtitle="Complete checklist to go from prototype to shippable product">
+  <ProductChecklist idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🎯" title="Slide Deck Generator" subtitle="AI creates a complete presentation with speaker notes and interactive HTML export">
