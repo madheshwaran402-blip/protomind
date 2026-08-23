@@ -1,3 +1,4 @@
+import EnclosureDesigner from '../components/EnclosureDesigner'
 import ProductChecklist from '../components/ProductChecklist'
 import PartsSubstitutionFinder from '../components/PartsSubstitutionFinder'
 import WiringDiagramDescriber from '../components/WiringDiagramDescriber'
@@ -504,6 +505,10 @@ function Viewer() {
 
 <AccordionSection icon="🎯" title="Slide Deck Generator" subtitle="AI creates a complete presentation with speaker notes and interactive HTML export">
   <SlidesGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📦" title="Enclosure Designer" subtitle="Design physical housing with cutouts, IP rating and manufacturing options">
+  <EnclosureDesigner idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="♿" title="Accessibility Checker" subtitle="Check your prototype for inclusive design issues with improvement suggestions">
