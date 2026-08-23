@@ -39,8 +39,7 @@ function DemoScriptGenerator({ idea, components }) {
       if (scene.tip) lines.push('Tip: ' + scene.tip)
       lines.push('')
     })
-    navigator.clipboard.writeText(lines.join('
-'))
+    navigator.clipboard.writeText(lines.join('\n'))
     setCopied(true)
     setTimeout(function() { setCopied(false) }, 2000)
     notify.success('Script copied!')

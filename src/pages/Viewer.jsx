@@ -1,4 +1,7 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import GrantFinder from '../components/GrantFinder'
+import MonetisationStrategist from '../components/MonetisationStrategist'
+import SupplyChainAnalyser from '../components/SupplyChainAnalyser'
 import DemoScriptGenerator from '../components/DemoScriptGenerator'
 import FeedbackFormBuilder from '../components/FeedbackFormBuilder'
 import EnclosureDesigner from '../components/EnclosureDesigner'
@@ -929,6 +932,9 @@ function Viewer() {
 </AccordionSection>
       <AccordionSection icon="📝" title="Feedback Form Builder" subtitle="Generate user feedback forms with ratings, multiple choice and response tracking"><FeedbackFormBuilder idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🎤" title="Demo Script Generator" subtitle="Generate live demo scripts with scenes, actions and presentation mode"><DemoScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🏭" title="Supply Chain Analyser" subtitle="Analyse component availability, lead times and supply chain risks"><SupplyChainAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💰" title="Monetisation Strategist" subtitle="Build revenue streams, pricing tiers and go-to-market strategy"><MonetisationStrategist idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💵" title="Grant Finder" subtitle="Find relevant grants, funding programs and accelerators for your prototype"><GrantFinder idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
