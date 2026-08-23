@@ -1,4 +1,6 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import ConfigFileGenerator from '../components/ConfigFileGenerator'
+import ArchitectureDiagram from '../components/ArchitectureDiagram'
 import ExplainerVideoScript from '../components/ExplainerVideoScript'
 import InterviewPrepCoach from '../components/InterviewPrepCoach'
 import SustainabilityReport from '../components/SustainabilityReport'
@@ -941,6 +943,8 @@ function Viewer() {
       <AccordionSection icon="🌱" title="Sustainability Report" subtitle="Evaluate environmental impact, carbon footprint and sustainability score"><SustainabilityReport idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🎯" title="Interview Prep Coach" subtitle="Prepare answers for investor, accelerator and technical interviews with practice mode"><InterviewPrepCoach idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🎬" title="Explainer Video Script" subtitle="Generate YouTube explainer scripts with hook, B-roll notes and section breakdown"><ExplainerVideoScript idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🏗️" title="Architecture Diagram" subtitle="System architecture with layers, data flow and ASCII diagram"><ArchitectureDiagram idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="⚙️" title="Config File Generator" subtitle="Generate JSON, YAML, .env and INI config files with download"><ConfigFileGenerator idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
