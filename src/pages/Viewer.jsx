@@ -1,3 +1,4 @@
+import PitchEmailGenerator from '../components/PitchEmailGenerator'
 import EnclosureDesigner from '../components/EnclosureDesigner'
 import ProductChecklist from '../components/ProductChecklist'
 import PartsSubstitutionFinder from '../components/PartsSubstitutionFinder'
@@ -505,6 +506,10 @@ function Viewer() {
 
 <AccordionSection icon="🎯" title="Slide Deck Generator" subtitle="AI creates a complete presentation with speaker notes and interactive HTML export">
   <SlidesGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="📧" title="Pitch Email Generator" subtitle="Generate targeted pitch emails for investors, manufacturers, press and partners">
+  <PitchEmailGenerator idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📦" title="Enclosure Designer" subtitle="Design physical housing with cutouts, IP rating and manufacturing options">
