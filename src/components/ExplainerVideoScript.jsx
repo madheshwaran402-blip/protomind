@@ -38,8 +38,7 @@ function ExplainerVideoScript({ idea, components }) {
       if (s.transition) parts.push('Transition: ' + s.transition)
       parts.push('')
     })
-    navigator.clipboard.writeText(parts.join('
-'))
+    navigator.clipboard.writeText(parts.join('\n'))
     setCopied(true)
     setTimeout(function() { setCopied(false) }, 2000)
     notify.success('Script copied!')
