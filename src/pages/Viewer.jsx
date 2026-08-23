@@ -1,4 +1,5 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import FeedbackFormBuilder from '../components/FeedbackFormBuilder'
 import EnclosureDesigner from '../components/EnclosureDesigner'
 import ProductChecklist from '../components/ProductChecklist'
 import PartsSubstitutionFinder from '../components/PartsSubstitutionFinder'
@@ -925,6 +926,7 @@ function Viewer() {
 <AccordionSection icon="🧪" title="Test Suite" subtitle="AI generates hardware and software tests with pass/fail tracking">
   <TestSuite idea={idea} components={selectedComponents} />
 </AccordionSection>
+      <AccordionSection icon="📝" title="Feedback Form Builder" subtitle="Generate user feedback forms with ratings, multiple choice and response tracking"><FeedbackFormBuilder idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
