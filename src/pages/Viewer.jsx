@@ -1,4 +1,5 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import DemoScriptGenerator from '../components/DemoScriptGenerator'
 import FeedbackFormBuilder from '../components/FeedbackFormBuilder'
 import EnclosureDesigner from '../components/EnclosureDesigner'
 import ProductChecklist from '../components/ProductChecklist'
@@ -927,6 +928,7 @@ function Viewer() {
   <TestSuite idea={idea} components={selectedComponents} />
 </AccordionSection>
       <AccordionSection icon="📝" title="Feedback Form Builder" subtitle="Generate user feedback forms with ratings, multiple choice and response tracking"><FeedbackFormBuilder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🎤" title="Demo Script Generator" subtitle="Generate live demo scripts with scenes, actions and presentation mode"><DemoScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
