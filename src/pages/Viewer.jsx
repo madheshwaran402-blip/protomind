@@ -1,3 +1,4 @@
+import PartsSubstitutionFinder from '../components/PartsSubstitutionFinder'
 import WiringDiagramDescriber from '../components/WiringDiagramDescriber'
 import GlossaryBuilder from '../components/GlossaryBuilder'
 import ChangelogGenerator from '../components/ChangelogGenerator'
@@ -554,6 +555,10 @@ function Viewer() {
 
 <AccordionSection icon="🏭" title="Manufacturing Guide" subtitle="Get scaling options, process steps, quality checks and supplier recommendations">
   <ManufacturingGuide idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔄" title="Parts Substitution Finder" subtitle="Find drop-in and compatible alternative components with price comparison">
+  <PartsSubstitutionFinder idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="📋" title="User Story Generator" subtitle="Generate agile user stories with acceptance criteria and story point estimates">
