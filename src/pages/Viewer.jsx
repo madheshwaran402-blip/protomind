@@ -1,3 +1,4 @@
+import WiringDiagramDescriber from '../components/WiringDiagramDescriber'
 import GlossaryBuilder from '../components/GlossaryBuilder'
 import ChangelogGenerator from '../components/ChangelogGenerator'
 import UserStoryGenerator from '../components/UserStoryGenerator'
@@ -485,6 +486,10 @@ function Viewer() {
 
 <AccordionSection icon="🧪" title="Unit Test Generator" subtitle="Generate unit tests for your prototype code with pass/fail tracking">
   <UnitTestGenerator idea={idea} components={selectedComponents} />
+</AccordionSection>
+
+<AccordionSection icon="🔴" title="Wiring Diagram" subtitle="Complete pin-by-pin wiring instructions with wire colors and power connections">
+  <WiringDiagramDescriber idea={idea} components={selectedComponents} />
 </AccordionSection>
 
 <AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
