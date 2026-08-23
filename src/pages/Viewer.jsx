@@ -1,4 +1,5 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import InterviewPrepCoach from '../components/InterviewPrepCoach'
 import SustainabilityReport from '../components/SustainabilityReport'
 import GrantFinder from '../components/GrantFinder'
 import MonetisationStrategist from '../components/MonetisationStrategist'
@@ -937,6 +938,7 @@ function Viewer() {
       <AccordionSection icon="💰" title="Monetisation Strategist" subtitle="Build revenue streams, pricing tiers and go-to-market strategy"><MonetisationStrategist idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="💵" title="Grant Finder" subtitle="Find relevant grants, funding programs and accelerators for your prototype"><GrantFinder idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🌱" title="Sustainability Report" subtitle="Evaluate environmental impact, carbon footprint and sustainability score"><SustainabilityReport idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🎯" title="Interview Prep Coach" subtitle="Prepare answers for investor, accelerator and technical interviews with practice mode"><InterviewPrepCoach idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
