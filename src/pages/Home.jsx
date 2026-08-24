@@ -181,17 +181,6 @@ function Home() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-[#0a0a0f] to-[#0a0a0f] pointer-events-none" />
         <div className="relative px-4 sm:px-8 md:px-16 pt-12 pb-8">
-
-          {/* Day 100 celebration banner */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="bg-yellow-950 border border-yellow-700 rounded-full px-6 py-2 flex items-center gap-2">
-              <span className="text-xl">🎊</span>
-              <span className="text-yellow-400 text-sm font-bold">Day 100 — ProtoMind is 100 days old!</span>
-              <span className="text-xl">🎊</span>
-            </div>
-          </div>
-
-          {/* Level + XP bar */}
           <div className="flex items-center justify-center mb-6">
             <div className="bg-[#13131f] border border-[#2e2e4e] rounded-2xl px-5 py-3 flex items-center gap-4">
               <div className="text-center">

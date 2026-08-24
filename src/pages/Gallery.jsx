@@ -479,7 +479,7 @@ function Gallery() {
       {/* Day 90 celebration banner */}
       <div className="mt-10 bg-gradient-to-br from-indigo-950 to-purple-950 border border-indigo-800 rounded-2xl p-6 text-center">
         <div className="text-5xl mb-3">🎊</div>
-        <h3 className="text-white font-black text-xl mb-2">Day 120 — Month 4 Complete!</h3>
+        
         <p className="text-indigo-300 text-sm mb-4">
           120 days of building · 30+ pages · 40+ AI tools · Community features live!
         </p>

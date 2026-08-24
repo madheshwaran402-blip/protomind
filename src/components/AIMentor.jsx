@@ -45,13 +45,6 @@ function AIMentor({ idea, components }) {
 
   return (
     <div className="space-y-4">
-      {/* Month 5 complete banner */}
-      <div className="bg-gradient-to-r from-indigo-950 to-purple-950 border border-indigo-700 rounded-xl p-3 flex items-center gap-2">
-        <span className="text-2xl">🎊</span>
-        <div>
-          <p className="text-indigo-300 font-bold text-sm">Month 5 Complete — Day 150!</p>
-          <p className="text-slate-500 text-xs">55.6% of the ProtoMind journey complete</p>
-        </div>
         <span className="text-2xl">🎊</span>
       </div>
 
