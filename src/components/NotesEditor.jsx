@@ -383,11 +383,6 @@ function NotesEditor({ idea, projectId }) {
   return (
     <div className="space-y-4">
 
-      {/* Month 5 note */}
-      <div className="bg-gradient-to-r from-indigo-950 to-purple-950 border border-indigo-800 rounded-xl p-3 flex items-center gap-2">
-        <span className="text-xl">🎊</span>
-        <p className="text-indigo-300 text-xs">Month 5 — UX Polish! Notes 2.0 with rich text, tags, colors and search.</p>
-      </div>
 
       {/* Toolbar */}
       <div className="flex gap-2 flex-wrap">

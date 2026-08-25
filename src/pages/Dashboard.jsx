@@ -135,13 +135,20 @@ function Dashboard() {
         (analytics.level.next - [0, 0, 200, 500, 1000][analytics.level.level])) * 100, 100)
     : 100
 
+  const PHASES = [
+    { label: 'Month 1 — Foundation', days: '1-30', done: true },
+    { label: 'Month 2 — Core Features', days: '31-60', done: true },
+    { label: 'Month 3 — AI Tools', days: '61-90', done: true },
+    { label: 'Month 4 — Polish', days: '91-120', done: true },
+    { label: 'Month 5 — Advanced', days: '121-150', done: true },
+    { label: 'Month 6 — Collaboration', days: '151-180', done: false },
+    { label: 'Month 7 — Desktop App', days: '181-210', done: false },
+    { label: 'Month 8 — Launch Prep', days: '211-240', done: false },
+    { label: 'Month 9 — Launch! 🚀', days: '241-270', done: false },
+  ]
+
   return (
     <div className="min-h-screen page-enter px-4 sm:px-8 md:px-16 py-8 sm:py-12">
-          className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition"
-        >
-          ⚡ Build Now →
-        </button>
-      </div>
 
       {/* XP Level Card */}
       <div className="bg-gradient-to-br from-indigo-950 to-[#0d0d1a] border border-indigo-800 rounded-2xl p-5 mb-6">
@@ -158,10 +165,7 @@ function Dashboard() {
               {analytics.level.next && <span className="text-slate-600">{analytics.level.next} XP next</span>}
             </div>
             <div className="w-full bg-[#1e1e2e] rounded-full h-3 mb-2">
-              <div
-                className="h-3 rounded-full bg-indigo-600 transition-all"
-                style={{ width: levelProgress + '%' }}
-              />
+              <div className="h-3 rounded-full bg-indigo-600 transition-all" style={{ width: levelProgress + '%' }} />
             </div>
             <div className="flex gap-4 text-xs">
               <span className="text-yellow-400">🏆 {analytics.achievements.length}/{ALL_ACHIEVEMENTS.length} achievements</span>
@@ -191,54 +195,20 @@ function Dashboard() {
       {/* Overview Tab */}
       {activeTab === 'overview' && (
         <div className="space-y-6">
+
           {/* Key stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <StatCard
-              icon="⚡"
-              label="Prototypes Built"
-              value={analytics.totalProjects}
-              color="#6366f1"
-              onClick={function() { navigate('/history') }}
-            />
-            <StatCard
-              icon="💾"
-              label="Versions Saved"
-              value={analytics.totalVersions}
-              color="#0ea5e9"
-            />
-            <StatCard
-              icon="🔧"
-              label="Components Used"
-              value={analytics.totalComponents}
-              sub={'avg ' + analytics.avgComponentsPerProject + ' per build'}
-              color="#22c55e"
-            />
-            <StatCard
-              icon="📦"
-              label="Inventory Items"
-              value={analytics.inventoryItems}
-              sub={'$' + analytics.inventoryValue.toFixed(0) + ' total value'}
-              color="#f59e0b"
-              onClick={function() { navigate('/inventory') }}
-            />
+            <StatCard icon="⚡" label="Prototypes Built" value={analytics.totalProjects} color="#6366f1" onClick={function() { navigate('/history') }} />
+            <StatCard icon="💾" label="Versions Saved" value={analytics.totalVersions} color="#0ea5e9" />
+            <StatCard icon="🔧" label="Components Used" value={analytics.totalComponents} sub={'avg ' + analytics.avgComponentsPerProject + ' per build'} color="#22c55e" />
+            <StatCard icon="📦" label="Inventory Items" value={analytics.inventoryItems} sub={'$' + analytics.inventoryValue.toFixed(0) + ' total value'} color="#f59e0b" onClick={function() { navigate('/inventory') }} />
           </div>
 
-          {/* Recent prototypes */}
+          {/* Journey */}
           <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold mb-4">ProtoMind Journey</h3>
+            <h3 className="text-white font-bold mb-4">ProtoMind Journey</h3>
             <div className="space-y-3">
-              {[
-                { label: 'Month 1 — Foundation', days: '1-30', done: true },
-                { label: 'Month 2 — Core Features', days: '31-60', done: true },
-                { label: 'Month 3 — AI Tools', days: '61-90', done: true },
-                
-                { label: 'Month 5 — UX & Performance', days: '121-150', done: false, current: true },
-                { label: 'Month 6 — Collaboration', days: '151-180', done: false },
-                { label: 'Month 7 — Desktop App', days: '181-210', done: false },
-                { label: 'Month 8 — Launch Prep', days: '211-240', done: false },
-                { label: 'Month 9 — Launch! 🚀', days: '241-270', done: false },
-              ].map(function(phase, i) {
+              {PHASES.map(function(phase, i) {
                 return (
                   <div key={i} className="flex items-center gap-3">
                     <div className={'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs ' + (
@@ -257,8 +227,17 @@ function Dashboard() {
               })}
             </div>
           </div>
+
         </div>
       )}
+
+      {/* Quick action */}
+      <div className="mt-6 text-center">
+        <button onClick={function() { navigate('/') }} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition">
+          ⚡ Build Now →
+        </button>
+      </div>
+
     </div>
   )
 }

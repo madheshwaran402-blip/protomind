@@ -45,8 +45,6 @@ function AIMentor({ idea, components }) {
 
   return (
     <div className="space-y-4">
-        <span className="text-2xl">🎊</span>
-      </div>
 
       <div className="flex gap-1 bg-[#13131f] rounded-xl p-1">
         {TABS.map(function(tab) {
