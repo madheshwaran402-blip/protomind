@@ -1,4 +1,9 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import KnowledgeBaseBuilder from '../components/KnowledgeBaseBuilder'
+import PressReleaseGenerator from '../components/PressReleaseGenerator'
+import StakeholderMap from '../components/StakeholderMap'
+import RapidPrototypeAdvisor from '../components/RapidPrototypeAdvisor'
+import NoiseEmiAnalyser from '../components/NoiseEmiAnalyser'
 import ConfigFileGenerator from '../components/ConfigFileGenerator'
 import ArchitectureDiagram from '../components/ArchitectureDiagram'
 import ExplainerVideoScript from '../components/ExplainerVideoScript'
@@ -945,6 +950,11 @@ function Viewer() {
       <AccordionSection icon="🎬" title="Explainer Video Script" subtitle="Generate YouTube explainer scripts with hook, B-roll notes and section breakdown"><ExplainerVideoScript idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🏗️" title="Architecture Diagram" subtitle="System architecture with layers, data flow and ASCII diagram"><ArchitectureDiagram idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="⚙️" title="Config File Generator" subtitle="Generate JSON, YAML, .env and INI config files with download"><ConfigFileGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📡" title="Noise & EMI Analyser" subtitle="Identify EMI risks with shielding and filtering recommendations"><NoiseEmiAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="⚡" title="Rapid Prototype Advisor" subtitle="Time-boxed build plan with shortcuts, tradeoffs and task tracking"><RapidPrototypeAdvisor idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🗺️" title="Stakeholder Map" subtitle="Map all stakeholders with influence levels and engagement strategies"><StakeholderMap idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📰" title="Press Release Generator" subtitle="Generate professional press releases for product launches and milestones"><PressReleaseGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📚" title="Knowledge Base Builder" subtitle="Build a searchable KB with setup guides, troubleshooting articles and FAQs"><KnowledgeBaseBuilder idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
