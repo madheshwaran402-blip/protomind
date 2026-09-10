@@ -1,4 +1,9 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import ExitStrategyPlanner from '../components/ExitStrategyPlanner'
+import MetricsDashboardDesigner from '../components/MetricsDashboardDesigner'
+import OnboardingFlowBuilder from '../components/OnboardingFlowBuilder'
+import NameValidator from '../components/NameValidator'
+import ABTestPlanner from '../components/ABTestPlanner'
 import KnowledgeBaseBuilder from '../components/KnowledgeBaseBuilder'
 import PressReleaseGenerator from '../components/PressReleaseGenerator'
 import StakeholderMap from '../components/StakeholderMap'
@@ -955,6 +960,11 @@ function Viewer() {
       <AccordionSection icon="🗺️" title="Stakeholder Map" subtitle="Map all stakeholders with influence levels and engagement strategies"><StakeholderMap idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="📰" title="Press Release Generator" subtitle="Generate professional press releases for product launches and milestones"><PressReleaseGenerator idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="📚" title="Knowledge Base Builder" subtitle="Build a searchable KB with setup guides, troubleshooting articles and FAQs"><KnowledgeBaseBuilder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🔬" title="A/B Test Planner" subtitle="Plan rigorous A/B tests to validate hardware and design decisions"><ABTestPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="✅" title="Product Name Validator" subtitle="Score any name on memorability, uniqueness, pronouncability and relevance"><NameValidator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🎯" title="Onboarding Flow Builder" subtitle="Design the first-use experience with step-by-step user guidance"><OnboardingFlowBuilder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📊" title="Metrics Dashboard Designer" subtitle="Define north star metric and KPIs with targets and formula"><MetricsDashboardDesigner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🚪" title="Exit Strategy Planner" subtitle="Plan acquisition, IPO and licensing exits with valuation ranges"><ExitStrategyPlanner idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
