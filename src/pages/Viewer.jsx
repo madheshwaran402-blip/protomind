@@ -1,4 +1,9 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import LaunchCountdownPlanner from '../components/LaunchCountdownPlanner'
+import PartnershipFinder from '../components/PartnershipFinder'
+import LocalizationPlanner from '../components/LocalizationPlanner'
+import TechDebtTracker from '../components/TechDebtTracker'
+import PricingPsychologyAnalyser from '../components/PricingPsychologyAnalyser'
 import ExitStrategyPlanner from '../components/ExitStrategyPlanner'
 import MetricsDashboardDesigner from '../components/MetricsDashboardDesigner'
 import OnboardingFlowBuilder from '../components/OnboardingFlowBuilder'
@@ -965,6 +970,11 @@ function Viewer() {
       <AccordionSection icon="🎯" title="Onboarding Flow Builder" subtitle="Design the first-use experience with step-by-step user guidance"><OnboardingFlowBuilder idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="📊" title="Metrics Dashboard Designer" subtitle="Define north star metric and KPIs with targets and formula"><MetricsDashboardDesigner idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🚪" title="Exit Strategy Planner" subtitle="Plan acquisition, IPO and licensing exits with valuation ranges"><ExitStrategyPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💰" title="Pricing Psychology Analyser" subtitle="Discover anchoring tactics and psychological pricing strategies"><PricingPsychologyAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🔧" title="Technical Debt Tracker" subtitle="Identify and resolve hardware and software technical debt"><TechDebtTracker idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🌍" title="Localization Planner" subtitle="Plan global markets with voltage, plug types and certification requirements"><LocalizationPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🤝" title="Partnership Finder" subtitle="Find strategic partners with approach strategies and pitch angles"><PartnershipFinder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🚀" title="Launch Countdown Planner" subtitle="Milestone-based launch countdown with tasks and progress tracking"><LaunchCountdownPlanner idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
