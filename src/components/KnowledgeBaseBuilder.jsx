@@ -28,20 +28,16 @@ function KnowledgeBaseBuilder({ idea, components }) {
 
   function handleExport() {
     if (!result) return
-    const lines = ['# Knowledge Base
-']
+    const parts = ['# Knowledge Base']
     ;(result.articles || []).forEach(function(a) {
-      lines.push('## ' + a.title)
-      lines.push('Category: ' + a.category)
-      lines.push('Tags: ' + (a.tags || []).join(', '))
-      lines.push('')
-      lines.push(a.content)
-      lines.push('
----
-')
+      parts.push('## ' + a.title)
+      parts.push('Category: ' + a.category)
+      parts.push('Tags: ' + (a.tags || []).join(', '))
+      parts.push('')
+      parts.push(a.content)
+      parts.push('---')
     })
-    const blob = new Blob([lines.join('
-')], { type: 'text/markdown' })
+    const blob = new Blob([parts.join('\n')], { type: 'text/markdown' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url; link.download = 'knowledge_base.md'; link.click()

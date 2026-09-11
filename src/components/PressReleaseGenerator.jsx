@@ -43,8 +43,7 @@ function PressReleaseGenerator({ idea, components }) {
       result.contact?.phone || '',
       '', '###',
     ]
-    return parts.join('
-')
+    return parts.join('\n')
   }
 
   function handleCopy() {
