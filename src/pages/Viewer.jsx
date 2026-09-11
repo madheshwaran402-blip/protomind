@@ -1,4 +1,23 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import PostLaunchPlanner from '../components/PostLaunchPlanner'
+import BetaProgramDesigner from '../components/BetaProgramDesigner'
+import DataPrivacyGuide from '../components/DataPrivacyGuide'
+import InvestorUpdateGenerator from '../components/InvestorUpdateGenerator'
+import ProductHuntLaunch from '../components/ProductHuntLaunch'
+import TechTransferPackage from '../components/TechTransferPackage'
+import FieldTestPlanner from '../components/FieldTestPlanner'
+import SalesScriptGenerator from '../components/SalesScriptGenerator'
+import PackagingDesigner from '../components/PackagingDesigner'
+import WarrantyPolicyGenerator from '../components/WarrantyPolicyGenerator'
+import CommunityStrategyBuilder from '../components/CommunityStrategyBuilder'
+import HardwareDebugGuide from '../components/HardwareDebugGuide'
+import InvestorQAPrep from '../components/InvestorQAPrep'
+import MVPScopeDefiner from '../components/MVPScopeDefiner'
+import CodeStyleGuide from '../components/CodeStyleGuide'
+import ErrorHandlingGuide from '../components/ErrorHandlingGuide'
+import APIDocGenerator from '../components/APIDocGenerator'
+import DevEnvironmentSetup from '../components/DevEnvironmentSetup'
+import AccessibilityAuditor from '../components/AccessibilityAuditor'
 import LaunchCountdownPlanner from '../components/LaunchCountdownPlanner'
 import PartnershipFinder from '../components/PartnershipFinder'
 import LocalizationPlanner from '../components/LocalizationPlanner'
@@ -975,6 +994,25 @@ function Viewer() {
       <AccordionSection icon="🌍" title="Localization Planner" subtitle="Plan global markets with voltage, plug types and certification requirements"><LocalizationPlanner idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🤝" title="Partnership Finder" subtitle="Find strategic partners with approach strategies and pitch angles"><PartnershipFinder idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🚀" title="Launch Countdown Planner" subtitle="Milestone-based launch countdown with tasks and progress tracking"><LaunchCountdownPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="♿" title="Accessibility Auditor" subtitle="Audit for accessibility issues with scoring and inclusive design recommendations"><AccessibilityAuditor idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💻" title="Dev Environment Setup" subtitle="Generate complete dev environment with tools, configs and setup tips"><DevEnvironmentSetup idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📋" title="API Doc Generator" subtitle="Generate complete API documentation with endpoints, params and examples"><APIDocGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🚨" title="Error Handling Guide" subtitle="Generate error codes, detection methods and recovery procedures"><ErrorHandlingGuide idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📐" title="Code Style Guide" subtitle="Generate coding standards with good/bad examples and linter config"><CodeStyleGuide idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🎯" title="MVP Scope Definer" subtitle="Define MVP scope with MoSCoW prioritisation and validation goals"><MVPScopeDefiner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💬" title="Investor Q&A Prep" subtitle="Prepare for tough investor questions with model answers and red flags"><InvestorQAPrep idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🔍" title="Hardware Debug Guide" subtitle="Symptom-based debugging guide with step-by-step fixes"><HardwareDebugGuide idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="👥" title="Community Strategy Builder" subtitle="Build community strategy across platforms with growth tactics"><CommunityStrategyBuilder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📄" title="Warranty Policy Generator" subtitle="Generate complete warranty, returns and refund policy"><WarrantyPolicyGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📦" title="Packaging Designer" subtitle="Design product packaging with materials and unboxing experience"><PackagingDesigner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🗣️" title="Sales Script Generator" subtitle="Generate complete sales script with objection handling"><SalesScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🧪" title="Field Test Planner" subtitle="Plan field tests with procedures, pass/fail criteria and result tracking"><FieldTestPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📋" title="Tech Transfer Package" subtitle="Generate complete tech transfer package for manufacturing or licensing"><TechTransferPackage idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🚀" title="Product Hunt Launch" subtitle="Generate tagline, description, maker comment and launch day schedule"><ProductHuntLaunch idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📧" title="Investor Update Generator" subtitle="Generate monthly investor updates with metrics and highlights"><InvestorUpdateGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🔐" title="Data Privacy Guide" subtitle="Generate GDPR checklist, data inventory and privacy by design"><DataPrivacyGuide idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🧪" title="Beta Program Designer" subtitle="Design structured beta program with phases, criteria and incentives"><BetaProgramDesigner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📈" title="Post-Launch Planner" subtitle="Plan Week 1, Month 1, Month 3 actions with KPIs and issue handling"><PostLaunchPlanner idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
