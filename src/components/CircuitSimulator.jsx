@@ -74,7 +74,7 @@ const COMPONENT_LIBRARY = [
   { type: 'ultrasonic', label: 'HC-SR04', icon: '📡', color: '#0ea5e9', pins: ['vcc','trig','echo','gnd'], desc: 'Ultrasonic distance sensor' },
   { type: 'servo', label: 'Servo Motor', icon: '⚙️', color: '#f97316', pins: ['vcc','signal','gnd'], desc: 'SG90 servo motor' },
   { type: 'lcd16x2', label: 'LCD 16x2', icon: '🖥️', color: '#22c55e', pins: ['vcc','gnd','sda','scl'], desc: 'I2C LCD display' },
-  { type: 'oled', label: 'OLED 0.96'', icon: '📺', color: '#6366f1', pins: ['vcc','gnd','sda','scl'], desc: 'I2C OLED display' },
+  { type: 'oled', label: 'OLED 0.96in', icon: '📺', color: '#6366f1', pins: ['vcc','gnd','sda','scl'], desc: 'I2C OLED display' },
   { type: 'relay', label: 'Relay', icon: '⚡', color: '#ef4444', pins: ['vcc','gnd','in'], desc: '5V relay module' },
   { type: 'pir', label: 'PIR Sensor', icon: '👁️', color: '#f59e0b', pins: ['vcc','out','gnd'], desc: 'Motion detection sensor' },
   { type: 'rgb_led', label: 'RGB LED', icon: '🌈', color: '#a855f7', pins: ['red','green','blue','gnd'], desc: 'Common cathode RGB LED' },
