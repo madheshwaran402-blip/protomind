@@ -1,4 +1,5 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import CircuitSimulator from '../components/CircuitSimulator'
 import NetworkingScriptGenerator from '../components/NetworkingScriptGenerator'
 import ProductStoryBuilder from '../components/ProductStoryBuilder'
 import FinalLaunchChecklist from '../components/FinalLaunchChecklist'
@@ -1037,6 +1038,7 @@ function Viewer() {
       <AccordionSection icon="🚀" title="Final Launch Checklist" subtitle="The definitive pre-launch checklist covering every critical item"><FinalLaunchChecklist idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="📖" title="Product Story Builder" subtitle="Craft a compelling origin story, problem, solution and vision narrative"><ProductStoryBuilder idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🤝" title="Networking Script Generator" subtitle="Generate scripts for conferences, demo days and investor meetings"><NetworkingScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🔌" title="Circuit Simulator" subtitle="Live circuit simulation with LED, button, servo, sensor components and serial monitor"><CircuitSimulator idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
