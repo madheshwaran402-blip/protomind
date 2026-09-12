@@ -14,8 +14,7 @@ function WarrantyPolicyGenerator({ idea, components }) {
   function copyAll() {
     if (!result) return
     const parts = ['WARRANTY POLICY','','Period: '+(result.warrantyPeriod||''),'','COVERED:',... (result.covered||[]).map(function(c){return '+ '+c}),'','NOT COVERED:',... (result.notCovered||[]).map(function(c){return '- '+c}),'','CLAIM PROCESS:',... (result.claimProcess||[]).map(function(c,i){return (i+1)+'. '+c}),'','RETURNS: '+(result.returnPolicy||''),'','REFUNDS: '+(result.refundPolicy||'')]
-    navigator.clipboard.writeText(parts.join('
-'))
+    navigator.clipboard.writeText(parts.join('\n'))
     setCopied(true); setTimeout(function(){setCopied(false)},2000); notify.success('Policy copied!')
   }
   return (
