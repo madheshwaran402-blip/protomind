@@ -8,6 +8,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
+import ProjectWizard from './pages/ProjectWizard'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
 
@@ -240,6 +241,7 @@ function App() {
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Home />} />
+          <Route path="/wizard" element={<ProjectWizard />} />
               <Route path="/components" element={<Components />} />
               <Route path="/viewer" element={<Viewer />} />
               <Route path="/layout" element={<Layout />} />
