@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { notify } from './toast'
+import { notify } from '../services/toast'
 
 // ─── BOARD DEFINITIONS ────────────────────────────────────────────────────────
 const BOARDS = {
