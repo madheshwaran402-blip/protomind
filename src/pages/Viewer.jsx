@@ -1,4 +1,16 @@
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
+import NetworkingScriptGenerator from '../components/NetworkingScriptGenerator'
+import ProductStoryBuilder from '../components/ProductStoryBuilder'
+import FinalLaunchChecklist from '../components/FinalLaunchChecklist'
+import IdeaValidationScorer from '../components/IdeaValidationScorer'
+import RevenueProjection from '../components/RevenueProjection'
+import ComponentAgingAnalyser from '../components/ComponentAgingAnalyser'
+import QualityControlPlan from '../components/QualityControlPlan'
+import EmailCampaignBuilder from '../components/EmailCampaignBuilder'
+import TRLAssessment from '../components/TRLAssessment'
+import SalesChannelPlanner from '../components/SalesChannelPlanner'
+import CostReductionAnalyser from '../components/CostReductionAnalyser'
+import HardwareVersionHistory from '../components/HardwareVersionHistory'
 import PostLaunchPlanner from '../components/PostLaunchPlanner'
 import BetaProgramDesigner from '../components/BetaProgramDesigner'
 import DataPrivacyGuide from '../components/DataPrivacyGuide'
@@ -1013,6 +1025,18 @@ function Viewer() {
       <AccordionSection icon="🔐" title="Data Privacy Guide" subtitle="Generate GDPR checklist, data inventory and privacy by design"><DataPrivacyGuide idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="🧪" title="Beta Program Designer" subtitle="Design structured beta program with phases, criteria and incentives"><BetaProgramDesigner idea={idea} components={selectedComponents} /></AccordionSection>
       <AccordionSection icon="📈" title="Post-Launch Planner" subtitle="Plan Week 1, Month 1, Month 3 actions with KPIs and issue handling"><PostLaunchPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📜" title="Hardware Version History" subtitle="Document version history with changes, breaking updates and release notes"><HardwareVersionHistory idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💸" title="Cost Reduction Analyser" subtitle="Find opportunities to reduce BOM and production costs with risk assessment"><CostReductionAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🏪" title="Sales Channel Planner" subtitle="Plan sales channels from direct to marketplace distribution"><SalesChannelPlanner idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🔬" title="TRL Assessment" subtitle="Assess Technology Readiness Level 1-9 with gaps and advancement path"><TRLAssessment idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="✉️" title="Email Campaign Builder" subtitle="Generate complete email sequence for product launch"><EmailCampaignBuilder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="✅" title="Quality Control Plan" subtitle="Generate QC checkpoints with test methods and pass/fail criteria"><QualityControlPlan idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="⏳" title="Component Aging Analyser" subtitle="Analyse component lifespan, failure modes and maintenance requirements"><ComponentAgingAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📈" title="Revenue Projection" subtitle="Project 3-year revenue across optimistic, realistic and pessimistic scenarios"><RevenueProjection idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="💡" title="Idea Validation Scorer" subtitle="Score your idea across market, technical, financial and feasibility dimensions"><IdeaValidationScorer idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🚀" title="Final Launch Checklist" subtitle="The definitive pre-launch checklist covering every critical item"><FinalLaunchChecklist idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="📖" title="Product Story Builder" subtitle="Craft a compelling origin story, problem, solution and vision narrative"><ProductStoryBuilder idea={idea} components={selectedComponents} /></AccordionSection>
+      <AccordionSection icon="🤝" title="Networking Script Generator" subtitle="Generate scripts for conferences, demo days and investor meetings"><NetworkingScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
 
         </div>
 
