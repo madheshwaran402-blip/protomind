@@ -8,11 +8,11 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import UserMenu from './components/UserMenu'
 import ProtoScan from './pages/ProtoScan'
 import AIRoadmap from './pages/AIRoadmap'
 import ProjectWizard from './pages/ProjectWizard'
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import UserMenu from './components/UserMenu'
 
 const Home = lazy(() => import('./pages/Home'))
 const Components = lazy(() => import('./pages/Components'))
@@ -241,81 +241,42 @@ function App() {
         <ScrollToTop />
         <main id="main" tabIndex={-1}>
           <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Home />
-          } />
-          
-          } />
-          
-          } />
-          
-          } /> />
-          } />
-              <Route path="/components" element={<Components />
-          } />
-              <Route path="/viewer" element={<Viewer />
-          } />
-              <Route path="/layout" element={<Layout />
-          } />
-              <Route path="/history" element={<History />
-          } />
-              <Route path="/parts" element={<Parts />
-          } />
-              <Route path="/gallery" element={<Gallery />
-          } />
-              <Route path="/landing" element={<Landing />
-          } />
-              <Route path="/auth" element={<Auth />
-          } />
-              <Route path="/settings" element={<Settings />
-          } />
-              <Route path="/library" element={<CustomLibrary />
-          } />
-              <Route path="/templates" element={<Templates />
-          } />
-              <Route path="/dashboard" element={<Dashboard />
-          } />
-              <Route path="/help" element={<Help />
-          } />
-              <Route path="/showcase" element={<Showcase />
-          } />
-              <Route path="/progress" element={<ProgressReport />
-          } />
-              <Route path="/inventory" element={<Inventory />
-          } />
-              <Route path="/symbols" element={<CircuitSymbols />
-          } />
-              <Route path="/calculator" element={<ElectronicsCalculator />
-          } />
-              <Route path="/resistor" element={<ResistorCalculator />
-          } />
-              <Route path="/wire" element={<WireGauge />
-          } />
-              <Route path="/capacitor" element={<CapacitorReference />
-          } />
-              <Route path="/ratings" element={<RatingWall />
-          } />
-              <Route path="/pinouts" element={<PinoutReference />
-          } />
-              <Route path="/compare" element={<PrototypeComparator />
-          } />
-              <Route path="/diff" element={<VersionDiff />
-          } />
-              <Route path="/recommend" element={<ComponentRecommender />
-          } />
-              <Route path="/ideas" element={<IdeaGenerator />
-          } />
-              <Route path="/search" element={<ComponentSearchPage />
-          } />
-              <Route path="/kb" element={<KnowledgeBase />
-          } />
-              <Route path="/share/:shareId" element={<ShareView />
-          } />
-              <Route path="*" element={<NotFound />
-          } />
-                      <Route path="/wizard" element={<ProjectWizard />} />
-                  <Route path="/roadmap" element={<AIRoadmap />} />
-                  <Route path="/protoscan" element={<ProtoScan />} />
+                    <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/components" element={<Components />} />
+          <Route path="/viewer" element={<Viewer />} />
+          <Route path="/layout" element={<Layout />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/parts" element={<Parts />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/library" element={<CustomLibrary />} />
+          <Route path="/templates" element={<Templates />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/showcase" element={<Showcase />} />
+          <Route path="/progress" element={<ProgressReport />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/symbols" element={<CircuitSymbols />} />
+          <Route path="/calculator" element={<ElectronicsCalculator />} />
+          <Route path="/resistor" element={<ResistorCalculator />} />
+          <Route path="/wire" element={<WireGauge />} />
+          <Route path="/capacitor" element={<CapacitorReference />} />
+          <Route path="/ratings" element={<RatingWall />} />
+          <Route path="/pinouts" element={<PinoutReference />} />
+          <Route path="/compare" element={<PrototypeComparator />} />
+          <Route path="/diff" element={<VersionDiff />} />
+          <Route path="/recommend" element={<ComponentRecommender />} />
+          <Route path="/ideas" element={<IdeaGenerator />} />
+          <Route path="/search" element={<ComponentSearchPage />} />
+          <Route path="/kb" element={<KnowledgeBase />} />
+          <Route path="/share/:shareId" element={<ShareView />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/wizard" element={<ProjectWizard />} />
+          <Route path="/roadmap" element={<AIRoadmap />} />
+          <Route path="/protoscan" element={<ProtoScan />} />
         </Routes>
           </Suspense>
         </main>
