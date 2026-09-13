@@ -244,8 +244,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
           <Route path="/wizard" element={<ProjectWizard />} />
-          <Route path="/roadmap" element={<AIRoadmap /><Route path="/protoscan" element={<ProtoScan />} />
-          } />
+          <Route path="/roadmap" element={<AIRoadmap />} />
+          <Route path="/protoscan" element={<ProtoScan />} /> />
           } />
               <Route path="/components" element={<Components />} />
               <Route path="/viewer" element={<Viewer />} />
