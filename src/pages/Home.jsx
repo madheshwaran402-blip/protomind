@@ -431,6 +431,7 @@ function Home() {
           <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 text-center">Quick Access</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
             {[
+              { label: '📷 ProtoScan', path: '/protoscan' },
               { label: '💡 Ideas', path: '/ideas' },
               { label: '🎯 Recommender', path: '/recommend' },
               { label: '📂 History', path: '/history' },

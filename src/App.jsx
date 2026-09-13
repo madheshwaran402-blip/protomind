@@ -8,6 +8,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
+import ProtoScan from './pages/ProtoScan'
 import AIRoadmap from './pages/AIRoadmap'
 import ProjectWizard from './pages/ProjectWizard'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
@@ -243,7 +244,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
           <Route path="/wizard" element={<ProjectWizard />} />
-          <Route path="/roadmap" element={<AIRoadmap />} />
+          <Route path="/roadmap" element={<AIRoadmap /><Route path="/protoscan" element={<ProtoScan />} />
+          } />
           } />
               <Route path="/components" element={<Components />} />
               <Route path="/viewer" element={<Viewer />} />
