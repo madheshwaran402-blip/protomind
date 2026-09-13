@@ -406,6 +406,26 @@ function Home() {
           </div>
         )}
 
+        {/* Wizard + Roadmap CTAs */}
+      <div className="flex gap-3 mt-4 mb-2">
+        <button onClick={function(){navigate('/wizard')}}
+          className="flex-1 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 rounded-xl font-bold text-sm transition">
+          <span className="text-lg">⚙️</span>
+          <div className="text-left">
+            <p className="text-white font-bold">Detailed Requirements</p>
+            <p className="text-indigo-200 text-xs">Full wizard with timeline</p>
+          </div>
+        </button>
+        <button onClick={function(){navigate('/roadmap')}}
+          className="flex-1 flex items-center gap-2 px-4 py-3 bg-[#0d0d1a] border border-[#2e2e4e] hover:border-indigo-500 rounded-xl text-sm transition">
+          <span className="text-lg">🗺️</span>
+          <div className="text-left">
+            <p className="text-white font-bold">My Roadmap</p>
+            <p className="text-slate-400 text-xs">View daily plan</p>
+          </div>
+        </button>
+      </div>
+
         {/* Quick navigation */}
         <div className="max-w-3xl mx-auto">
           <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 text-center">Quick Access</p>
