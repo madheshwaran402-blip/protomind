@@ -242,7 +242,8 @@ function App() {
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Home />} />
-          <Route path="/wizard" element={<ProjectWizard /><Route path="/roadmap" element={<AIRoadmap />} />
+          <Route path="/wizard" element={<ProjectWizard />} />
+          <Route path="/roadmap" element={<AIRoadmap />} />
           } />
               <Route path="/components" element={<Components />} />
               <Route path="/viewer" element={<Viewer />} />
