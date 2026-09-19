@@ -10,7 +10,11 @@ import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
+import Simulator2 from './pages/Simulator2'
 import Simulator from './pages/Simulator'
+import DigitalTwin from './pages/DigitalTwin'
+import NavHub from './pages/NavHub'
+import LandingPage from './pages/LandingPage'
 import HardwareIDE from './pages/HardwareIDE'
 import ProtoScan from './pages/ProtoScan'
 import AIRoadmap from './pages/AIRoadmap'
@@ -281,6 +285,10 @@ function App() {
           <Route path="/protoscan" element={<ProtoScan />} />
                   <Route path="/ide" element={<HardwareIDE />} />
                   <Route path="/simulator" element={<Simulator />} />
+                  <Route path="/simulator2" element={<Simulator2 />} />
+                  <Route path="/digitaltwin" element={<DigitalTwin />} />
+                  <Route path="/landing" element={<LandingPage />} />
+                  <Route path="/hub" element={<NavHub />} />
         </Routes>
           </Suspense>
         </main>
