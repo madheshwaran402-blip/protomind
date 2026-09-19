@@ -437,6 +437,7 @@ function Home() {
               { label: '📂 History', path: '/history' },
               { label: '📋 Templates', path: '/templates' },
               { label: '📊 Dashboard', path: '/dashboard' },
+              { label: '🎨 Sim v2', path: '/esim' },
               { label: '🆘 Help', path: '/help' },
             ].map(link => (
               <button

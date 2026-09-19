@@ -6,6 +6,7 @@ const PAGES = [
   { path:'/roadmap', icon:'🗺️', title:'AI Roadmap', desc:'Daily adaptive project planner', color:'#8b5cf6', tag:'New' },
   { path:'/protoscan', icon:'📷', title:'ProtoScan', desc:'AI component photo identification', color:'#06b6d4', tag:'New' },
   { path:'/ide', icon:'💻', title:'Hardware IDE', desc:'Monaco editor + Web Serial', color:'#64748b', tag:'New' },
+  { path:'/esim', icon:'🎨', title:'Enhanced Sim', desc:'Drag-drop SVG canvas simulator', color:'#06b6d4', tag:'New' },
   { path:'/simulator2', icon:'🔌', title:'Simulator', desc:'Wokwi-style circuit simulation', color:'#22c55e', tag:'New' },
   { path:'/digitaltwin', icon:'🔮', title:'Digital Twin', desc:'Real hardware live sync', color:'#f59e0b', tag:'New' },
   { path:'/viewer', icon:'🔭', title:'3D Viewer', desc:'270+ AI tools accordion', color:'#6366f1', tag:'Core' },

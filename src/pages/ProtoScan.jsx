@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { notify } from '../services/toast'
+import { SkeletonCard } from '../components/Skeletons'
 
 const COMPONENT_DB = [
   { name:'Arduino Uno', category:'Microcontroller', voltage:'5V', interface:'USB/UART', pins:'14 digital, 6 analog', icon:'🔵', id:2 },

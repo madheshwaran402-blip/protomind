@@ -143,6 +143,45 @@ function TwinWidget({ widget, value, onControl }) {
   )
 }
 
+
+function DataChart({ data, keys, colors }) {
+  const canvasRef = useRef()
+  useEffect(function() {
+    const canvas = canvasRef.current
+    if (!canvas || data.length < 2) return
+    const ctx = canvas.getContext('2d')
+    const w = canvas.width, h = canvas.height
+    ctx.fillStyle = '#050510'
+    ctx.fillRect(0, 0, w, h)
+    // Grid
+    ctx.strokeStyle = '#1e1e2e'
+    ctx.lineWidth = 1
+    for (let i = 0; i <= 5; i++) {
+      ctx.beginPath(); ctx.moveTo(0, h/5*i); ctx.lineTo(w, h/5*i); ctx.stroke()
+    }
+    // Lines
+    ;(keys || []).forEach(function(key, ki) {
+      const vals = data.map(function(d) { return parseFloat(d[key]) || 0 })
+      const min = Math.min(...vals), max = Math.max(...vals)
+      const range = max - min || 1
+      ctx.strokeStyle = (colors || [])[ki] || '#6366f1'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      vals.forEach(function(v, i) {
+        const x = (i / (vals.length - 1)) * w
+        const y = h - ((v - min) / range) * (h - 16) - 8
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+      })
+      ctx.stroke()
+      // Label
+      ctx.fillStyle = (colors || [])[ki] || '#6366f1'
+      ctx.font = '10px monospace'
+      ctx.fillText(key + ': ' + (vals[vals.length-1]||0).toFixed(1), 8 + ki * 120, 14)
+    })
+  }, [data, keys])
+  return <canvas ref={canvasRef} width={600} height={120} className="w-full rounded-xl border border-[#2e2e4e]"/>
+}
+
 function DigitalTwin() {
   const navigate = useNavigate()
   const [connected, setConnected] = useState(false)
@@ -154,7 +193,8 @@ function DigitalTwin() {
   const [outputStates, setOutputStates] = useState({})
   const [log, setLog] = useState([])
   const [autoDetect, setAutoDetect] = useState(true)
-  const [dataHistory, setDataHistory] = useState({})
+  const [dataHistory, setDataHistory] = useState([])
+  const [showChart, setShowChart] = useState(false)
   const portRef = useRef()
   const readerRef = useRef()
   const writerRef = useRef()
@@ -164,6 +204,7 @@ function DigitalTwin() {
   useEffect(function() {
     if (connected) return
     const interval = setInterval(function() {
+      setDataHistory(function(prev) { return [...prev.slice(-60), { temperature: 0, humidity: 0, ...prev[prev.length-1], t: Date.now() }] })
       setSensorData(function(prev) {
         return {
           temperature: parseFloat((20 + Math.sin(Date.now()/3000)*5 + Math.random()*0.5).toFixed(1)),
@@ -189,6 +230,7 @@ function DigitalTwin() {
     // JSON format: {"temp":25.3,"hum":60}
     try {
       const parsed = JSON.parse(line)
+      setDataHistory(function(prev) { return [...prev.slice(-60), { temperature: 0, humidity: 0, ...prev[prev.length-1], t: Date.now() }] })
       setSensorData(function(prev) { return Object.assign({}, prev, parsed) })
       return
     } catch(e) {}
@@ -198,6 +240,7 @@ function DigitalTwin() {
     if (kv) {
       const key = kv[1].toLowerCase()
       const val = parseFloat(kv[2])
+      setDataHistory(function(prev) { return [...prev.slice(-60), { temperature: 0, humidity: 0, ...prev[prev.length-1], t: Date.now() }] })
       setSensorData(function(prev) { return Object.assign({}, prev, { [key]: val }) })
       return
     }
@@ -208,6 +251,7 @@ function DigitalTwin() {
       const keys = ['ch1','ch2','ch3','ch4','ch5']
       const obj = {}
       parts.forEach(function(v, i) { if (keys[i]) obj[keys[i]] = v })
+      setDataHistory(function(prev) { return [...prev.slice(-60), { temperature: 0, humidity: 0, ...prev[prev.length-1], t: Date.now() }] })
       setSensorData(function(prev) { return Object.assign({}, prev, obj) })
     }
   }
@@ -439,6 +483,23 @@ function DigitalTwin() {
                   <TwinWidget key={widget.id} widget={widget} value={value} onControl={handleControl}/>
                 )
               })}
+            </div>
+
+            {/* Chart toggle */}
+            <div className="bg-[#0d0d1a] border border-[#1e1e2e] rounded-2xl p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <p className="text-white font-bold">Live Chart</p>
+                <button onClick={function(){setShowChart(function(s){return !s})}}
+                  className={"ml-auto px-3 py-1 rounded-lg text-xs " + (showChart?'bg-indigo-700 text-white':'bg-[#1e1e2e] text-slate-400')}>
+                  {showChart?'Hide':'Show'}
+                </button>
+              </div>
+              {showChart && dataHistory.length > 1 && (
+                <DataChart data={dataHistory} keys={['temperature','humidity']} colors={['#ef4444','#3b82f6']}/>
+              )}
+              {showChart && dataHistory.length <= 1 && (
+                <p className="text-slate-600 text-xs text-center py-4">Waiting for data...</p>
+              )}
             </div>
 
             {/* Raw data + log */}

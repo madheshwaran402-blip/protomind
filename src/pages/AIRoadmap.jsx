@@ -234,6 +234,32 @@ function AIRoadmap() {
     return incomplete ? incomplete.day : allDays.length
   }
 
+
+  function exportRoadmap() {
+    if (!roadmap) return
+    const phases = roadmap.phases || []
+    const lines = ['# ProtoMind AI Roadmap', '', '**Project:** ' + (requirements?.idea || 'My Project'), '']
+    phases.forEach(function(phase) {
+      lines.push('## ' + phase.name)
+      lines.push('Days ' + phase.startDay + ' to ' + phase.endDay)
+      lines.push('')
+      ;(phase.days || []).forEach(function(day) {
+        const done = completedDays[day.day]
+        lines.push('### Day ' + day.day + ': ' + day.title + (done ? ' ✓' : ''))
+        ;(day.tasks || []).forEach(function(task) {
+          lines.push('- ' + task)
+        })
+        lines.push('')
+      })
+    })
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = 'roadmap.md'; a.click()
+    URL.revokeObjectURL(url)
+    notify.success('Roadmap exported!')
+  }
+
   const currentDay = getCurrentDay()
   const allPhases = roadmap?.phases || []
   const allDays = allPhases.flatMap(function(p){return p.days||[]})
@@ -267,6 +293,12 @@ function AIRoadmap() {
               className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-xl text-sm transition">
               ← Wizard
             </button>
+            {roadmap && (
+              <button onClick={exportRoadmap}
+                className="px-4 py-2 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-xl text-sm transition">
+                Export .md
+              </button>
+            )}
             {!roadmap && (
               <button onClick={handleGenerate} disabled={loading || !requirements}
                 className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm transition disabled:opacity-50">
