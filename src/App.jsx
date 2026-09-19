@@ -10,6 +10,7 @@ import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
+import Simulator from './pages/Simulator'
 import HardwareIDE from './pages/HardwareIDE'
 import ProtoScan from './pages/ProtoScan'
 import AIRoadmap from './pages/AIRoadmap'
@@ -279,6 +280,7 @@ function App() {
           <Route path="/roadmap" element={<AIRoadmap />} />
           <Route path="/protoscan" element={<ProtoScan />} />
                   <Route path="/ide" element={<HardwareIDE />} />
+                  <Route path="/simulator" element={<Simulator />} />
         </Routes>
           </Suspense>
         </main>
