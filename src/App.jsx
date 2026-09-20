@@ -10,12 +10,13 @@ import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
-import Simulator2 from './pages/Simulator2'
+const Simulator2 = React.lazy(function() { return import('./pages/Simulator2') })
 import Simulator from './pages/Simulator'
-import DigitalTwin from './pages/DigitalTwin'
+const DigitalTwin = React.lazy(function() { return import('./pages/DigitalTwin') })
+import GlobalSearch from './components/GlobalSearch'
 import NavHub from './pages/NavHub'
-import LandingPage from './pages/LandingPage'
-import HardwareIDE from './pages/HardwareIDE'
+const LandingPage = React.lazy(function() { return import('./pages/LandingPage') })
+const HardwareIDE = React.lazy(function() { return import('./pages/HardwareIDE') })
 import ProtoScan from './pages/ProtoScan'
 import AIRoadmap from './pages/AIRoadmap'
 import ProjectWizard from './pages/ProjectWizard'
@@ -215,6 +216,20 @@ function Navbar({ onOpenPalette }) {
 }
 
 function App() {
+  const [searchOpen, setSearchOpen] = useState(false)
+
+  // Cmd+K / Ctrl+K to open search
+  useEffect(function() {
+    function handleKey(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(function(s) { return !s })
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return function() { window.removeEventListener('keydown', handleKey) }
+  }, [])
+
   const [paletteOpen, setPaletteOpen] = useState(false)
 
   useKeyboardShortcuts([
@@ -245,6 +260,7 @@ function App() {
         <InstallPrompt />
         <AccessibilityPanel />
         <ScrollToTop />
+        <GlobalSearch open={searchOpen} onClose={function(){setSearchOpen(false)}} />
         <main id="main" tabIndex={-1}>
           <Suspense fallback={<PageLoader />}>
                     <Routes>

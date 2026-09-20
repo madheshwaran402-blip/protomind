@@ -206,6 +206,13 @@ function Home() {
             </div>
           </div>
 
+          <div className="flex justify-center mb-4">
+            <button onClick={function(){window.dispatchEvent(new KeyboardEvent('keydown', {key:'k',ctrlKey:true}))}}
+              className="flex items-center gap-2 bg-[#0d0d1a] border border-[#2e2e4e] hover:border-indigo-500 rounded-xl px-4 py-2 text-sm text-slate-400 hover:text-white transition">
+              <span>🔍 Search pages and features</span>
+              <kbd className="text-xs bg-[#1e1e2e] px-2 py-0.5 rounded ml-2">Ctrl K</kbd>
+            </button>
+          </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-center leading-tight mb-4">
             Build Electronics
             <span className="text-indigo-400"> With AI</span>

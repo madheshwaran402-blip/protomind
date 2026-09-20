@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { notify } from '../services/toast'
+import { saveCurrentProject } from '../services/projectContext'
 
 const COMMUNICATION_OPTIONS = [
   { id: 'wifi', label: 'Wi-Fi', icon: '📶' },
@@ -180,7 +181,22 @@ function ProjectWizard() {
 
       // Save requirements and navigate with full context
       localStorage.setItem('protomind_current_requirements', JSON.stringify(requirements))
+      // Save as active project for cross-page context
+      saveCurrentProject({
+        idea: form.idea,
+        requirements,
+        components: result.components || [],
+        createdAt: new Date().toISOString(),
+      })
 
+      // Show option to go to roadmap
+      const goToRoadmap = window.confirm('Prototype generated! Would you like to view your AI Roadmap before exploring the 3D viewer?')
+      if (goToRoadmap) {
+        navigate('/roadmap', {
+          state: { requirements, components: result.components }
+        })
+        return
+      }
       navigate('/viewer', {
         state: {
           idea: form.idea,

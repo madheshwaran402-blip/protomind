@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { OllamaStatusBadge } from '../components/OllamaStatus'
 
 const PAGES = [
   { path:'/', icon:'⚡', title:'Quick Build', desc:'Type idea, get components instantly', color:'#6366f1', tag:'Core' },
@@ -26,9 +27,13 @@ function NavHub() {
   return (
     <div className="min-h-screen bg-[#050510] text-white p-6">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-black mb-1">ProtoMind Navigation Hub</h1>
-          <p className="text-slate-400">All pages and features in one place</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-black mb-1">ProtoMind Navigation Hub</h1>
+            <p className="text-slate-400">All pages and features in one place</p>
+          </div>
+          <OllamaStatusBadge />
+        </div>
         </div>
 
         <h2 className="text-lg font-bold text-indigo-400 mb-3">New Features (Days 1-10)</h2>
