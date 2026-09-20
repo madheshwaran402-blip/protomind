@@ -193,10 +193,10 @@ async function simulateCompile(code, board) {
 
   // Basic syntax checks
   if (!code.includes('void setup()')) {
-    errors.push({ line: 1, message: 'error: 'setup' was not declared in this scope', type: 'error' })
+    errors.push({ line: 1, message: "error: 'setup' was not declared in this scope", type: 'error' })
   }
   if (!code.includes('void loop()')) {
-    errors.push({ line: 1, message: 'error: 'loop' was not declared in this scope', type: 'error' })
+    errors.push({ line: 1, message: "error: 'loop' was not declared in this scope", type: 'error' })
   }
 
   // Check for common mistakes

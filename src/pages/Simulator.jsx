@@ -914,7 +914,7 @@ function Simulator() {
                     <div className="flex flex-wrap gap-1">
                       {wires.map(function(w){
                         const fromComp = placed.find(function(c){return c.id===w.fromComp})
-                        const label = (fromComp?.label||'Board') + ' ['+w.fromPin+'] → ['+w.toPin+']' + (w.toComp==='board'?' (Board)':''
+                        const label = (fromComp?.label||'Board') + ' ['+w.fromPin+'] → ['+w.toPin+']' + (w.toComp==='board'?' (Board)':'')
                         return(
                           <div key={w.id} className="flex items-center gap-1 bg-[#13131f] rounded-lg px-2 py-0.5 text-xs">
                             <div className="w-2 h-2 rounded-full" style={{backgroundColor:w.color}}/>
