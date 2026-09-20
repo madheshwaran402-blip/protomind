@@ -489,10 +489,7 @@ function HardwareIDE() {
       let generated = data.response
 
       // Clean code fences if present
-      generated = generated.replace(/```cpp
-?/g, '').replace(/```arduino
-?/g, '').replace(/```
-?/g, '').trim()
+      generated = generated.split('```cpp').join('').split('```arduino').join('').split('```c').join('').split('```').join('').trim()
       setCode(generated)
       notify.success('AI code generated for ' + selectedBoard.name + '!')
     } catch(e) {
