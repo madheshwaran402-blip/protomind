@@ -707,7 +707,7 @@ function HardwareIDE() {
               onChange={function(val) { setCode(val || '') }}
               options={{
                 fontSize,
-                fontFamily: ''JetBrains Mono', 'Fira Code', Consolas, monospace',
+                fontFamily: "JetBrains Mono, Fira Code, Consolas, monospace",
                 fontLigatures: true,
                 lineNumbers: 'on',
                 minimap: { enabled: showMinimap },
