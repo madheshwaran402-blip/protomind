@@ -157,6 +157,17 @@ function Home() {
       notify.warning('Please select at least one component')
       return
     }
+    // Save requirements context so Viewer can show roadmap
+    try {
+      const existing = JSON.parse(localStorage.getItem('protomind_current_requirements') || 'null')
+      if (!existing || existing.idea !== idea) {
+        localStorage.setItem('protomind_current_requirements', JSON.stringify({
+          idea,
+          skillLevel: 'intermediate',
+          timeline: { months: 1, hoursPerDay: 2, workingDays: ['mon','tue','wed','thu','fri'], startDate: new Date().toISOString().split('T')[0] }
+        }))
+      }
+    } catch(e) {}
     navigate('/viewer', {
       state: { idea, selectedComponents },
     })
@@ -244,7 +255,39 @@ function Home() {
 
         {/* Step indicator */}
         <div className="flex items-center gap-3 mb-6 max-w-2xl mx-auto">
-          {[
+          {/* ── FLOW: Idea → Requirements → Components → Roadmap → 3D View ── */}
+        <div className="max-w-2xl mx-auto mb-2">
+          <div className="flex items-center justify-center gap-1 overflow-x-auto">
+            {[
+              { n:1, label:'💡 Idea', active: step >= 1 },
+              { n:2, label:'⚙️ Requirements', active: false, path:'/wizard', hint:'Optional but recommended' },
+              { n:3, label:'🧩 Components', active: step >= 2 },
+              { n:4, label:'🗺️ Roadmap', active: false, path:'/roadmap' },
+              { n:5, label:'🔭 3D Viewer', active: false },
+            ].map(function(s, i) {
+              return (
+                <div key={s.n} className="flex items-center gap-1 flex-shrink-0">
+                  <div
+                    title={s.hint || ''}
+                    onClick={s.path ? function() { navigate(s.path) } : undefined}
+                    className={"px-3 py-1.5 rounded-xl text-xs font-semibold transition " + (
+                      s.active ? 'bg-indigo-600 text-white' :
+                      s.path ? 'bg-[#0d0d1a] border border-[#2e2e4e] text-slate-500 hover:border-indigo-500 hover:text-white cursor-pointer' :
+                      'bg-[#0d0d1a] border border-[#1e1e2e] text-slate-600'
+                    )}>
+                    {s.label}
+                  </div>
+                  {i < 4 && <span className="text-[#2e2e4e] text-xs">→</span>}
+                </div>
+              )
+            })}
+          </div>
+          <p className="text-center text-slate-600 text-xs mt-1">
+            For best AI results: use <button onClick={function(){navigate('/wizard')}} className="text-indigo-400 hover:underline">⚙️ Detailed Requirements</button> before building
+          </p>
+        </div>
+
+        {[
             { n: 1, label: 'Describe Idea' },
             { n: 2, label: 'Pick Components' },
             { n: 3, label: 'Build & Explore' },
