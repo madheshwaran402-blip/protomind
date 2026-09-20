@@ -5,18 +5,18 @@ import InstallPrompt from './components/InstallPrompt'
 import AccessibilityPanel from './components/AccessibilityPanel'
 import QuickActions from './components/QuickActions'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import { useState, useEffect, lazy, Suspense } from 'react'
+import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
-const Simulator2 = React.lazy(function() { return import('./pages/Simulator2') })
+const Simulator2 = lazy(function() { return import('./pages/Simulator2') })
 import Simulator from './pages/Simulator'
-const DigitalTwin = React.lazy(function() { return import('./pages/DigitalTwin') })
+const DigitalTwin = lazy(function() { return import('./pages/DigitalTwin') })
 import GlobalSearch from './components/GlobalSearch'
 import NavHub from './pages/NavHub'
-const LandingPage = React.lazy(function() { return import('./pages/LandingPage') })
-const HardwareIDE = React.lazy(function() { return import('./pages/HardwareIDE') })
+const LandingPage = lazy(function() { return import('./pages/LandingPage') })
+const HardwareIDE = lazy(function() { return import('./pages/HardwareIDE') })
 import ProtoScan from './pages/ProtoScan'
 import AIRoadmap from './pages/AIRoadmap'
 import ProjectWizard from './pages/ProjectWizard'
