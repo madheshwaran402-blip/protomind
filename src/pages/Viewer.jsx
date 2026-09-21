@@ -287,6 +287,7 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 
 function Viewer() {
   const [activeCategory, setActiveCategory] = useState('Design & Build')
+  const [activeCategory, setActiveCategory] = useState('Design & Build')
 
   const location = useLocation()
   const navigate = useNavigate()
