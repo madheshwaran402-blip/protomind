@@ -1,4 +1,5 @@
 import CommandPalette from './components/CommandPalette'
+import GlobalSidebar from './components/GlobalSidebar'
 import ToastContainer from './components/ToastContainer'
 import OfflineDetector from './components/OfflineDetector'
 import InstallPrompt from './components/InstallPrompt'
@@ -260,6 +261,7 @@ function App() {
         <InstallPrompt />
         <AccessibilityPanel />
         <ScrollToTop />
+        <GlobalSidebar />
         <GlobalSearch open={searchOpen} onClose={function(){setSearchOpen(false)}} />
         <main id="main" tabIndex={-1}>
           <Suspense fallback={<PageLoader />}>

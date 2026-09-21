@@ -168,9 +168,27 @@ function Home() {
         }))
       }
     } catch(e) {}
-    navigate('/viewer', {
-      state: { idea, selectedComponents },
-    })
+    // Check if roadmap exists for this idea
+    const roadmapKey = 'protomind_roadmap_' + btoa(idea.slice(0, 50)).slice(0, 20)
+    const hasRoadmap = !!localStorage.getItem(roadmapKey)
+
+    // Save as current project
+    try {
+      localStorage.setItem('protomind_current_requirements', JSON.stringify({
+        idea,
+        skillLevel: 'intermediate',
+        components: selectedComponents,
+        timeline: { months: 1, hoursPerDay: 2, workingDays: ['mon','tue','wed','thu','fri'], startDate: new Date().toISOString().split('T')[0] }
+      }))
+    } catch(e) {}
+
+    if (hasRoadmap) {
+      // Already has roadmap — go to viewer
+      navigate('/viewer', { state: { idea, selectedComponents } })
+    } else {
+      // No roadmap yet — go to roadmap page to generate one
+      navigate('/roadmap', { state: { idea, selectedComponents, fromHome: true } })
+    }
   }
 
   const progressPercent = level.next

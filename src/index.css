@@ -71,3 +71,19 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* Sidebar offset — pushes main content right of the 56px icon rail */
+body {
+  padding-left: 56px;
+}
+
+/* Full-screen pages (IDE, Simulator) override this */
+.fullscreen-page {
+  margin-left: -56px;
+  width: calc(100% + 56px);
+}
+
+/* When sidebar panel is open (320px panel + 56px rail) */
+.sidebar-panel-open {
+  padding-left: 376px;
+}

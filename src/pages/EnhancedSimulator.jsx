@@ -331,7 +331,7 @@ void loop() {
   const CANVAS_W = 900, CANVAS_H = 600
 
   return (
-    <div className="h-screen bg-[#050510] text-white flex flex-col overflow-hidden">
+    <div className="fullscreen-page h-screen bg-[#050510] text-white flex flex-col overflow-hidden">
       {/* Toolbar */}
       <div className="flex items-center gap-2 px-4 py-2 bg-[#0a0a1a] border-b border-[#1e1e2e] flex-shrink-0">
         <button onClick={function() { navigate('/') }} className="text-indigo-400 font-black text-sm">ProtoMind</button>

@@ -521,7 +521,7 @@ function HardwareIDE() {
   const SERIAL_COLORS = { rx: 'text-green-400', tx: 'text-blue-400', system: 'text-slate-500', error: 'text-red-400' }
 
   return (
-    <div className="h-screen bg-[#050510] text-white flex flex-col overflow-hidden">
+    <div className="fullscreen-page h-screen bg-[#050510] text-white flex flex-col overflow-hidden">
       {/* ── TOP TOOLBAR ── */}
       <div className="flex items-center gap-2 px-4 py-2 bg-[#0d0d1a] border-b border-[#1e1e2e] flex-shrink-0">
         {/* Logo */}
