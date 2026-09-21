@@ -1,4 +1,5 @@
 import CommandPalette from './components/CommandPalette'
+import ProtoSpec from './pages/ProtoSpec'
 import GlobalSidebar from './components/GlobalSidebar'
 import ToastContainer from './components/ToastContainer'
 import OfflineDetector from './components/OfflineDetector'
@@ -307,6 +308,7 @@ function App() {
                   <Route path="/digitaltwin" element={<DigitalTwin />} />
                   <Route path="/landing" element={<LandingPage />} />
                   <Route path="/hub" element={<NavHub />} />
+                  <Route path="/protospec" element={<ProtoSpec />} />
         </Routes>
           </Suspense>
         </main>

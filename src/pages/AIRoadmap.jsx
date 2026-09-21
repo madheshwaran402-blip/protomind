@@ -430,7 +430,20 @@ function AIRoadmap() {
 
             {/* Regenerate */}
             <div className="mt-6 text-center">
-              <button onClick={handleGenerate}
+                          {/* Continue to ProtoView */}
+            <div className="bg-gradient-to-r from-indigo-950 to-[#0d0d1a] border border-indigo-800 rounded-2xl p-5 mb-4">
+              <p className="text-white font-black text-lg mb-1">🎉 Your roadmap is ready!</p>
+              <p className="text-slate-400 text-sm mb-4">Now explore 360+ AI tools in ProtoView to design, verify, and plan your build.</p>
+              <button
+                onClick={function() {
+                  const req = requirements || JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
+                  navigate('/viewer', { state: { idea: req.idea, selectedComponents: req.components || [], requirements: req } })
+                }}
+                className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-black text-lg transition flex items-center justify-center gap-2">
+                <span>🔭</span> Open ProtoView — 360+ AI Tools →
+              </button>
+            </div>
+<button onClick={handleGenerate}
                 className="px-6 py-2.5 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-400 rounded-xl text-sm transition">
                 Regenerate Roadmap
               </button>

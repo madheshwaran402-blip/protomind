@@ -285,14 +285,16 @@ function GlobalSidebar() {
   }
 
   const NAV_ITEMS = [
-    { id: 'home', icon: '⚡', label: 'ProtoMind', path: '/', color: '#6366f1' },
-    { id: 'viewer', icon: '🔭', label: 'ProtoView', path: '/viewer', color: '#22c55e' },
-    { id: 'roadmap', icon: '🗺️', label: 'ProtoPlan', panel: 'roadmap', color: '#a855f7' },
-    { id: 'scan', icon: '📷', label: 'ProtoScan', path: '/protoscan', color: '#06b6d4' },
-    { id: 'sim', icon: '🔌', label: 'ProtoSim', path: '/simulator2', color: '#22c55e' },
-    { id: 'ide', icon: '💻', label: 'ProtoIDE', path: '/ide', color: '#64748b' },
-    { id: 'twin', icon: '🔮', label: 'ProtoTwin', path: '/digitaltwin', color: '#f59e0b' },
-    { id: 'hub', icon: '🧭', label: 'Hub', path: '/hub', color: '#6366f1' },
+    { id: 'spec', icon: '🧩', label: 'ProtoSpec', path: '/protospec', color: '#6366f1', desc: 'Requirements' },
+    { id: 'plan', icon: '🗺️', label: 'ProtoPlan', panel: 'roadmap', color: '#a855f7', desc: 'Daily Plan' },
+    { id: 'view', icon: '🔭', label: 'ProtoView', path: '/viewer', color: '#22c55e', desc: '3D Viewer' },
+    { id: 'scan', icon: '📷', label: 'ProtoScan', path: '/protoscan', color: '#06b6d4', desc: 'Identify Parts' },
+    { id: 'sim', icon: '🔌', label: 'ProtoSim', path: '/simulator2', color: '#10b981', desc: 'Simulate' },
+    { id: 'ide', icon: '💻', label: 'ProtoIDE', path: '/ide', color: '#64748b', desc: 'Code & Upload' },
+    { id: 'link', icon: '🔗', label: 'ProtoLink', path: '/digitaltwin', color: '#f59e0b', desc: 'Connect HW' },
+    { id: 'twin', icon: '🔮', label: 'ProtoTwin', path: '/digitaltwin', color: '#ec4899', desc: 'Digital Twin' },
+    { id: 'parts', icon: '📦', label: 'ProtoParts', path: '/', color: '#0ea5e9', desc: 'Components' },
+    { id: 'hub', icon: '🧭', label: 'Hub', path: '/hub', color: '#6366f1', desc: 'All Pages' },
   ]
 
   if (!mounted) return null
@@ -326,7 +328,7 @@ function GlobalSidebar() {
                   if (item.panel) { togglePanel(item.panel) }
                   else { navigate(item.path); setOpenPanel(null) }
                 }}
-                title={item.label}
+                title={item.label + " — " + (item.desc || "")}
                 className={"w-10 h-10 rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all group relative " + (
                   isActive ? 'text-white' : 'text-slate-600 hover:text-white hover:bg-[#13131f]'
                 )}

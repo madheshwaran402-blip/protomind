@@ -247,6 +247,22 @@ function Home() {
             <span className="text-indigo-400"> With AI</span>
           </h1>
 
+          
+          {/* ProtoSpec CTA — mandatory flow entry */}
+          <div className="max-w-3xl mx-auto mb-6">
+            <div className="bg-gradient-to-r from-indigo-950 to-purple-950 border border-indigo-800 rounded-2xl p-5 flex items-center gap-5">
+              <div className="text-4xl">🧩</div>
+              <div className="flex-1">
+                <p className="text-white font-black text-lg">Start with ProtoSpec</p>
+                <p className="text-slate-400 text-sm">For best results — enter your requirements first. ProtoMind builds a personalized roadmap and 3D prototype from your specs.</p>
+              </div>
+              <button onClick={function(){navigate('/protospec')}}
+                className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-bold transition shrink-0">
+                Start ProtoSpec →
+              </button>
+            </div>
+          </div>
+
           <p className="text-slate-400 text-base sm:text-lg text-center max-w-2xl mx-auto mb-8">
             Describe your idea → AI picks components → 3D preview → Code, docs, shopping list. Everything in one place.
           </p>

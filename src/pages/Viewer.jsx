@@ -287,14 +287,13 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 
 function Viewer() {
   const [activeCategory, setActiveCategory] = useState('Design & Build')
-  const [activeCategory, setActiveCategory] = useState('Design & Build')
+
+
 
   const location = useLocation()
   const navigate = useNavigate()
   const idea = location.state?.idea || 'Your prototype'
   const selectedComponents = location.state?.selectedComponents || []
-
-    const [activeCategory, setActiveCategory] = useState('Design & Build')
 const [stlExported, setStlExported] = useState(false)
   const [printAnalysis, setPrintAnalysis] = useState(null)
   const [printLoading, setPrintLoading] = useState(false)
