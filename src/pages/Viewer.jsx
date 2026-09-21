@@ -291,7 +291,8 @@ function Viewer() {
   const idea = location.state?.idea || 'Your prototype'
   const selectedComponents = location.state?.selectedComponents || []
 
-  const [stlExported, setStlExported] = useState(false)
+    const [activeCategory, setActiveCategory] = useState('Design & Build')
+const [stlExported, setStlExported] = useState(false)
   const [printAnalysis, setPrintAnalysis] = useState(null)
   const [printLoading, setPrintLoading] = useState(false)
   const [selectedComp, setSelectedComp] = useState(null)
