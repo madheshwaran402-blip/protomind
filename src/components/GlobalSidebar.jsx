@@ -101,7 +101,7 @@ const MANUAL_PAGES = [
       'PCB board with mounting holes and via holes',
       'Rotate, zoom and inspect from any angle',
       '360+ AI tools organized in 7 categories below the viewer',
-      'Today's roadmap task shown at the top',
+      "Today's roadmap task shown at the top",
     ],
     tip: 'The 7 tabs below the 3D view contain all AI tools: Design & Build, Code & Dev, Testing & QA, Business, Planning, Content, Learn & Share.',
     howTo: 'Complete ProtoSpec + ProtoPlan first → ProtoView opens automatically',
