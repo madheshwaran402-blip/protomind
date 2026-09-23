@@ -286,7 +286,6 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 }
 
 function Viewer() {
-  const [activeCategory, setActiveCategory] = useState('Design & Build')
 
 
 
@@ -563,539 +562,235 @@ const [stlExported, setStlExported] = useState(false)
         )
       })()}
 
-      {/* ─── CATEGORIZED FEATURE TABS ─── */}
-      <div className="mt-6">
-        {/* Category tab bar */}
-        <div className="flex gap-1 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-          {[
-            {icon:'🔧', cat:'Design & Build'},
-            {icon:'💻', cat:'Code & Dev'},
-            {icon:'🧪', cat:'Testing & QA'},
-            {icon:'📈', cat:'Business'},
-            {icon:'📋', cat:'Planning'},
-            {icon:'📢', cat:'Content'},
-            {icon:'🎓', cat:'Learn & Share'},
-          ].map(function(tab) {
-            return (
-              <button
-                key={tab.cat}
-                onClick={function() { setActiveCategory(tab.cat) }}
-                className={"flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0 " + (
-                  activeCategory === tab.cat
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/40'
-                    : 'bg-[#0d0d1a] border border-[#2e2e4e] text-slate-400 hover:border-indigo-500 hover:text-white'
-                )}>
-                <span>{tab.icon}</span>
-                <span>{tab.cat}</span>
-              </button>
-            )
-          })}
+      
+      {/* ─── FEATURE CATEGORIES ─── */}
+      <div className="mt-8 px-2">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-1 h-px bg-[#1e1e2e]"/>
+          <p className="text-slate-500 text-sm font-medium">360+ AI Engineering Tools</p>
+          <div className="flex-1 h-px bg-[#1e1e2e]"/>
         </div>
-
-        {/* Design & Build */}
-        {activeCategory === 'Design & Build' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>🔧</span>
-              <span>Design & Build</span>
-              <span className="text-slate-700">— 45 tools</span>
-            </p>
-            <AccordionSection icon="🔍" title="Component Inspector" subtitle="Search, filter and highlight components" defaultOpen={true}>
-            <ComponentSearch components={selectedComponents} onHighlight={(id) => console.log('Highlight:', id)} onSelect={(comp) => setSelectedComp(comp)} />
-          </AccordionSection>
-            <AccordionSection icon="📄" title="Datasheet Viewer" subtitle="Look up specs, pinout and code examples for any component">
-  <DatasheetViewer components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔗" title="Compatibility Checker" subtitle="Check voltage, protocol and pin conflicts between all components">
-  <CompatibilityChecker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🚀" title="AI Improvement Suggester" subtitle="Get ranked suggestions to improve your prototype" badge="New">
-  <ImprovementSuggester idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📡" title="Signal Integrity Checker" subtitle="Check SPI, I2C, UART signals for integrity issues with PCB layout tips">
-  <SignalIntegrityChecker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔬" title="Prototype Health Analyser" subtitle="AI grades your design across 5 engineering dimensions" badge="New">
-  <ComplexityAnalyser idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📶" title="Wireless Range Calculator" subtitle="Compare WiFi, Bluetooth, LoRa range and performance for your prototype">
-  <WirelessRangeCalculator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔴" title="Wiring Diagram" subtitle="Complete pin-by-pin wiring instructions with wire colors and power connections">
-  <WiringDiagramDescriber idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📦" title="Enclosure Designer" subtitle="Design physical housing with cutouts, IP rating and manufacturing options">
-  <EnclosureDesigner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔌" title="Connection Diagram" subtitle="AI generates pin-by-pin wiring with wire colors and communication buses">
-  <ConnectionDiagram idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔌" title="Protocol Decoder" subtitle="Decode I2C, SPI, UART protocols with pinout tables and timing diagrams">
-  <ProtocolDecoder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🌡️" title="Thermal Management" subtitle="Identify thermal hotspots and design cooling solutions with PCB layout tips">
-  <ThermalManagement idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔬" title="Sensor Fusion Planner" subtitle="Plan Kalman filter and other algorithms to combine multiple sensor streams">
-  <SensorFusionPlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔄" title="Parts Substitution Finder" subtitle="Find drop-in and compatible alternative components with price comparison">
-  <PartsSubstitutionFinder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💾" title="Memory & Storage Planner" subtitle="Plan RAM, Flash and storage layout with usage breakdown and optimisation tips">
-  <MemoryStoragePlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔋" title="Battery Management System" subtitle="Design complete BMS with battery selection, charging circuit and runtime estimates">
-  <BatteryManagement idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💊" title="Component Health Monitor" subtitle="Analyse component lifespan, failure modes and maintenance schedule">
-  <HealthMonitor idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="⚡" title="Simulation Mode" subtitle="Simulate power-on, fault, thermal and other scenarios step by step">
-  <SimulationMode idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🌿" title="Green Build Advisor" subtitle="Analyse power consumption and get eco-friendly design recommendations">
-  <GreenAdvisor idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="⚖️" title="Component Comparison" subtitle="Compare any two components side by side with AI analysis">
-            <ComponentComparison components={selectedComponents} idea={idea} />
-          </AccordionSection>
-            <AccordionSection icon="📊" title="Sensor Calibration" subtitle="Enter sensor readings and AI validates calibration with step-by-step fixes">
-  <CalibrationTool components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="⚡" title="Power Budget Calculator" subtitle="Calculate current and power draw for every component with voltage rail breakdown">
-  <PowerBudget idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔍" title="PCB Footprint Finder" subtitle="Find KiCad and Altium footprints for all components with one-click copy">
-  <PCBFootprintFinder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📊" title="Component Comparison Table" subtitle="Side-by-side spec comparison of any components with winners and CSV export">
-  <ComponentComparisonTable />
-</AccordionSection>
-            <AccordionSection icon="🖨️" title="Custom Enclosure Builder" subtitle="Choose enclosure type, color, material and export STL" badge="3D Print">
-            <EnclosureCustomizer components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
-          </AccordionSection>
-            <AccordionSection icon="📦" title="Enclosure Designer" subtitle="AI designs a custom enclosure with dimensions, cutouts and 3D print settings">
-  <EnclosureDesigner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📐" title="3D Model Export" subtitle="Export as OBJ, GLTF or estimate 3D print cost">
-            <ModelExportPanel components={selectedComponents} idea={idea} printAnalysis={printAnalysis || {}} />
-          </AccordionSection>
-            <AccordionSection icon="🔌" title="Breadboard View" subtitle="Visual wiring guide for physical breadboard building">
-            <BreadboardView idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="📐" title="Wiring Guide" subtitle="Step-by-step wiring with exact pin connections and wire colours">
-  <WiringGuide idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🖥️" title="PCB Layout Planner" subtitle="AI designs PCB component placement and trace routing">
-  <PCBPlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📐" title="PCB Design Guide" subtitle="Complete checklist and ordering guide for taking your design to PCB">
-  <PCBHelper idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📌" title="Pin Assignment Editor" subtitle="Assign and validate microcontroller pin connections">
-            <PinAssignmentEditor idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="⚡" title="Circuit Diagram" subtitle="AI-generated wiring diagram with colored connections">
-            <CircuitDiagram idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="⚡" title="Power Supply Designer" subtitle="Design power circuits with voltage divider, regulator and battery life calculators">
-  <PowerSupplyDesigner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔄" title="Component Substitution" subtitle="Find alternatives for any unavailable or expensive component">
-            <SubstitutionSuggester idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="🔄" title="Substitution Finder 2.0" subtitle="AI finds the best alternative components with compatibility scores and pin mapping">
-  <SubstitutionFinder components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔋" title="Power Calculator" subtitle="Calculate current draw, battery life, and power requirements">
-            <PowerCalculator idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="⚡" title="Energy Audit" subtitle="Calculate exact power consumption and battery life estimates">
-  <EnergyAudit idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔍" title="Missing Components" subtitle="AI scans for missing resistors, capacitors, and protection circuits">
-            <MissingComponents idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="🏗️" title="Architecture Diagram" subtitle="System architecture with layers, data flow and ASCII diagram"><ArchitectureDiagram idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📡" title="Noise & EMI Analyser" subtitle="Identify EMI risks with shielding and filtering recommendations"><NoiseEmiAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="⚡" title="Rapid Prototype Advisor" subtitle="Time-boxed build plan with shortcuts, tradeoffs and task tracking"><RapidPrototypeAdvisor idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="⏳" title="Component Aging Analyser" subtitle="Analyse component lifespan, failure modes and maintenance requirements"><ComponentAgingAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🔌" title="Circuit Simulator" subtitle="Live circuit simulation with LED, button, servo, sensor components and serial monitor"><CircuitSimulator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🎯" title="Calibration Guide" subtitle="Step-by-step calibration procedures for every sensor with code snippets">
-  <CalibrationGuide idea={idea} components={selectedComponents} />
-</AccordionSection>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {/* Design & Build */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#f9731615'}}>
+                  🔧
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#f9731615', color: '#f97316'}}>
+                  45+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Design & Build</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">Wiring, PCB, power analysis, component specs, simulation</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#f9731620'}}/>
+              <a href="/features/design-build"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#f9731615',
+                  color: '#f97316',
+                  border: '1px solid #f9731630',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#f9731690'}}/>
           </div>
-        )}
-
-        {/* Code & Dev */}
-        {activeCategory === 'Code & Dev' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>💻</span>
-              <span>Code & Dev</span>
-              <span className="text-slate-700">— 26 tools</span>
-            </p>
-            <AccordionSection icon="⇄" title="Code Translator" subtitle="Translate code between Arduino, MicroPython, CircuitPython and 6 languages">
-  <CodeTranslator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🧪" title="Unit Test Generator" subtitle="Generate unit tests for your prototype code with pass/fail tracking">
-  <UnitTestGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="Documentation Writer" subtitle="Generate README, API docs, user manual and assembly guide with one click">
-  <DocumentationWriter idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🐛" title="Error Code Decoder" subtitle="Paste any Arduino or compiler error to get instant explanation and fixes">
-  <ErrorDecoder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🗂️" title="Dependency Mapper" subtitle="Map all libraries and dependencies with install commands and license info">
-  <DependencyMapper idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="Changelog Generator" subtitle="Track version history with AI-generated entries and export to CHANGELOG.md">
-  <ChangelogGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📦" title="Library Finder" subtitle="Find all Arduino libraries with install commands for your prototype">
-  <LibraryFinder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔒" title="Security Audit" subtitle="Find IoT security vulnerabilities and get hardening recommendations">
-  <SecurityAudit idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📡" title="OTA Update Planner" subtitle="Plan over-the-air firmware updates with security features and rollback strategy">
-  <OTAPlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔌" title="API Integration Planner" subtitle="Find cloud APIs and IoT platforms with code snippets for your prototype">
-  <APIPlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔍" title="AI Code Reviewer" subtitle="Paste your code for AI review — issues, grade, improvements and optimized snippets">
-  <CodeReviewer idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📅" title="Version History Timeline" subtitle="Visual timeline of all saved versions with diff comparison">
-  <VersionHistory idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="📄" title="Datasheet Generator" subtitle="Generate full AI datasheets with pinout, electrical specs and application notes">
-  <DatasheetGenerator components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🕐" title="Version History" subtitle="Browse and restore previous versions">
-            <VersionHistory idea={idea} currentComponents={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="💻" title="Code Generator 2.0" subtitle="Generate code in 5 languages — Arduino, MicroPython, CircuitPython, Raspberry Pi, JavaScript">
-  <CodeGenerator2 idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔍" title="AI Troubleshooter" subtitle="Describe a problem and AI diagnoses causes with step-by-step fixes">
-  <PrototypeTroubleshooter idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📋" title="Changelog Generator" subtitle="AI writes professional release notes from your version history">
-  <ChangelogGenerator idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="🧪" title="Test Suite" subtitle="AI generates hardware and software tests with pass/fail tracking">
-  <TestSuite idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="⚙️" title="Config File Generator" subtitle="Generate JSON, YAML, .env and INI config files with download"><ConfigFileGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🔧" title="Technical Debt Tracker" subtitle="Identify and resolve hardware and software technical debt"><TechDebtTracker idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="💻" title="Dev Environment Setup" subtitle="Generate complete dev environment with tools, configs and setup tips"><DevEnvironmentSetup idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📋" title="API Doc Generator" subtitle="Generate complete API documentation with endpoints, params and examples"><APIDocGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🚨" title="Error Handling Guide" subtitle="Generate error codes, detection methods and recovery procedures"><ErrorHandlingGuide idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📐" title="Code Style Guide" subtitle="Generate coding standards with good/bad examples and linter config"><CodeStyleGuide idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🔍" title="Hardware Debug Guide" subtitle="Symptom-based debugging guide with step-by-step fixes"><HardwareDebugGuide idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📜" title="Hardware Version History" subtitle="Document version history with changes, breaking updates and release notes"><HardwareVersionHistory idea={idea} components={selectedComponents} /></AccordionSection>
+          {/* Code & Dev */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#6366f115'}}>
+                  💻
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#6366f115', color: '#6366f1'}}>
+                  27+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Code & Dev</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">Code gen, debugging, docs, APIs, version history</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#6366f120'}}/>
+              <a href="/features/code-dev"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#6366f115',
+                  color: '#6366f1',
+                  border: '1px solid #6366f130',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#6366f190'}}/>
           </div>
-        )}
-
-        {/* Testing & QA */}
-        {activeCategory === 'Testing & QA' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>🧪</span>
-              <span>Testing & QA</span>
-              <span className="text-slate-700">— 21 tools</span>
-            </p>
-            <AccordionSection icon="🚀" title="Launch Readiness" subtitle="Get a Go/No-Go verdict with a complete deployment checklist">
-  <LaunchReadiness idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🚀" title="Product Launch Checklist" subtitle="Complete checklist to go from prototype to shippable product">
-  <ProductChecklist idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="♿" title="Accessibility Checker" subtitle="Check your prototype for inclusive design issues with improvement suggestions">
-  <AccessibilityChecker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🚀" title="Deployment Checklist" subtitle="AI generates launch readiness checklist with critical items and progress tracking">
-  <DeploymentChecklist idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📋" title="Regulatory Compliance" subtitle="Check CE, FCC, RoHS and other certifications required for your target region">
-  <ComplianceChecker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📜" title="Patent Research" subtitle="Research patentability, potential claims and prior art for your prototype">
-  <PatentResearch idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🛡️" title="Risk Assessment" subtitle="AI identifies electrical, thermal and safety risks with mitigation steps">
-  <RiskAssessment idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🛡️" title="Safety Checklist" subtitle="AI identifies risks and generates a pre-build safety checklist">
-            <SafetyChecklist idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="🛡️" title="Risk Assessment" subtitle="AI identifies technical, safety and regulatory risks with mitigations">
-  <RiskAssessment idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔧" title="Change Validator" subtitle="Validate proposed changes before implementing them">
-            <ChangeValidator idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="🔬" title="Virtual Simulation" subtitle="Run a virtual test of your prototype to catch issues before building" badge="New">
-  <SimulationRunner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="Feedback Form Builder" subtitle="Generate user feedback forms with ratings, multiple choice and response tracking"><FeedbackFormBuilder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🌱" title="Sustainability Report" subtitle="Evaluate environmental impact, carbon footprint and sustainability score"><SustainabilityReport idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🔬" title="A/B Test Planner" subtitle="Plan rigorous A/B tests to validate hardware and design decisions"><ABTestPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="♿" title="Accessibility Auditor" subtitle="Audit for accessibility issues with scoring and inclusive design recommendations"><AccessibilityAuditor idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🎯" title="MVP Scope Definer" subtitle="Define MVP scope with MoSCoW prioritisation and validation goals"><MVPScopeDefiner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🧪" title="Field Test Planner" subtitle="Plan field tests with procedures, pass/fail criteria and result tracking"><FieldTestPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🔬" title="TRL Assessment" subtitle="Assess Technology Readiness Level 1-9 with gaps and advancement path"><TRLAssessment idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="✅" title="Quality Control Plan" subtitle="Generate QC checkpoints with test methods and pass/fail criteria"><QualityControlPlan idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="💡" title="Idea Validation Scorer" subtitle="Score your idea across market, technical, financial and feasibility dimensions"><IdeaValidationScorer idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🚀" title="Final Launch Checklist" subtitle="The definitive pre-launch checklist covering every critical item"><FinalLaunchChecklist idea={idea} components={selectedComponents} /></AccordionSection>
+          {/* Testing & QA */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#06b6d415'}}>
+                  🧪
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#06b6d415', color: '#06b6d4'}}>
+                  23+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Testing & QA</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">Field tests, compliance, validation, quality control</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#06b6d420'}}/>
+              <a href="/features/testing-qa"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#06b6d415',
+                  color: '#06b6d4',
+                  border: '1px solid #06b6d430',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#06b6d490'}}/>
           </div>
-        )}
-
-        {/* Business */}
-        {activeCategory === 'Business' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>📈</span>
-              <span>Business</span>
-              <span className="text-slate-700">— 34 tools</span>
-            </p>
-            <AccordionSection icon="🚀" title="Crowdfunding Campaign" subtitle="Build a complete Kickstarter campaign with reward tiers, story and platform recommendations">
-  <CrowdfundingBuilder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="✨" title="Brand Kit Generator" subtitle="AI creates product names, taglines, colors and pitch" badge="New">
-  <NameGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📧" title="Pitch Email Generator" subtitle="Generate targeted pitch emails for investors, manufacturers, press and partners">
-  <PitchEmailGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💼" title="Investor Pitch" subtitle="Generate complete investor pitch with financials, market size and use of funds breakdown">
-  <InvestorPitch idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🗺️" title="Feature Roadmap" subtitle="Build a phased product roadmap with priorities and effort estimates">
-  <FeatureRoadmap idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="👥" title="Customer Personas" subtitle="Generate realistic user personas with goals, pain points and willingness to pay">
-  <CustomerPersonas idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🎯" title="Pitch Builder" subtitle="Build a compelling elevator pitch and practice interview Q&A">
-  <PitchBuilder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="✨" title="AI Naming Generator" subtitle="Generate creative product names with taglines and domain availability scores">
-  <NamingGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🔍" title="Competition Research" subtitle="AI researches similar products, market gaps and your competitive advantages">
-  <CompetitionResearch idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💰" title="Monetisation Strategist" subtitle="Build revenue streams, pricing tiers and go-to-market strategy"><MonetisationStrategist idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="💵" title="Grant Finder" subtitle="Find relevant grants, funding programs and accelerators for your prototype"><GrantFinder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🗺️" title="Stakeholder Map" subtitle="Map all stakeholders with influence levels and engagement strategies"><StakeholderMap idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="✅" title="Product Name Validator" subtitle="Score any name on memorability, uniqueness, pronouncability and relevance"><NameValidator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🎯" title="Onboarding Flow Builder" subtitle="Design the first-use experience with step-by-step user guidance"><OnboardingFlowBuilder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📊" title="Metrics Dashboard Designer" subtitle="Define north star metric and KPIs with targets and formula"><MetricsDashboardDesigner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🚪" title="Exit Strategy Planner" subtitle="Plan acquisition, IPO and licensing exits with valuation ranges"><ExitStrategyPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="💰" title="Pricing Psychology Analyser" subtitle="Discover anchoring tactics and psychological pricing strategies"><PricingPsychologyAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🌍" title="Localization Planner" subtitle="Plan global markets with voltage, plug types and certification requirements"><LocalizationPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🤝" title="Partnership Finder" subtitle="Find strategic partners with approach strategies and pitch angles"><PartnershipFinder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🚀" title="Launch Countdown Planner" subtitle="Milestone-based launch countdown with tasks and progress tracking"><LaunchCountdownPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="💬" title="Investor Q&A Prep" subtitle="Prepare for tough investor questions with model answers and red flags"><InvestorQAPrep idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="👥" title="Community Strategy Builder" subtitle="Build community strategy across platforms with growth tactics"><CommunityStrategyBuilder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📄" title="Warranty Policy Generator" subtitle="Generate complete warranty, returns and refund policy"><WarrantyPolicyGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🗣️" title="Sales Script Generator" subtitle="Generate complete sales script with objection handling"><SalesScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📋" title="Tech Transfer Package" subtitle="Generate complete tech transfer package for manufacturing or licensing"><TechTransferPackage idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🚀" title="Product Hunt Launch" subtitle="Generate tagline, description, maker comment and launch day schedule"><ProductHuntLaunch idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📧" title="Investor Update Generator" subtitle="Generate monthly investor updates with metrics and highlights"><InvestorUpdateGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🔐" title="Data Privacy Guide" subtitle="Generate GDPR checklist, data inventory and privacy by design"><DataPrivacyGuide idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🧪" title="Beta Program Designer" subtitle="Design structured beta program with phases, criteria and incentives"><BetaProgramDesigner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📈" title="Post-Launch Planner" subtitle="Plan Week 1, Month 1, Month 3 actions with KPIs and issue handling"><PostLaunchPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="💸" title="Cost Reduction Analyser" subtitle="Find opportunities to reduce BOM and production costs with risk assessment"><CostReductionAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🏪" title="Sales Channel Planner" subtitle="Plan sales channels from direct to marketplace distribution"><SalesChannelPlanner idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="✉️" title="Email Campaign Builder" subtitle="Generate complete email sequence for product launch"><EmailCampaignBuilder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📈" title="Revenue Projection" subtitle="Project 3-year revenue across optimistic, realistic and pessimistic scenarios"><RevenueProjection idea={idea} components={selectedComponents} /></AccordionSection>
+          {/* Business */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#22c55e15'}}>
+                  📈
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#22c55e15', color: '#22c55e'}}>
+                  34+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Business</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">Investor pitch, revenue, sales, launch strategy</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#22c55e20'}}/>
+              <a href="/features/business"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#22c55e15',
+                  color: '#22c55e',
+                  border: '1px solid #22c55e30',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#22c55e90'}}/>
           </div>
-        )}
-
-        {/* Planning */}
-        {activeCategory === 'Planning' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>📋</span>
-              <span>Planning</span>
-              <span className="text-slate-700">— 22 tools</span>
-            </p>
-            <AccordionSection icon="🔄" title="Inventory Sync" subtitle="Check stock levels and deduct components from inventory when building">
-  <InventorySync idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💰" title="Cost Tracker" subtitle="Track actual spending with purchase status, categories and budget alerts">
-  <CostTracker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📚" title="Learning Path" subtitle="Personalised learning roadmap based on your skill level with XP tracking">
-  <LearningPath idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🗓️" title="Sprint Planner" subtitle="AI generates a day-by-day sprint plan with task tracking and progress">
-  <SprintPlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🏭" title="Manufacturing Guide" subtitle="Get scaling options, process steps, quality checks and supplier recommendations">
-  <ManufacturingGuide idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📋" title="User Story Generator" subtitle="Generate agile user stories with acceptance criteria and story point estimates">
-  <UserStoryGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📦" title="Export Bundle" subtitle="Download a complete ZIP with README, BOM, wiring guide, code and specs">
-  <ExportBundle idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🏆" title="Hackathon Pack" subtitle="Generate complete hackathon submission with pitch, timeline, judge Q&A and team roles">
-  <HackathonPack idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🗓️" title="Build Timeline" subtitle="Track your build progress milestone by milestone">
-  <BuildTimeline idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="📅" title="Timeline Planner" subtitle="AI generates a Gantt chart with phases, tasks and milestones">
-  <TimelinePlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📔" title="Build Log Journal" subtitle="Document your daily build progress with mood, tags and milestones">
-  <BuildLog idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="💰" title="Cost Optimizer" subtitle="Set a budget and AI finds savings opportunities with priority ranking">
-  <CostOptimizer idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🎯" title="Progress Tracker" subtitle="Track your prototype journey with milestones and AI encouragement">
-  <ProgressTracker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🏷️" title="Label Maker" subtitle="Design and print labels with QR codes for your prototype enclosure">
-  <LabelMaker idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💰" title="Build Cost Estimator" subtitle="Compare prices across Amazon, AliExpress, and local stores">
-            <CostEstimator idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="💰" title="BOM Cost Optimizer" subtitle="Compare AliExpress, Amazon and local prices for every component">
-  <BOMOptimizer components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="💰" title="Budget Planner" subtitle="Set a budget, track spending per component and supplier">
-  <BudgetPlanner idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🛒" title="Shopping List Generator" subtitle="Complete prioritized shopping list with buy links and prices">
-  <ShoppingListGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📦" title="Stock Checker" subtitle="AI checks component availability, lead times and suggests alternatives">
-  <StockChecker components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🗺️" title="Learning Roadmap" subtitle="Step-by-step learning path to build this prototype successfully">
-  <LearningRoadmap idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🏭" title="Supply Chain Analyser" subtitle="Analyse component availability, lead times and supply chain risks"><SupplyChainAnalyser idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📦" title="Packaging Designer" subtitle="Design product packaging with materials and unboxing experience"><PackagingDesigner idea={idea} components={selectedComponents} /></AccordionSection>
+          {/* Planning */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#a855f715'}}>
+                  📋
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#a855f715', color: '#a855f7'}}>
+                  22+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Planning</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">Sprints, BOM, supply chain, manufacturing</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#a855f720'}}/>
+              <a href="/features/planning"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#a855f715',
+                  color: '#a855f7',
+                  border: '1px solid #a855f730',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#a855f790'}}/>
           </div>
-        )}
-
-        {/* Content */}
-        {activeCategory === 'Content' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>📢</span>
-              <span>Content</span>
-              <span className="text-slate-700">— 16 tools</span>
-            </p>
-            <AccordionSection icon="🎬" title="Video Script Generator" subtitle="AI writes your complete YouTube or TikTok build video script">
-  <VideoScriptGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🎯" title="Slide Deck Generator" subtitle="AI creates a complete presentation with speaker notes and interactive HTML export">
-  <SlidesGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📖" title="Glossary Builder" subtitle="Build a searchable technical glossary with categories and related terms">
-  <GlossaryBuilder idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📱" title="Social Content Generator" subtitle="Generate ready-to-post content for Twitter, Instagram, Reddit, LinkedIn and YouTube">
-  <SocialContentGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="Word Document Generator" subtitle="Generate a professional .docx report for Word, Google Docs or LibreOffice">
-  <WordDocGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📋" title="Team Report Generator" subtitle="Generate a professional project status report for your team or supervisor">
-  <TeamReportGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📄" title="Documentation Generator" subtitle="AI writes complete technical docs with wiring guide and troubleshooting">
-  <DocumentationGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="GitHub README Generator" subtitle="Generate a professional README.md for your GitHub repository">
-  <ReadmeGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📋" title="Technical Spec Sheet" subtitle="Generate a professional engineering specification document">
-  <SpecSheetGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🎤" title="Demo Script Generator" subtitle="Generate live demo scripts with scenes, actions and presentation mode"><DemoScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🎯" title="Interview Prep Coach" subtitle="Prepare answers for investor, accelerator and technical interviews with practice mode"><InterviewPrepCoach idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🎬" title="Explainer Video Script" subtitle="Generate YouTube explainer scripts with hook, B-roll notes and section breakdown"><ExplainerVideoScript idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📰" title="Press Release Generator" subtitle="Generate professional press releases for product launches and milestones"><PressReleaseGenerator idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📚" title="Knowledge Base Builder" subtitle="Build a searchable KB with setup guides, troubleshooting articles and FAQs"><KnowledgeBaseBuilder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="📖" title="Product Story Builder" subtitle="Craft a compelling origin story, problem, solution and vision narrative"><ProductStoryBuilder idea={idea} components={selectedComponents} /></AccordionSection>
-            <AccordionSection icon="🤝" title="Networking Script Generator" subtitle="Generate scripts for conferences, demo days and investor meetings"><NetworkingScriptGenerator idea={idea} components={selectedComponents} /></AccordionSection>
+          {/* Content & Scripts */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#f59e0b15'}}>
+                  📢
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#f59e0b15', color: '#f59e0b'}}>
+                  17+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Content & Scripts</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">Video scripts, press releases, social media, marketing</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#f59e0b20'}}/>
+              <a href="/features/content"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#f59e0b15',
+                  color: '#f59e0b',
+                  border: '1px solid #f59e0b30',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#f59e0b90'}}/>
           </div>
-        )}
-
-        {/* Learn & Share */}
-        {activeCategory === 'Learn & Share' && (
-          <div className="space-y-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <span>🎓</span>
-              <span>Learn & Share</span>
-              <span className="text-slate-700">— 16 tools</span>
-            </p>
-            <AccordionSection icon="👥" title="Team Collaboration" subtitle="Share updates, assign tasks and manage your build team">
-  <TeamCollaboration idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="🧑‍🏫" title="AI Mentor" subtitle="Structured lessons with analogies, deep dives and common mistakes">
-  <AIMentor idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="⭐" title="AI Review Generator" subtitle="Generate realistic product reviews to understand user perception of your prototype">
-  <ReviewGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="⭐" title="Rate This Prototype" subtitle="Rate difficulty, time spent and leave a personal review">
-            <PrototypeRating idea={idea} />
-          </AccordionSection>
-            <AccordionSection icon="💬" title="Prototype Feedback" subtitle="Log what worked, what didn't, and lessons learned">
-  <FeedbackCollector idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="📊" title="IoT Dashboard Builder" subtitle="Design a monitoring dashboard with live simulated sensor data">
-  <IoTDashboard idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🤖" title="AI Assistant" subtitle="Context-aware chat that knows your prototype components and idea">
-  <ContextChat idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="🎯" title="Challenge Generator" subtitle="Generate upgrade challenges to level up your prototype skills and earn XP">
-  <ChallengeGenerator idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="Prototype Notes" subtitle="Build log, next steps, status tracking">
-            <PrototypeNotes idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="📋" title="Feedback Collector" subtitle="Create surveys to collect structured feedback from prototype testers">
-  <FeedbackCollector idea={idea} components={selectedComponents} />
-</AccordionSection>
-            <AccordionSection icon="📝" title="Notes 2.0" subtitle="Rich text notes with categories, tags, colors, pinning and search">
-  <NotesEditor idea={idea} />
-</AccordionSection>
-            <AccordionSection icon="💬" title="Prototype Explainer" subtitle="Explain your prototype in simple language for any audience">
-            <PrototypeExplainer idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="⚖️" title="Prototype Comparison" subtitle="Compare your prototype against an AI-generated alternative">
-            <PrototypeComparison idea={idea} currentComponents={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="💬" title="Community Comments" subtitle="Leave feedback and discuss this prototype with the community">
-  <CommentSystem projectId={idea} projectTitle={idea} />
-</AccordionSection>
-            <AccordionSection icon="📊" title="Difficulty & Build Time" subtitle="AI estimates how hard this is to build and how long it takes">
-            <DifficultyPanel idea={idea} components={selectedComponents} />
-          </AccordionSection>
-            <AccordionSection icon="🧠" title="Knowledge Quiz" subtitle="Test your understanding of your prototype's components and circuits">
-  <PrototypeQuiz idea={idea} components={selectedComponents} />
-</AccordionSection>
+          {/* Learn & Share */}
+          <div className="group rounded-2xl border border-[#1e1e2e] bg-[#0d0d1a] hover:border-opacity-60 transition-all duration-300 overflow-hidden hover:shadow-xl hover:scale-[1.02]"
+            style={{borderColor: 'transparent', background: 'linear-gradient(135deg, #0d0d1a, #0a0a14)'}}>
+            <div className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{backgroundColor: '#ef444415'}}>
+                  🎓
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{backgroundColor: '#ef444415', color: '#ef4444'}}>
+                  14+ tools
+                </span>
+              </div>
+              <h3 className="text-white font-black text-lg mb-1">Learn & Share</h3>
+              <p className="text-slate-500 text-xs leading-relaxed mb-4">AI mentor, quizzes, community, notes</p>
+              <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#ef444420'}}/>
+              <a href="/features/learn-share"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
+                style={{
+                  backgroundColor: '#ef444415',
+                  color: '#ef4444',
+                  border: '1px solid #ef444430',
+                }}>
+                View Features
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+            <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
+              style={{backgroundColor: '#ef444490'}}/>
           </div>
-        )}
+        </div>
       </div>
-      {/* ─── END CATEGORIZED TABS ─── */}
+
 
         </div>
 

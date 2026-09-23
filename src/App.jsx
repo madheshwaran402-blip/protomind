@@ -1,4 +1,5 @@
 import CommandPalette from './components/CommandPalette'
+import FeaturesPage from './pages/FeaturesPage'
 import ProtoSpec from './pages/ProtoSpec'
 import GlobalSidebar from './components/GlobalSidebar'
 import ToastContainer from './components/ToastContainer'
@@ -309,6 +310,7 @@ function App() {
                   <Route path="/landing" element={<LandingPage />} />
                   <Route path="/hub" element={<NavHub />} />
                   <Route path="/protospec" element={<ProtoSpec />} />
+                  <Route path="/features/:categoryId" element={<FeaturesPage />} />
         </Routes>
           </Suspense>
         </main>
