@@ -617,6 +617,7 @@ const NAV_ITEMS = [
   { id:'link', icon:'🔗', label:'ProtoLink', path:'/digitaltwin', color:'#f59e0b', desc:'Connect Hardware' },
   { id:'twin', icon:'🔮', label:'ProtoTwin', path:'/digitaltwin', color:'#ec4899', desc:'Digital Twin' },
   { id:'hub', icon:'🧭', label:'Hub', path:'/hub', color:'#6366f1', desc:'All Pages' },
+  { id:'download', icon:'⬇', label:'Download', path:'/download', color:'#22c55e', desc:'Desktop App' },
 ]
 
 function GlobalSidebar() {

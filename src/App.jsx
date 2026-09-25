@@ -1,5 +1,7 @@
 import CommandPalette from './components/CommandPalette'
 import FeaturesPage from './pages/FeaturesPage'
+import DownloadPage from './pages/DownloadPage'
+import ElectronSetup from './pages/ElectronSetup'
 import ProtoSpec from './pages/ProtoSpec'
 import GlobalSidebar from './components/GlobalSidebar'
 import ToastContainer from './components/ToastContainer'
@@ -311,6 +313,8 @@ function App() {
                   <Route path="/hub" element={<NavHub />} />
                   <Route path="/protospec" element={<ProtoSpec />} />
                   <Route path="/features/:categoryId" element={<FeaturesPage />} />
+                  <Route path="/setup" element={<ElectronSetup />} />
+                  <Route path="/download" element={<DownloadPage />} />
         </Routes>
           </Suspense>
         </main>

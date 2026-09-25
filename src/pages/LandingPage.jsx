@@ -147,6 +147,10 @@ function LandingPage() {
               className="px-8 py-4 bg-[#0d0d1a] border border-[#2e2e4e] hover:border-indigo-500 rounded-2xl font-bold text-lg transition flex items-center gap-2">
               <span>⚙️</span> Detailed Setup
             </button>
+            <button onClick={function(){navigate('/download')}}
+              className="px-8 py-4 bg-[#0d0d1a] border border-green-800 hover:border-green-500 text-green-400 rounded-2xl font-bold text-lg transition flex items-center gap-2">
+              <span>⬇</span> Desktop App
+            </button>
             <button onClick={function(){navigate('/simulator2')}}
               className="px-8 py-4 bg-[#0d0d1a] border border-[#2e2e4e] hover:border-cyan-500 rounded-2xl font-bold text-lg transition flex items-center gap-2">
               <span>🔌</span> Try Simulator
