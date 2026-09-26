@@ -7,12 +7,12 @@ const RELEASES = {
     label: 'Windows 10 / 11',
     icon: '🪟',
     color: '#0078d4',
-    file: 'ProtoMind-Setup-1.0.0.exe',
+    file: 'ProtoMind-Setup-0.0.0.exe',
     size: '~320MB',
     arch: '64-bit',
     note: 'Includes AI engine auto-setup',
     // Replace with real GitHub release URL when built
-    url: '#windows',
+    url: 'https://github.com/madheshwaran402-blip/protomind/releases/download/v1.0.0/ProtoMind-Setup-0.0.0.exe',
   },
   mac: {
     label: 'macOS 12+',
