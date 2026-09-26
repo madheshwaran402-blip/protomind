@@ -18,11 +18,11 @@ const RELEASES = {
     label: 'macOS 12+',
     icon: '🍎',
     color: '#555555',
-    file: 'ProtoMind-1.0.0.dmg',
+    file: 'ProtoMind-0.0.0.dmg',
     size: '~280MB',
     arch: 'Intel + Apple Silicon',
     note: 'Universal binary (M1/M2/M3 + Intel)',
-    url: '#mac',
+    url: 'https://github.com/madheshwaran402-blip/protomind/releases/download/v1.0.0/ProtoMind-0.0.0.dmg',
   },
   linux: {
     label: 'Linux (Ubuntu/Debian)',
@@ -120,11 +120,11 @@ export default function DownloadPage() {
   const [activeTab, setActiveTab] = useState('desktop') // desktop | web
 
   function handleDownload(platform, data) {
-    if (data.url === '#windows' || data.url === '#mac' || data.url === '#linux') {
-      // Not built yet — show coming soon
+    if (!data.url || data.url === '#windows' || data.url === '#linux') {
       setShowModal(platform)
       return
     }
+    // Real download URL — open it
     window.open(data.url, '_blank')
   }
 
