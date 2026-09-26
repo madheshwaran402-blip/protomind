@@ -124,8 +124,8 @@ export default function DownloadPage() {
       setShowModal(platform)
       return
     }
-    // Real download URL — open it
-    window.open(data.url, '_blank')
+    // Real download URL — trigger the download
+window.location.href = data.url
   }
 
   return (
