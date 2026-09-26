@@ -323,14 +323,12 @@ export default function DownloadPage() {
               <h2 className="text-white font-black text-3xl mb-3">Use ProtoMind in Your Browser</h2>
               <p className="text-slate-400 mb-6">No download needed. Open the web app instantly in Chrome or Edge. Works on any device.</p>
 
-              
-                href="https://protomind-ten.vercel.app"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-black text-xl transition mb-4">
+              <button
+                onClick={function() { window.open('https://protomind-ten.vercel.app', '_blank') }}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-black text-xl transition mb-4 w-full justify-center">
                 <span>🚀</span>
                 <span>Open ProtoMind Web App</span>
-              </a>
+              </button>
 
               <p className="text-indigo-400 text-sm mb-8">protomind-ten.vercel.app</p>
 
@@ -375,10 +373,7 @@ export default function DownloadPage() {
                           </code>
                         )}
                         {item.link && (
-                          <a href={item.link} target="_blank" rel="noreferrer"
-                            className="text-indigo-400 hover:underline text-xs mt-1 inline-block">
-                            {item.linkText}
-                          </a>
+                          <button onClick={function() { undefined }} className="text-indigo-400 hover:underline text-xs mt-1 inline-block">{item.linkText}</button>
                         )}
                       </div>
                     </div>
@@ -434,8 +429,7 @@ export default function DownloadPage() {
         <div className="mt-12 text-center">
           <p className="text-slate-500 text-sm mb-4">
             ProtoMind is free and open source •{' '}
-            <a href="https://github.com/madheshwaran402-blip/protomind" target="_blank" rel="noreferrer"
-              className="text-indigo-400 hover:underline">View on GitHub</a>
+            <button onClick={function() { window.open('https://github.com/madheshwaran402-blip/protomind', '_blank') }} className="text-indigo-400 hover:underline">View on GitHub</button>
           </p>
           <p className="text-slate-700 text-xs">
             AI runs locally on your device. No data is sent to any server. No subscription required.
@@ -458,10 +452,7 @@ export default function DownloadPage() {
                 className="flex-1 py-3 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded-xl font-medium transition">
                 Close
               </button>
-              <a href="https://protomind-ten.vercel.app" target="_blank" rel="noreferrer"
-                className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition text-center">
-                Open Web App →
-              </a>
+              <button onClick={function() { window.open('https://protomind-ten.vercel.app', '_blank') }} className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition text-center">Open Web App →</button>
             </div>
           </div>
         </div>
