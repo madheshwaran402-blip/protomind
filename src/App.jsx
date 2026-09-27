@@ -2,6 +2,8 @@ import CommandPalette from './components/CommandPalette'
 import FeaturesPage from './pages/FeaturesPage'
 import DownloadPage from './pages/DownloadPage'
 import ElectronSetup from './pages/ElectronSetup'
+import ProtoChat from './pages/ProtoChat'
+import ProtoSlide from './pages/ProtoSlide'
 import ProtoSpec from './pages/ProtoSpec'
 import GlobalSidebar from './components/GlobalSidebar'
 import ToastContainer from './components/ToastContainer'
@@ -13,7 +15,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { getSettings, applyFontSize } from './services/settings'
 import { applyA11ySettings, getA11ySettings } from './services/accessibility'
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { HashRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import UserMenu from './components/UserMenu'
 const Simulator2 = lazy(function() { return import('./pages/Simulator2') })
 import Simulator from './pages/Simulator'
@@ -255,7 +257,7 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="min-h-screen bg-[#0a0a0f] text-white">
         <a href="#main" className="skip-link">Skip to content</a>
         <OfflineDetector />
@@ -315,12 +317,14 @@ function App() {
                   <Route path="/features/:categoryId" element={<FeaturesPage />} />
                   <Route path="/setup" element={<ElectronSetup />} />
                   <Route path="/download" element={<DownloadPage />} />
+                  <Route path="/protochat" element={<ProtoChat />} />
+                  <Route path="/protoslide" element={<ProtoSlide />} />
         </Routes>
           </Suspense>
         </main>
         <QuickActions />
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
