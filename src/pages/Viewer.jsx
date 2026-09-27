@@ -588,7 +588,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Design & Build</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">Wiring, PCB, power analysis, component specs, simulation</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#f9731620'}}/>
-              <a href="/features/design-build"
+              <button onClick={function(){navigate('/features/design-build')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#f9731615',
@@ -619,7 +619,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Code & Dev</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">Code gen, debugging, docs, APIs, version history</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#6366f120'}}/>
-              <a href="/features/code-dev"
+              <button onClick={function(){navigate('/features/code-dev')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#6366f115',
@@ -650,7 +650,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Testing & QA</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">Field tests, compliance, validation, quality control</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#06b6d420'}}/>
-              <a href="/features/testing-qa"
+              <button onClick={function(){navigate('/features/testing-qa')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#06b6d415',
@@ -681,7 +681,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Business</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">Investor pitch, revenue, sales, launch strategy</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#22c55e20'}}/>
-              <a href="/features/business"
+              <button onClick={function(){navigate('/features/business')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#22c55e15',
@@ -712,7 +712,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Planning</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">Sprints, BOM, supply chain, manufacturing</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#a855f720'}}/>
-              <a href="/features/planning"
+              <button onClick={function(){navigate('/features/planning')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#a855f715',
@@ -743,7 +743,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Content & Scripts</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">Video scripts, press releases, social media, marketing</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#f59e0b20'}}/>
-              <a href="/features/content"
+              <button onClick={function(){navigate('/features/content')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#f59e0b15',
@@ -774,7 +774,7 @@ const [stlExported, setStlExported] = useState(false)
               <h3 className="text-white font-black text-lg mb-1">Learn & Share</h3>
               <p className="text-slate-500 text-xs leading-relaxed mb-4">AI mentor, quizzes, community, notes</p>
               <div className="w-full h-0.5 rounded-full mb-4" style={{backgroundColor: '#ef444420'}}/>
-              <a href="/features/learn-share"
+              <button onClick={function(){navigate('/features/learn-share')}}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group-hover:shadow-lg"
                 style={{
                   backgroundColor: '#ef444415',

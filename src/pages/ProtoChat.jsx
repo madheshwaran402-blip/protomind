@@ -59,8 +59,7 @@ function ProtoChat() {
       // Build conversation history
       const history = messages.slice(-8).map(function(m) {
         return m.role + ': ' + m.content
-      }).join('
-')
+      }).join('\n'))
 
       const systemPrompt = 'You are ProtoMentor, an expert AI engineering assistant inside ProtoMind. You specialize in electronics, Arduino/ESP32/Raspberry Pi programming, circuit design, IoT, and hardware prototyping. You also know about business, pitch decks, and product development. Be helpful, clear, and practical. Give code examples when relevant. ' + (projectContext ? '
 
