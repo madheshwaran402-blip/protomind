@@ -597,7 +597,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#f9731690'}}/>
@@ -628,7 +628,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#6366f190'}}/>
@@ -659,7 +659,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#06b6d490'}}/>
@@ -690,7 +690,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#22c55e90'}}/>
@@ -721,7 +721,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#a855f790'}}/>
@@ -752,7 +752,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#f59e0b90'}}/>
@@ -783,7 +783,7 @@ const [stlExported, setStlExported] = useState(false)
                 }}>
                 View Features
                 <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-              </a>
+              </button>
             </div>
             <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300"
               style={{backgroundColor: '#ef444490'}}/>
