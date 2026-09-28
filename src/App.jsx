@@ -240,6 +240,15 @@ function App() {
     return function() { window.removeEventListener('keydown', handleKey) }
   }, [])
 
+  // Listen for ProtoDemo trigger from page or anywhere
+  useEffect(function() {
+    function handleDemoStart() {
+      setDemoActive(true)
+    }
+    window.addEventListener('start-protodemo', handleDemoStart)
+    return function() { window.removeEventListener('start-protodemo', handleDemoStart) }
+  }, [])
+
   const [paletteOpen, setPaletteOpen] = useState(false)
 
   useKeyboardShortcuts([
