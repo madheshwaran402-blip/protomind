@@ -616,7 +616,7 @@ const NAV_ITEMS = [
   { id:'ide', icon:'💻', label:'ProtoIDE', path:'/ide', color:'#64748b', desc:'Code & Upload' },
   { id:'link', icon:'🔗', label:'ProtoLink', path:'/digitaltwin', color:'#f59e0b', desc:'Connect Hardware' },
   { id:'twin', icon:'🔮', label:'ProtoTwin', path:'/digitaltwin', color:'#ec4899', desc:'Digital Twin' },
-  { id:'demo', icon:'🎬', label:'ProtoDemo', path:null, panel:'demo', color:'#ef4444', desc:'Guided Demo Mode' },
+  { id:'demo', icon:'🎬', label:'ProtoDemo', path:null, panel:null, color:'#ef4444', desc:'Guided Demo Mode' },
   { id:'chat', icon:'🤖', label:'ProtoChat', path:'/protochat', color:'#22c55e', desc:'AI Chatbot' },
   { id:'slide', icon:'🎨', label:'ProtoSlide', path:'/protoslide', color:'#a855f7', desc:'AI Presentations' },
   { id:'hub', icon:'🧭', label:'Hub', path:'/hub', color:'#6366f1', desc:'All Pages' },
@@ -695,7 +695,9 @@ function GlobalSidebar({ onStartDemo }) {
                 onMouseLeave={function(){setHoveredItem(null)}}>
                 <button
                   onClick={function() {
-                    if (item.panel) { togglePanel(item.panel) }
+                    if (item.id === 'demo') {
+                      window.dispatchEvent(new CustomEvent('start-protodemo'))
+                    } else if (item.panel) { togglePanel(item.panel) }
                     else { navigate(item.path); setOpenPanel(null) }
                   }}
                   className={"flex flex-col items-center justify-center transition-all duration-200 rounded-xl relative " + (
