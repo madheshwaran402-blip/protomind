@@ -3,6 +3,7 @@ import FeaturesPage from './pages/FeaturesPage'
 import DownloadPage from './pages/DownloadPage'
 import ElectronSetup from './pages/ElectronSetup'
 import ProtoDemo from './pages/ProtoDemo'
+import ProtoDemoOverlay from './components/ProtoDemoOverlay'
 import ProtoChat from './pages/ProtoChat'
 import ProtoSlide from './pages/ProtoSlide'
 import ProtoSpec from './pages/ProtoSpec'
@@ -225,6 +226,7 @@ function Navbar({ onOpenPalette }) {
 
 function App() {
   const [searchOpen, setSearchOpen] = useState(false)
+  const [demoActive, setDemoActive] = useState(false)
 
   // Cmd+K / Ctrl+K to open search
   useEffect(function() {
@@ -268,7 +270,8 @@ function App() {
         <InstallPrompt />
         <AccessibilityPanel />
         <ScrollToTop />
-        <GlobalSidebar />
+        <ProtoDemoOverlay active={demoActive} onExit={function(){setDemoActive(false)}} />
+        <GlobalSidebar onStartDemo={function(){setDemoActive(true)}} />
         <GlobalSearch open={searchOpen} onClose={function(){setSearchOpen(false)}} />
         <main id="main" tabIndex={-1}>
           <Suspense fallback={<PageLoader />}>
