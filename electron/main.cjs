@@ -13,11 +13,22 @@ let ollamaReady = false
 // ── Ollama paths per OS ───────────────────────────────────────────────────────
 function getOllamaPath() {
   const platform = process.platform
-  if (platform === "win32") return "C:\\Program Files\\Ollama\\ollama.exe"
-  if (platform === "darwin") return "/usr/local/bin/ollama"
+
+  if (platform === "win32") {
+    return path.join(
+      process.env.LOCALAPPDATA || "",
+      "Programs",
+      "Ollama",
+      "ollama.exe"
+    )
+  }
+
+  if (platform === "darwin") {
+    return "/usr/local/bin/ollama"
+  }
+
   return "/usr/local/bin/ollama"
 }
-
 function getOllamaInstallerUrl() {
   const platform = process.platform
   const arch = process.arch
@@ -31,8 +42,10 @@ function getOllamaInstallerUrl() {
 
 // ── Check if Ollama is installed ──────────────────────────────────────────────
 function isOllamaInstalled() {
+  const ollamaPath = getOllamaPath()
+
   return new Promise(function(resolve) {
-    exec("ollama --version", function(error) {
+    fs.access(ollamaPath, fs.constants.F_OK, function(error) {
       resolve(!error)
     })
   })
@@ -40,9 +53,15 @@ function isOllamaInstalled() {
 
 // ── Check if llama3.2 model is downloaded ─────────────────────────────────────
 function isModelDownloaded() {
+  const ollamaPath = getOllamaPath()
+
   return new Promise(function(resolve) {
-    exec("ollama list", function(error, stdout) {
-      if (error) { resolve(false); return }
+    exec('"' + ollamaPath + '" list', function(error, stdout) {
+      if (error) {
+        resolve(false)
+        return
+      }
+
       resolve(stdout.includes("llama3.2"))
     })
   })
@@ -51,28 +70,82 @@ function isModelDownloaded() {
 // ── Download file with progress ───────────────────────────────────────────────
 function downloadFile(url, dest, onProgress) {
   return new Promise(function(resolve, reject) {
-    const file = fs.createWriteStream(dest)
-    https.get(url, function(response) {
-      // Handle redirects
-      if (response.statusCode === 302 || response.statusCode === 301) {
-        downloadFile(response.headers.location, dest, onProgress).then(resolve).catch(reject)
-        return
-      }
-      const total = parseInt(response.headers["content-length"], 10)
-      let downloaded = 0
-      response.on("data", function(chunk) {
-        downloaded += chunk.length
-        if (onProgress) onProgress(downloaded, total)
+    function download(currentUrl) {
+      https.get(currentUrl, function(response) {
+
+        // Handle redirects
+        if (
+          response.statusCode === 301 ||
+          response.statusCode === 302 ||
+          response.statusCode === 307 ||
+          response.statusCode === 308
+        ) {
+          response.resume()
+
+          if (!response.headers.location) {
+            reject(new Error("Download redirect has no location"))
+            return
+          }
+
+          download(response.headers.location)
+          return
+        }
+
+        if (response.statusCode !== 200) {
+          response.resume()
+          reject(
+            new Error(
+              "Download failed with HTTP status " + response.statusCode
+            )
+          )
+          return
+        }
+
+        const file = fs.createWriteStream(dest)
+
+        const total = parseInt(
+          response.headers["content-length"] || "0",
+          10
+        )
+
+        let downloaded = 0
+
+        response.on("data", function(chunk) {
+          downloaded += chunk.length
+
+          if (onProgress) {
+            onProgress(downloaded, total)
+          }
+        })
+
+        response.on("error", function(err) {
+          file.destroy()
+          reject(err)
+        })
+
+        file.on("error", function(err) {
+          reject(err)
+        })
+
+        file.on("finish", function() {
+          file.close(function(err) {
+            if (err) {
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
+        })
+
+        response.pipe(file)
+      }).on("error", function(err) {
+        reject(err)
       })
-      response.pipe(file)
-      file.on("finish", function() { file.close(); resolve() })
-    }).on("error", function(err) {
-      fs.unlink(dest, function() {})
-      reject(err)
-    })
+    }
+
+    download(url)
   })
 }
-
 // ── Install Ollama ────────────────────────────────────────────────────────────
 async function installOllama(sendStatus) {
   const platform = process.platform
@@ -91,13 +164,39 @@ async function installOllama(sendStatus) {
   }
 
   const url = getOllamaInstallerUrl()
-  const ext = platform === "win32" ? ".exe" : ".zip"
-  const dest = path.join(os.tmpdir(), "ollama-installer" + ext)
+const ext = platform === "win32" ? ".exe" : ".zip"
+const dest = path.join(
+  os.tmpdir(),
+  "ollama-installer" + ext
+)
+
+// Remove an old installer if one exists
+try {
+  if (fs.existsSync(dest)) {
+    fs.unlinkSync(dest)
+  }
+} catch (err) {
+  console.log("Could not remove old installer:", err.message)
+}
 
   await downloadFile(url, dest, function(downloaded, total) {
-    const pct = total ? Math.round(downloaded / total * 100) : 0
-    sendStatus({ step: "downloading", message: "Downloading Ollama... " + pct + "%", progress: pct })
+    const pct = total
+      ? Math.round(downloaded / total * 100)
+      : 0
+
+    sendStatus({
+      step: "downloading",
+      message: "Downloading Ollama... " + pct + "%",
+      progress: pct
+    })
   })
+
+  // Give Windows time to fully release the downloaded installer file
+  if (platform === "win32") {
+    await new Promise(function(resolve) {
+      setTimeout(resolve, 1000)
+    })
+  }
 
   sendStatus({ step: "installing", message: "Installing Ollama..." })
 
@@ -105,20 +204,34 @@ async function installOllama(sendStatus) {
     if (platform === "win32") {
       // Run Windows installer silently
       exec('"' + dest + '" /S', function(error) {
-        if (error) { reject(error); return }
+        if (error) {
+          reject(error)
+          return
+        }
+
         sendStatus({ step: "done", message: "Ollama installed!" })
         resolve()
       })
     } else if (platform === "darwin") {
       // Mac: unzip and move to Applications
-      exec("unzip -o " + dest + " -d /Applications/ && xattr -d com.apple.quarantine /Applications/Ollama.app 2>/dev/null || true", function(error) {
-        if (error) { reject(error); return }
-        // Create symlink for CLI
-        exec("ln -sf /Applications/Ollama.app/Contents/Resources/ollama /usr/local/bin/ollama", function() {
-          sendStatus({ step: "done", message: "Ollama installed!" })
-          resolve()
-        })
-      })
+      exec(
+        "unzip -o " + dest +
+        " -d /Applications/ && xattr -d com.apple.quarantine /Applications/Ollama.app 2>/dev/null || true",
+        function(error) {
+          if (error) {
+            reject(error)
+            return
+          }
+
+          exec(
+            "ln -sf /Applications/Ollama.app/Contents/Resources/ollama /usr/local/bin/ollama",
+            function() {
+              sendStatus({ step: "done", message: "Ollama installed!" })
+              resolve()
+            }
+          )
+        }
+      )
     }
   })
 }
@@ -128,7 +241,9 @@ function downloadModel(sendStatus) {
   return new Promise(function(resolve, reject) {
     sendStatus({ step: "model", message: "Downloading llama3.2 AI model (~2GB)... This takes a few minutes.", progress: 0 })
 
-    const proc = spawn("ollama", ["pull", "llama3.2"])
+    const proc = spawn(getOllamaPath(), ["pull", "llama3.2"], {
+  windowsHide: true
+})
 
     proc.stdout.on("data", function(data) {
       const text = data.toString()
@@ -184,11 +299,15 @@ function startOllama() {
 }
 
 function startFreshOllama(resolve, reject) {
-  ollamaProcess = spawn("ollama", ["serve"], {
-    detached: false,
-    stdio: "ignore",
-    env: Object.assign({}, process.env, { OLLAMA_HOST: "127.0.0.1:11434" })
+  ollamaProcess = spawn(getOllamaPath(), ["serve"], {
+  detached: false,
+  stdio: "ignore",
+  windowsHide: true,
+  env: Object.assign({}, process.env, {
+    OLLAMA_HOST: "127.0.0.1:11434"
   })
+})
+
 
   ollamaProcess.on("error", function(err) {
     reject(err)
@@ -235,7 +354,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.cjs"),
     },
     titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "default",
     icon: path.join(__dirname, "../public/icon.png"),
@@ -270,7 +389,7 @@ function createSetupWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.cjs"),
     },
     titleBarStyle: "hidden",
     backgroundColor: "#050510",
@@ -281,8 +400,10 @@ function createSetupWindow() {
   if (isDev) {
     win.loadURL("http://localhost:5173/setup")
   } else {
-    win.loadFile(path.join(__dirname, "../dist/index.html"))
-    win.webContents.executeJavaScript("window.location.hash = '/setup'")
+    win.loadFile(
+  path.join(__dirname, "../dist/index.html"),
+  { hash: "setup" }
+)
   }
 
   win.once("ready-to-show", function() { win.show() })

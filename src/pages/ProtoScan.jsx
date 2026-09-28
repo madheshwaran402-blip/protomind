@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { notify } from '../services/toast'
-import { ProjectFlowBar } from '../services/projectContext'
+import { ProjectFlowBar } from '../services/projectContext.jsx'
 import { SkeletonCard } from '../components/Skeletons'
 
 const COMPONENT_DB = [

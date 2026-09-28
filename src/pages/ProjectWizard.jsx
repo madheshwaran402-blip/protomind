@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { notify } from '../services/toast'
-import { saveCurrentProject } from '../services/projectContext'
+import { saveCurrentProject } from '../services/projectContext.jsx'
 
 const COMMUNICATION_OPTIONS = [
   { id: 'wifi', label: 'Wi-Fi', icon: '📶' },
