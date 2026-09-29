@@ -831,4 +831,4 @@ const [stlExported, setStlExported] = useState(false)
   )
 }
 
-export default Viewer
+export default Viewer// ProtoEnclose link added via separate route

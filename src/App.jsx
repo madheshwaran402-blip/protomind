@@ -2,6 +2,7 @@ import CommandPalette from './components/CommandPalette'
 import FeaturesPage from './pages/FeaturesPage'
 import DownloadPage from './pages/DownloadPage'
 import ElectronSetup from './pages/ElectronSetup'
+import ProtoEnclose from './pages/ProtoEnclose'
 import ProtoDemo from './pages/ProtoDemo'
 import ProtoDemoOverlay from './components/ProtoDemoOverlay'
 import ProtoChat from './pages/ProtoChat'
@@ -333,6 +334,7 @@ function App() {
                   <Route path="/protochat" element={<ProtoChat />} />
                   <Route path="/protoslide" element={<ProtoSlide />} />
                   <Route path="/protodemo" element={<ProtoDemo />} />
+                  <Route path="/protoenclose" element={<ProtoEnclose />} />
         </Routes>
           </Suspense>
         </main>
