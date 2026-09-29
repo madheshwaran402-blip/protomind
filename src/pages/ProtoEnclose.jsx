@@ -109,7 +109,7 @@ function WatchEnclosure({ enclosureData, displayText, animating }) {
   })
 
   const enc = ENCLOSURE_TYPES[enclosureData?.enclosureType || 'smartwatch']
-  const bodyColor = enclosureData?.color ? enclosureData.color.includes('Black') ? '#1a1a2e' : enclosureData.color.includes('White') ? '#e8e8f0' : enc.color : enc.color
+  const bodyColor = enclosureData?.color ? enclosureData.color.includes('Black') ? '#1a1a3e' : enclosureData.color.includes('White') ? '#e0e8ff' : enc.color : '#1a2040'
 
   return (
     <group ref={groupRef}>
@@ -125,12 +125,12 @@ function WatchEnclosure({ enclosureData, displayText, animating }) {
 
       {/* OLED Display glow area */}
       <RoundedBox args={[enc.displayW, enc.displayH, 0.05]} radius={0.2} smoothness={4} position={[0, 0.1, enc.d / 2 + 0.12]}>
-        <meshStandardMaterial color="#001133" emissive="#002266" emissiveIntensity={0.8} roughness={0} metalness={0}/>
+        <meshStandardMaterial color="#001133" emissive="#0033aa" emissiveIntensity={2.0} roughness={0} metalness={0}/>
       </RoundedBox>
 
       {/* Display light glow */}
       <RoundedBox ref={glowRef} args={[enc.displayW + 0.2, enc.displayH + 0.2, 0.02]} radius={0.2} position={[0, 0.1, enc.d / 2 + 0.09]}>
-        <meshStandardMaterial color="#0044ff" emissive="#0044ff" emissiveIntensity={1} transparent opacity={0.3}/>
+        <meshStandardMaterial color="#0044ff" emissive="#2266ff" emissiveIntensity={3} transparent opacity={0.5}/>
       </RoundedBox>
 
       {/* Display text lines */}
@@ -189,7 +189,8 @@ function WatchEnclosure({ enclosureData, displayText, animating }) {
       </Text>
 
       {/* Point light inside display */}
-      <pointLight position={[0, 0.1, enc.d / 2 + 0.5]} intensity={2} color="#0044ff" distance={4}/>
+      <pointLight position={[0, 0.1, enc.d / 2 + 0.5]} intensity={8} color="#2255ff" distance={6}/>
+      <pointLight position={[0, 0, 0]} intensity={1} color="#ffffff" distance={8}/>
       <pointLight position={[0, 0, -enc.d / 2 - 1]} intensity={0.5} color="#004400" distance={3}/>
     </group>
   )
@@ -327,7 +328,8 @@ function ProductScene({ enclosureData, displayText, components, viewMode, explod
 
   return (
     <>
-      <ambientLight intensity={0.4}/>
+      <ambientLight intensity={0.6}/>
+      <hemisphereLight skyColor='#1a2a6c' groundColor='#050510' intensity={0.8}/>
       <directionalLight position={[10, 10, 5]} intensity={1.5} castShadow/>
       <directionalLight position={[-5, 5, -5]} intensity={0.5}/>
       <pointLight position={[0, 8, 0]} intensity={0.8} color="#ffffff"/>
@@ -340,10 +342,11 @@ function ProductScene({ enclosureData, displayText, components, viewMode, explod
         <WatchEnclosure enclosureData={enclosureData} displayText={displayText} animating={viewMode === 'product'}/>
       )}
 
-      {/* Floor reflection */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -8, 0]} receiveShadow>
+      {/* Grid floor */}
+      <gridHelper args={[30, 30, '#1a2040', '#0d1228']} position={[0, -8, 0]}/>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -8.01, 0]}>
         <planeGeometry args={[40, 40]}/>
-        <meshStandardMaterial color="#050510" roughness={1}/>
+        <meshStandardMaterial color="#050a18" roughness={1} transparent opacity={0.8}/>
       </mesh>
 
       {/* Ambient particles / stars */}
@@ -361,6 +364,8 @@ function ProductScene({ enclosureData, displayText, components, viewMode, explod
       })}
 
       <OrbitControls enableDamping dampingFactor={0.05} minDistance={5} maxDistance={30} enablePan={true}/>
+      <directionalLight position={[-10, 5, -5]} intensity={0.8} color="#4466ff"/>
+      <directionalLight position={[10, -5, 10]} intensity={0.4} color="#ffffff"/>
     </>
   )
 }
@@ -597,7 +602,7 @@ export default function ProtoEnclose() {
 
         {/* 3D Canvas */}
         <div className="flex-1 relative">
-          <Canvas shadows camera={{ position: [0, 2, 14], fov: 45 }} style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}>
+          <Canvas shadows camera={{ position: [0, 2, 14], fov: 45 }} style={{ background: 'radial-gradient(ellipse at center, #111833 0%, #080d1a 50%, #030609 100%)' }}>
             <Suspense fallback={null}>
               <ProductScene
                 enclosureData={enclosureData}

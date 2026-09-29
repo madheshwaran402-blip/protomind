@@ -409,7 +409,7 @@ function DefaultShape({ color, emissive, hovered }) {
   )
 }
 
-function ComponentBox3D({ comp, position }) {
+function ComponentBox3D({ comp, position, onDrag, isDragging, locked}) {
   const groupRef = useRef()
   const glowRef = useRef()
   const [hovered, setHovered] = useState(false)

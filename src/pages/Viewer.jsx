@@ -287,6 +287,62 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 
 function Viewer() {
 
+  // ProtoEnclose applicability check
+  const [encloseApplicable, setEncloseApplicable] = useState(false)
+
+  // ── 3D Component Drag State ─────────────────────────────────────────────────
+  const [draggingComp, setDraggingComp] = useState(null)
+  const [componentPositions, setComponentPositions] = useState({})
+  const [validationMsg, setValidationMsg] = useState(null)
+
+  function handleCompDragStart(compId) {
+    setDraggingComp(compId)
+  }
+
+  function handleCompDragEnd(compId, newPos) {
+    setDraggingComp(null)
+    // Validate position
+    const PCB_W = 8, PCB_H = 6
+    const isOnBoard = Math.abs(newPos.x) < PCB_W / 2 && Math.abs(newPos.z) < PCB_H / 2
+    const occupied = Object.entries(componentPositions)
+      .filter(function(e) { return e[0] !== compId })
+      .some(function(e) {
+        const p = e[1]
+        return Math.abs(p.x - newPos.x) < 0.8 && Math.abs(p.z - newPos.z) < 0.8
+      })
+    if (!isOnBoard) {
+      setValidationMsg({ type: 'error', text: 'Component outside PCB boundary', icon: '✕' })
+    } else if (occupied) {
+      setValidationMsg({ type: 'warning', text: 'Insufficient clearance — overlaps with another component', icon: '⚠️' })
+    } else {
+      setComponentPositions(function(prev) { return Object.assign({}, prev, { [compId]: newPos }) })
+      setValidationMsg({ type: 'success', text: 'Placement valid — clearance OK, within PCB bounds', icon: '✓' })
+    }
+    setTimeout(function() { setValidationMsg(null) }, 4000)
+  }
+
+  const [encloseReason, setEncloseReason] = useState('')
+  useEffect(function() {
+    try {
+      const req = JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
+      const ideaLower = (req.idea || '').toLowerCase()
+      const comps = (req.components || []).map(function(c) { return (c.name || '').toLowerCase() })
+      const hasDisplay = comps.some(function(c) { return c.includes('oled') || c.includes('lcd') || c.includes('tft') || c.includes('display') })
+      const hasWearable = ideaLower.includes('watch') || ideaLower.includes('wrist') || ideaLower.includes('wearable') || ideaLower.includes('band') || ideaLower.includes('bracelet')
+      const hasPortable = ideaLower.includes('portable') || ideaLower.includes('handheld') || ideaLower.includes('battery') || ideaLower.includes('wireless')
+      const hasProduct = ideaLower.includes('device') || ideaLower.includes('product') || ideaLower.includes('system') || ideaLower.includes('monitor') || ideaLower.includes('sensor')
+      const hasIoT = ideaLower.includes('iot') || ideaLower.includes('smart') || ideaLower.includes('remote')
+      const isMedical = ideaLower.includes('health') || ideaLower.includes('medical') || ideaLower.includes('patient') || ideaLower.includes('heart') || ideaLower.includes('temperature')
+      if (hasWearable) { setEncloseApplicable(true); setEncloseReason('Wearable project — smartwatch/band enclosure available'); return }
+      if (isMedical && hasDisplay) { setEncloseApplicable(true); setEncloseReason('Medical device with display — medical device enclosure available'); return }
+      if (hasDisplay && (hasPortable || hasIoT)) { setEncloseApplicable(true); setEncloseReason('Portable device with display — product enclosure available'); return }
+      if (hasProduct && hasDisplay) { setEncloseApplicable(true); setEncloseReason('Product with display — enclosure view available'); return }
+      if (hasPortable || hasWearable || hasIoT) { setEncloseApplicable(true); setEncloseReason('Portable/IoT project — enclosure view available'); return }
+      setEncloseApplicable(false)
+    } catch(e) {}
+  }, [])
+
+
 
 
   const location = useLocation()
@@ -351,6 +407,19 @@ const [stlExported, setStlExported] = useState(false)
   return (
     <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
+
+        {/* Component placement validation */}
+        {validationMsg && (
+          <div className={"fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl border font-bold text-sm shadow-2xl transition-all " + (
+            validationMsg.type === 'success' ? 'bg-green-950 border-green-700 text-green-300' :
+            validationMsg.type === 'warning' ? 'bg-yellow-950 border-yellow-700 text-yellow-300' :
+            'bg-red-950 border-red-700 text-red-300'
+          )}>
+            <span className="text-xl">{validationMsg.icon}</span>
+            <span>{validationMsg.text}</span>
+          </div>
+        )}
+
       <div className="px-4 sm:px-8 md:px-16 pb-10">
 
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4 mt-4">
@@ -563,6 +632,36 @@ const [stlExported, setStlExported] = useState(false)
       })()}
 
       
+
+      {/* ─── PROTOENCLOSE APPLICABILITY BANNER ─── */}
+      {encloseApplicable && (
+        <div className="mt-6 rounded-2xl border border-purple-800 overflow-hidden"
+          style={{background: 'linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(99,102,241,0.08) 100%)'}}>
+          <div className="flex items-center gap-4 p-4">
+            <div className="w-12 h-12 rounded-2xl bg-purple-950 border border-purple-700 flex items-center justify-center text-2xl flex-shrink-0">
+              📦
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-400 border border-purple-800">
+                  ✓ ProtoEnclose Applicable
+                </span>
+              </div>
+              <p className="text-white font-bold text-sm">{encloseReason}</p>
+              <p className="text-slate-400 text-xs mt-0.5">
+                See how your finished product looks — watch body, enclosure, display through glass, internal component layout
+              </p>
+            </div>
+            <button
+              onClick={function(){window.location.href='/protoenclose'}}
+              className="flex-shrink-0 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
+              <span>Go to ProtoEnclose</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ─── FEATURE CATEGORIES ─── */}
       <div className="mt-8 px-2">
         <div className="flex items-center gap-3 mb-6">
