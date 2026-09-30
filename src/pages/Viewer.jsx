@@ -715,6 +715,23 @@ const [stlExported, setStlExported] = useState(false)
               {selectedComponents.length > 0 ? (
 
             
+                <Canvas
+                  shadows
+                  camera={{ position: [0, 8, 10], fov: 50 }}
+                  style={{ flex: 1, background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}
+                  onPointerMissed={function() { setSelectedComp(null) }}>
+                  <Suspense fallback={null}>
+                    <Draggable3DScene
+                      components={selectedComponents || []}
+                      positions={componentPositions}
+                      onDragEnd={handleCompDragEnd}
+                      selectedComp={selectedComp}
+                      onSelectComp={setSelectedComp}
+                      lockedComps={lockedComps}
+                    />
+                  </Suspense>
+                </Canvas>
+
             {/* 3D Component Toolbar */}
             <div className="flex items-center gap-2 px-4 py-2 bg-[#080814] border-b border-[#1e1e2e] flex-shrink-0">
               <span className="text-xs text-slate-500">3D Component Editor</span>
@@ -799,22 +816,6 @@ const [stlExported, setStlExported] = useState(false)
                   </div>
                 )}
                 {/* 3D Canvas */}
-                <Canvas
-                  shadows
-                  camera={{ position: [0, 8, 10], fov: 50 }}
-                  style={{ flex: 1, background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}
-                  onPointerMissed={function() { setSelectedComp(null) }}>
-                  <Suspense fallback={null}>
-                    <Draggable3DScene
-                      components={selectedComponents || []}
-                      positions={componentPositions}
-                      onDragEnd={handleCompDragEnd}
-                      selectedComp={selectedComp}
-                      onSelectComp={setSelectedComp}
-                      lockedComps={lockedComps}
-                    />
-                  </Suspense>
-                </Canvas>
               </div>
 <Canvas
               shadows
