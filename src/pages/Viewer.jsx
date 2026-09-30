@@ -712,7 +712,6 @@ const [stlExported, setStlExported] = useState(false)
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1">
             <div className="rounded-2xl overflow-hidden border border-[#1e1e2e]" style={{ height: '480px' }}>
-              {selectedComponents.length > 0 ? (
 
             
                 <Canvas
