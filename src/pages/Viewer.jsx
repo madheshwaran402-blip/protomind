@@ -189,8 +189,9 @@ import ValidationPanel from '../components/ValidationPanel'
 import ChangeValidator from '../components/ChangeValidator'
 import { Suspense, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Grid, Stars, Html } from '@react-three/drei'
+import { Canvas , useThree as useThreeHook} from '@react-three/fiber'
+import * as THREE from 'three'
+import { OrbitControls as OrbitControlsHook, Grid, Stars, Html , Text as ThreeText} from '@react-three/drei'
 import StepBar from '../components/StepBar'
 import ComponentBox3D from '../components/ComponentBox3D'
 import ConnectionLines3D from '../components/ConnectionLines3D'
@@ -285,7 +286,219 @@ function Scene({ components, exploded, showMeasurements, environment }) {
   )
 }
 
+
+// ── Draggable 3D Component ────────────────────────────────────────────────────
+function DraggableComponent({ id, name, icon, color, position, onDragEnd, isSelected, onSelect, locked }) {
+  const meshRef = React.useRef()
+  const [isDragging, setIsDragging] = React.useState(false)
+  const [hovered, setHovered] = React.useState(false)
+  const { camera, gl, raycaster } = useThreeHook()
+  const dragPlane = React.useRef(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0))
+  const intersection = React.useRef(new THREE.Vector3())
+  const offset = React.useRef(new THREE.Vector3())
+  const currentPos = React.useRef(new THREE.Vector3(...position))
+
+  function getWorldPos(e) {
+    raycaster.setFromCamera(
+      { x: (e.clientX / gl.domElement.clientWidth) * 2 - 1, y: -(e.clientY / gl.domElement.clientHeight) * 2 + 1 },
+      camera
+    )
+    raycaster.ray.intersectPlane(dragPlane.current, intersection.current)
+    return intersection.current.clone()
+  }
+
+  function onPointerDown(e) {
+    if (locked) return
+    e.stopPropagation()
+    onSelect(id)
+    setIsDragging(true)
+    gl.domElement.style.cursor = 'grabbing'
+    const wp = getWorldPos(e)
+    offset.current.subVectors(currentPos.current, wp)
+    gl.domElement.setPointerCapture(e.pointerId)
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return
+    e.stopPropagation()
+    const wp = getWorldPos(e)
+    const newPos = wp.add(offset.current)
+    // Snap to 0.5 grid
+    newPos.x = Math.round(newPos.x * 2) / 2
+    newPos.z = Math.round(newPos.z * 2) / 2
+    newPos.y = 0.3
+    currentPos.current.copy(newPos)
+    if (meshRef.current) {
+      meshRef.current.position.copy(newPos)
+    }
+  }
+
+  function onPointerUp(e) {
+    if (!isDragging) return
+    setIsDragging(false)
+    gl.domElement.style.cursor = 'grab'
+    onDragEnd(id, { x: currentPos.current.x, y: currentPos.current.y, z: currentPos.current.z })
+  }
+
+  return (
+    <group
+      ref={meshRef}
+      position={currentPos.current.toArray()}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerOver={function(e) { e.stopPropagation(); setHovered(true); gl.domElement.style.cursor = locked ? 'not-allowed' : 'grab' }}
+      onPointerOut={function() { setHovered(false); if (!isDragging) gl.domElement.style.cursor = 'default' }}>
+
+      {/* Component box */}
+      <mesh castShadow>
+        <boxGeometry args={[0.9, 0.25, 0.9]}/>
+        <meshStandardMaterial
+          color={isDragging ? '#ffffff' : hovered ? color : color}
+          emissive={isSelected ? color : isDragging ? '#ffffff' : hovered ? color : '#000000'}
+          emissiveIntensity={isSelected ? 0.4 : isDragging ? 0.3 : hovered ? 0.2 : 0}
+          roughness={0.4} metalness={0.6}
+          transparent opacity={isDragging ? 0.85 : 1}/>
+      </mesh>
+
+      {/* Pin holes */}
+      {[-0.3, 0, 0.3].map(function(x, i) {
+        return (
+          <mesh key={i} position={[x, -0.13, 0.35]}>
+            <cylinderGeometry args={[0.04, 0.04, 0.1, 6]}/>
+            <meshStandardMaterial color="#c0a000" metalness={0.9} roughness={0.1}/>
+          </mesh>
+        )
+      })}
+
+      {/* Chip marking on top */}
+      <mesh position={[0, 0.13, 0]}>
+        <boxGeometry args={[0.5, 0.02, 0.5]}/>
+        <meshStandardMaterial color="#111111" roughness={0.9}/>
+      </mesh>
+
+      {/* Selection ring */}
+      {isSelected && (
+        <mesh position={[0, 0.14, 0]} rotation={[-Math.PI/2, 0, 0]}>
+          <ringGeometry args={[0.55, 0.62, 32]}/>
+          <meshBasicMaterial color={color} transparent opacity={0.8}/>
+        </mesh>
+      )}
+
+      {/* Drag indicator */}
+      {isDragging && (
+        <mesh position={[0, -0.15, 0]} rotation={[-Math.PI/2, 0, 0]}>
+          <ringGeometry args={[0.5, 0.55, 32]}/>
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.5}/>
+        </mesh>
+      )}
+
+      {/* Label */}
+      <ThreeText position={[0, 0.3, 0]} fontSize={0.18} color="white" anchorX="center" anchorY="middle" outlineWidth={0.02} outlineColor="#000000">
+        {icon + ' ' + name.slice(0, 8)}
+      </ThreeText>
+
+      {locked && (
+        <ThreeText position={[0, 0.5, 0]} fontSize={0.15} color="#f59e0b" anchorX="center">
+          🔒
+        </ThreeText>
+      )}
+    </group>
+  )
+}
+
+// ── PCB Board ─────────────────────────────────────────────────────────────────
+function PCBBoard() {
+  return (
+    <group>
+      {/* Main board */}
+      <mesh receiveShadow position={[0, 0, 0]}>
+        <boxGeometry args={[9, 0.12, 7]}/>
+        <meshStandardMaterial color="#1a5a1a" roughness={0.7} metalness={0.1}/>
+      </mesh>
+      {/* Copper traces pattern */}
+      <mesh position={[0, 0.07, 0]}>
+        <boxGeometry args={[8.8, 0.01, 6.8]}/>
+        <meshStandardMaterial color="#1f6b1f" roughness={0.9}/>
+      </mesh>
+      {/* Edge connector gold fingers */}
+      {[-3, -1.5, 0, 1.5, 3].map(function(x, i) {
+        return (
+          <mesh key={i} position={[x, 0.07, 3.45]}>
+            <boxGeometry args={[0.3, 0.01, 0.3]}/>
+            <meshStandardMaterial color="#c0a000" roughness={0.1} metalness={0.9}/>
+          </mesh>
+        )
+      })}
+      {/* Board label */}
+      <ThreeText position={[-3.5, 0.08, -2.8]} fontSize={0.25} color="#2a8a2a" rotation={[-Math.PI/2, 0, 0]}>
+        ProtoMind PCB v1.0
+      </ThreeText>
+      {/* Grid overlay */}
+      <gridHelper args={[9, 18, '#2a6a2a', '#1a4a1a']} position={[0, 0.08, 0]}/>
+      {/* Board boundary indicator */}
+      <lineSegments position={[0, 0.1, 0]}>
+        <edgesGeometry args={[new THREE.BoxGeometry(9, 0.01, 7)]}/>
+        <lineBasicMaterial color="#22c55e" transparent opacity={0.4}/>
+      </lineSegments>
+    </group>
+  )
+}
+
+// ── Draggable 3D Scene ────────────────────────────────────────────────────────
+function Draggable3DScene({ components, positions, onDragEnd, selectedComp, onSelectComp, lockedComps }) {
+  const COLORS = ['#6366f1','#22c55e','#06b6d4','#f59e0b','#a855f7','#ef4444','#f97316','#14b8a6','#ec4899','#84cc16']
+  const ICONS = { 'Arduino': '🔵', 'ESP32': '📡', 'DHT': '🌡️', 'OLED': '🖥️', 'LED': '💡', 'Servo': '⚙️', 'Relay': '⚡', 'default': '🔧' }
+
+  function getIcon(name) {
+    const key = Object.keys(ICONS).find(function(k) { return name.toLowerCase().includes(k.toLowerCase()) })
+    return ICONS[key] || ICONS.default
+  }
+
+  return (
+    <>
+      <ambientLight intensity={0.5}/>
+      <directionalLight position={[5, 10, 5]} intensity={1.5} castShadow shadow-mapSize={[2048, 2048]}/>
+      <directionalLight position={[-5, 8, -5]} intensity={0.5}/>
+      <pointLight position={[0, 8, 0]} intensity={0.5} color="#6366f1"/>
+
+      <PCBBoard/>
+
+      {components.slice(0, 12).map(function(comp, i) {
+        const id = comp.id || ('comp_' + i)
+        const pos = positions[id] || [
+          ((i % 4) - 1.5) * 2,
+          0.3,
+          (Math.floor(i / 4) - 1) * 2
+        ]
+        return (
+          <DraggableComponent
+            key={id}
+            id={id}
+            name={comp.name || ('Component ' + (i+1))}
+            icon={getIcon(comp.name || '')}
+            color={COLORS[i % COLORS.length]}
+            position={Array.isArray(pos) ? pos : [pos.x, pos.y, pos.z]}
+            onDragEnd={onDragEnd}
+            isSelected={selectedComp === id}
+            onSelect={onSelectComp}
+            locked={lockedComps && lockedComps[id]}/>
+        )
+      })}
+
+      <OrbitControlsHook enableDamping dampingFactor={0.1} enabled={!selectedComp}/>
+
+      {/* Environment */}
+      <mesh rotation={[-Math.PI/2, 0, 0]} position={[0, -0.2, 0]} receiveShadow>
+        <planeGeometry args={[40, 40]}/>
+        <meshStandardMaterial color="#030309" roughness={1}/>
+      </mesh>
+    </>
+  )
+}
+
 function Viewer() {
+  const navigate = useNavigate()
 
   // ProtoEnclose applicability check
   const [encloseApplicable, setEncloseApplicable] = useState(false)
@@ -500,11 +713,55 @@ const [stlExported, setStlExported] = useState(false)
           <div className="flex-1">
             <div className="rounded-2xl overflow-hidden border border-[#1e1e2e]" style={{ height: '480px' }}>
               {selectedComponents.length > 0 ? (
-                <Canvas key={viewAngle + environment} camera={{ position: CAMERA_PRESETS[viewAngle] || CAMERA_PRESETS.perspective, fov: 50 }} style={{ background: currentEnv.bg }}>
-                  <Suspense fallback={null}>
-                    <Scene components={selectedComponents} exploded={exploded} showMeasurements={showMeasurements} environment={environment} />
-                  </Suspense>
-                </Canvas>
+
+            {/* 3D Component Toolbar */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-[#080814] border-b border-[#1e1e2e] flex-shrink-0">
+              <span className="text-xs text-slate-500">3D Component Editor</span>
+              {selectedComp && (
+                <>
+                  <span className="text-xs text-indigo-400 font-medium ml-2">● {(selectedComponents||[]).find(function(c){return (c.id||c.name)===selectedComp})?.name || selectedComp} selected</span>
+                  <button
+                    onClick={function(){
+                      setLockedComps(function(prev){
+                        const updated = Object.assign({}, prev)
+                        if (updated[selectedComp]) delete updated[selectedComp]
+                        else updated[selectedComp] = true
+                        return updated
+                      })
+                    }}
+                    className="px-2 py-1 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded text-xs transition">
+                    {lockedComps && lockedComps[selectedComp] ? '🔓 Unlock' : '🔒 Lock'}
+                  </button>
+                  <button
+                    onClick={function(){
+                      setComponentPositions(function(prev){ const u=Object.assign({},prev); delete u[selectedComp]; return u })
+                      setSelectedComp(null)
+                    }}
+                    className="px-2 py-1 bg-[#1e1e2e] hover:bg-red-900 text-slate-300 hover:text-red-300 rounded text-xs transition">
+                    ↺ Reset
+                  </button>
+                </>
+              )}
+              <div className="flex-1"/>
+              <span className="text-xs text-slate-600">Click to select · Drag to move · Grid snaps to 0.5 units</span>
+            </div>
+
+                <Canvas
+              shadows
+              camera={{ position: [0, 8, 10], fov: 50 }}
+              style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}
+              onPointerMissed={function() { setSelectedComp(null) }}>
+              <Suspense fallback={null}>
+                <Draggable3DScene
+                  components={selectedComponents || []}
+                  positions={componentPositions}
+                  onDragEnd={handleCompDragEnd}
+                  selectedComp={selectedComp}
+                  onSelectComp={setSelectedComp}
+                  lockedComps={lockedComps}
+                />
+              </Suspense>
+            </Canvas>
               ) : (
                 <div className="h-full flex items-center justify-center bg-[#0d0d1a]">
                   <p className="text-slate-400">No components to display</p>
@@ -653,7 +910,16 @@ const [stlExported, setStlExported] = useState(false)
               </p>
             </div>
             <button
-              onClick={function(){window.location.href='/protoenclose'}}
+              onClick={function(){
+              try {
+                const req = JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
+                if (idea) req.idea = idea
+                if (selectedComponents && selectedComponents.length > 0) req.components = selectedComponents
+                localStorage.setItem('protomind_current_requirements', JSON.stringify(req))
+                localStorage.setItem('protomind_viewer_state', JSON.stringify({ idea: idea || req.idea, selectedComponents: selectedComponents || req.components || [] }))
+              } catch(e) {}
+              navigate('/protoenclose')
+            }}
               className="flex-shrink-0 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
               <span>Go to ProtoEnclose</span>
               <span>→</span>
