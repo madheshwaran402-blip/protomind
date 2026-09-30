@@ -832,11 +832,6 @@ const [stlExported, setStlExported] = useState(false)
                 />
               </Suspense>
             </Canvas>
-              ) : (
-                <div className="h-full flex items-center justify-center bg-[#0d0d1a]">
-                  <p className="text-slate-400">No components to display</p>
-                </div>
-              )}
             </div>
             {(exploded || showMeasurements) && (
               <div className="flex gap-2 mt-2">
