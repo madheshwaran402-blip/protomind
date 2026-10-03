@@ -924,6 +924,5 @@ function Scene({ components, exploded, showMeasurements, environment }) {
       {shareOpen && <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />}
     </div>
   )
-}
 
 export default Viewer
