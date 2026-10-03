@@ -632,43 +632,32 @@ function Scene({ components, exploded, showMeasurements, environment }) {
       
 
       {/* ─── PROTOENCLOSE APPLICABILITY BANNER ─── */}
+      
+
+
       {encloseApplicable && (
-        <div className="mt-6 rounded-2xl border border-purple-800 overflow-hidden"
-          style={{background: 'linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(99,102,241,0.08) 100%)'}}>
-          <div className="flex items-center gap-4 p-4">
-            <div className="w-12 h-12 rounded-2xl bg-purple-950 border border-purple-700 flex items-center justify-center text-2xl flex-shrink-0">
-              📦
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-400 border border-purple-800">
-                  ✓ ProtoEnclose Applicable
-                </span>
-              </div>
-              <p className="text-white font-bold text-sm">{encloseReason}</p>
-              <p className="text-slate-400 text-xs mt-0.5">
-                See how your finished product looks — watch body, enclosure, display through glass, internal component layout
-              </p>
+        <div style={{marginTop:'16px',borderRadius:'16px',border:'1px solid #7c3aed',background:'linear-gradient(135deg,rgba(168,85,247,0.08),rgba(99,102,241,0.08))'}}>
+          <div style={{display:'flex',alignItems:'center',gap:'16px',padding:'16px',flexWrap:'wrap'}}>
+            <div style={{width:'44px',height:'44px',borderRadius:'12px',background:'rgba(88,28,135,0.5)',border:'1px solid #7c3aed',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',flexShrink:0}}>📦</div>
+            <div style={{flex:1,minWidth:0}}>
+              <span style={{fontSize:'11px',fontWeight:700,padding:'2px 8px',borderRadius:'999px',background:'rgba(88,28,135,0.5)',color:'#c084fc',border:'1px solid #7c3aed'}}>✓ ProtoEnclose Applicable</span>
+              <p style={{color:'white',fontWeight:700,fontSize:'14px',marginTop:'4px'}}>{encloseReason}</p>
+              <p style={{color:'#94a3b8',fontSize:'12px',marginTop:'2px'}}>See the final manufactured product view — enclosure, display, internal layout</p>
             </div>
             <button
-              onClick={function(){
-              try {
-                const req = JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
-                if (idea) req.idea = idea
-                if (selectedComponents && selectedComponents.length > 0) req.components = selectedComponents
-                localStorage.setItem('protomind_current_requirements', JSON.stringify(req))
-                localStorage.setItem('protomind_viewer_state', JSON.stringify({ idea: idea || req.idea, selectedComponents: selectedComponents || req.components || [] }))
-              } catch(e) {}
-              navigate('/protoenclose')
-            }}
-              className="flex-shrink-0 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
-              <span>Go to ProtoEnclose</span>
-              <span>→</span>
+              onClick={function() {
+                try {
+                  const req = JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
+                  localStorage.setItem('protomind_viewer_state', JSON.stringify({idea: req.idea, selectedComponents: req.components || []}))
+                } catch(ex) {}
+                navigate('/protoenclose')
+              }}
+              style={{flexShrink:0,padding:'10px 16px',background:'linear-gradient(135deg,#7c3aed,#4f46e5)',color:'white',borderRadius:'12px',fontSize:'14px',fontWeight:700,border:'none',cursor:'pointer',display:'flex',alignItems:'center',gap:'8px'}}>
+              <span>Go to ProtoEnclose</span><span>→</span>
             </button>
           </div>
         </div>
       )}
-
       {/* ─── FEATURE CATEGORIES ─── */}
       <div className="mt-8 px-2">
         <div className="flex items-center gap-3 mb-6">
