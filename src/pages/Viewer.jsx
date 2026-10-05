@@ -239,8 +239,6 @@ function MeasurementLine({ start, end, label }) {
 }
 
 function Scene({ components, exploded, showMeasurements, environment }) {
-  const positions = get3DPositions(components.length, exploded)
-  const env = ENVIRONMENTS.find(e => e.id === environment) || ENVIRONMENTS[0]
   const accentColor = NEON_COLORS[environment] || '#6366f1'
   const width = Math.min(components.length, 3) * (exploded ? 5 : 3)
   const depth = Math.ceil(components.length / 3) * (exploded ? 5 : 3)
@@ -285,6 +283,8 @@ function Scene({ components, exploded, showMeasurements, environment }) {
     </>
   )
 }
+
+function Viewer() {
 
 function Viewer() {
 
@@ -927,6 +927,5 @@ function Viewer() {
     </div>
   )
 
-}
 
 export default Viewer
