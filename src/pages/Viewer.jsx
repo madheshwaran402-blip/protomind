@@ -926,6 +926,7 @@ function Viewer() {
       {shareOpen && <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />}
     </div>
   )
-
+}
+}
 
 export default Viewer
