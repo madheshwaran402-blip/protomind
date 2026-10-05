@@ -238,9 +238,7 @@ function MeasurementLine({ start, end, label }) {
   )
 }
 
-function Scene({ components, exploded, showMeasurements, environment }
-
-function Viewer() {) {
+function Scene({ components, exploded, showMeasurements, environment }) {
   const positions = get3DPositions(components.length, exploded)
   const env = ENVIRONMENTS.find(e => e.id === environment) || ENVIRONMENTS[0]
   const accentColor = NEON_COLORS[environment] || '#6366f1'
@@ -287,6 +285,8 @@ function Viewer() {) {
     </>
   )
 }
+
+function Viewer() {
 
 
 
