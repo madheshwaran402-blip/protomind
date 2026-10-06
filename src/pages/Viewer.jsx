@@ -286,8 +286,6 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 
 function Viewer() {
 
-function Viewer() {
-
 
 
 
