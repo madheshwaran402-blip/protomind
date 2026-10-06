@@ -927,6 +927,5 @@ function Viewer() {
     </div>
   )
 }
-}
 
 export default Viewer
