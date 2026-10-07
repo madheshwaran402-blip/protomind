@@ -899,7 +899,7 @@ function Viewer() {
             const { totalMin, totalMax } = generateBOMCSV(selectedComponents, idea)
             return (
               <p className="text-xs text-slate-600 mb-3">
-                Estimated total cost: <span className="text-emerald-400">${totalMin.toFixed(0)} — ${totalMax.toFixed(0)} USD</span>
+                Estimated total cost: <span className="text-emerald-400">${totalMin.toFixed(0)} to ${totalMax.toFixed(0)} USD</span>
               </p>
             )
           })()}
