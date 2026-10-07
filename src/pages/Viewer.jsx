@@ -285,6 +285,7 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 }
 
 function Viewer() {
+  const navigate = useNavigate()
 
 
 
