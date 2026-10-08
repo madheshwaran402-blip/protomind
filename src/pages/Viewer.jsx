@@ -924,6 +924,25 @@ function Viewer() {
       <ValidationPanel result={validation} loading={validating} onClose={() => { setValidation(null); setValidating(false) }} />
       {shareOpen && <ShareModal idea={idea} components={selectedComponents} onClose={() => setShareOpen(false)} />}
     </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
   )
 }
 
