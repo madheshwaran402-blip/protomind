@@ -388,127 +388,54 @@ function Viewer() {
 
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="flex-1">
-            <div className="rounded-2xl overflow-hidden border border-[#1e1e2e]" style={{ height: '480px' }}>
-
-            
+            <div className="rounded-2xl overflow-hidden border border-[#1e1e2e] flex flex-col" style={{ height: '480px' }}>
+              {/* Toolbar */}
+              <div className="flex items-center gap-2 px-4 py-2 bg-[#080814] border-b border-[#1e1e2e] flex-shrink-0 flex-wrap">
+                <span className="text-xs text-slate-500 font-medium">🔧 3D Component Editor</span>
+                <div className="w-px h-4 bg-[#2e2e4e]"/>
+                {selectedComp ? (
+                  <span className="text-xs text-indigo-400">
+                    ● {(selectedComponents||[]).find(function(c){return String(c.id||c.name)===selectedComp})?.name || selectedComp} selected
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-600">Click to select · Drag to move · 0.5 unit grid snap</span>
+                )}
+                {selectedComp && (
+                  <div className="flex gap-1.5 ml-2">
+                    <button onClick={function(){setLockedComps(function(prev){const u=Object.assign({},prev);if(u[selectedComp])delete u[selectedComp];else u[selectedComp]=true;return u})}} className="px-2 py-1 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded text-xs transition">
+                      {lockedComps && lockedComps[selectedComp] ? '🔓 Unlock' : '🔒 Lock'}
+                    </button>
+                    <button onClick={function(){setComponentPositions(function(p){const u=Object.assign({},p);delete u[selectedComp];return u});setSelectedComp(null)}} className="px-2 py-1 bg-[#1e1e2e] hover:bg-red-900 text-slate-300 hover:text-red-300 rounded text-xs transition">
+                      ↺ Reset
+                    </button>
+                    <button onClick={function(){setSelectedComp(null)}} className="px-2 py-1 bg-[#1e1e2e] text-slate-500 rounded text-xs transition hover:text-white">
+                      ✕ Deselect
+                    </button>
+                  </div>
+                )}
+              </div>
+              {/* Canvas */}
+              <div className="flex-1 relative">
+                {validationMsg && (
+                  <div className={"absolute top-3 left-1/2 z-20 -translate-x-1/2 flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold shadow-2xl " + (validationMsg.type==='success'?'bg-green-950 border-green-700 text-green-300':validationMsg.type==='warning'?'bg-yellow-950 border-yellow-700 text-yellow-300':'bg-red-950 border-red-700 text-red-300')}>
+                    <span>{validationMsg.icon}</span><span>{validationMsg.text}</span>
+                  </div>
+                )}
                 <Canvas
                   shadows
                   camera={{ position: [0, 8, 10], fov: 50 }}
-                  style={{ flex: 1, background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}
+                  style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}
                   onPointerMissed={function() { setSelectedComp(null) }}>
                   <Suspense fallback={null}>
-                    <Draggable3DScene
-                      components={selectedComponents || []}
-                      positions={componentPositions}
-                      onDragEnd={handleCompDragEnd}
-                      selectedComp={selectedComp}
-                      onSelectComp={setSelectedComp}
-                      lockedComps={lockedComps}
+                    <Scene
+                      components={selectedComponents}
+                      exploded={exploded}
+                      showMeasurements={showMeasurements}
+                      environment={environment}
                     />
                   </Suspense>
                 </Canvas>
-
-            {/* 3D Component Toolbar */}
-            <div className="flex items-center gap-2 px-4 py-2 bg-[#080814] border-b border-[#1e1e2e] flex-shrink-0">
-              <span className="text-xs text-slate-500">3D Component Editor</span>
-              {selectedComp && (
-                <>
-                  <span className="text-xs text-indigo-400 font-medium ml-2">● {(selectedComponents||[]).find(function(c){return (c.id||c.name)===selectedComp})?.name || selectedComp} selected</span>
-                  <button
-                    onClick={function(){
-                      setLockedComps(function(prev){
-                        const updated = Object.assign({}, prev)
-                        if (updated[selectedComp]) delete updated[selectedComp]
-                        else updated[selectedComp] = true
-                        return updated
-                      })
-                    }}
-                    className="px-2 py-1 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded text-xs transition">
-                    {lockedComps && lockedComps[selectedComp] ? '🔓 Unlock' : '🔒 Lock'}
-                  </button>
-                  <button
-                    onClick={function(){
-                      setComponentPositions(function(prev){ const u=Object.assign({},prev); delete u[selectedComp]; return u })
-                      setSelectedComp(null)
-                    }}
-                    className="px-2 py-1 bg-[#1e1e2e] hover:bg-red-900 text-slate-300 hover:text-red-300 rounded text-xs transition">
-                    ↺ Reset
-                  </button>
-                </>
-              )}
-              {/* 3D Component Editor */}
-              <div className="relative flex-1 flex flex-col overflow-hidden" style={{minHeight: '400px'}}>
-                {/* Toolbar */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-[#080814] border-b border-[#1e1e2e] flex-shrink-0 flex-wrap">
-                  <span className="text-xs text-slate-500 font-medium">🔧 3D Component Editor</span>
-                  <div className="w-px h-4 bg-[#2e2e4e]"/>
-                  {selectedComp ? (
-                    <span className="text-xs text-indigo-400">
-                      ● {(selectedComponents||[]).find(function(c){return String(c.id||c.name)===selectedComp})?.name || selectedComp} selected
-                    </span>
-                  ) : (
-                    <span className="text-xs text-slate-600">Click component to select · Drag to reposition · Grid snaps to 0.5 units</span>
-                  )}
-                  {selectedComp && (
-                    <div className="flex gap-1.5 ml-2">
-                      <button
-                        onClick={function(){
-                          setLockedComps(function(prev){
-                            const u = Object.assign({}, prev)
-                            if (u[selectedComp]) delete u[selectedComp]; else u[selectedComp] = true
-                            return u
-                          })
-                        }}
-                        className="px-2 py-1 bg-[#1e1e2e] hover:bg-[#2e2e4e] text-slate-300 rounded text-xs transition">
-                        {lockedComps && lockedComps[selectedComp] ? '🔓 Unlock' : '🔒 Lock'}
-                      </button>
-                      <button
-                        onClick={function(){
-                          setComponentPositions(function(p){ const u=Object.assign({},p); delete u[selectedComp]; return u })
-                          setSelectedComp(null)
-                        }}
-                        className="px-2 py-1 bg-[#1e1e2e] hover:bg-red-900 text-slate-300 hover:text-red-300 rounded text-xs transition">
-                        ↺ Reset Position
-                      </button>
-                      <button
-                        onClick={function(){setSelectedComp(null)}}
-                        className="px-2 py-1 bg-[#1e1e2e] text-slate-500 rounded text-xs transition hover:text-white">
-                        ✕ Deselect
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex-1"/>
-                  <span className="text-xs text-slate-700">Ctrl+Z to undo · Click empty to deselect</span>
-                </div>
-                {/* Validation message */}
-                {validationMsg && (
-                  <div className={"absolute top-14 left-1/2 z-20 -translate-x-1/2 flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold shadow-2xl " + (
-                    validationMsg.type === 'success' ? 'bg-green-950 border-green-700 text-green-300' :
-                    validationMsg.type === 'warning' ? 'bg-yellow-950 border-yellow-700 text-yellow-300' :
-                    'bg-red-950 border-red-700 text-red-300'
-                  )}>
-                    <span>{validationMsg.icon}</span>
-                    <span>{validationMsg.text}</span>
-                  </div>
-                )}
-                {/* 3D Canvas */}
               </div>
-<Canvas
-              shadows
-              camera={{ position: [0, 8, 10], fov: 50 }}
-              style={{ background: 'linear-gradient(135deg, #050510 0%, #0a0a1a 100%)' }}
-              onPointerMissed={function() { setSelectedComp(null) }}>
-              <Suspense fallback={null}>
-                <Draggable3DScene
-                  components={selectedComponents || []}
-                  positions={componentPositions}
-                  onDragEnd={handleCompDragEnd}
-                  selectedComp={selectedComp}
-                  onSelectComp={setSelectedComp}
-                  lockedComps={lockedComps}
-                />
-              </Suspense>
-            </Canvas>
             </div>
             {(exploded || showMeasurements) && (
               <div className="flex gap-2 mt-2">
