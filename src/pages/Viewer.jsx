@@ -288,6 +288,7 @@ function Viewer() {
   const [componentPositions, setComponentPositions] = useState({})
   const [selectedComp, setSelectedComp] = useState(null)
   const [lockedComps, setLockedComps] = useState({})
+  const [validationMsg, setValidationMsg] = useState(null)
   const navigate = useNavigate()
 
 
