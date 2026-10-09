@@ -330,7 +330,7 @@ function Viewer() {
               onClick={async () => {
                 const project = saveProject(idea, selectedComponents, null)
                 setSaved(true)
-                notify.success('Saved — v' + project.version + '!')
+                notify.success('Saved  -  v' + project.version + '!')
                 const user = await getUser()
                 if (user) {
                   try { await saveProjectCloud(idea, selectedComponents); notify.info('Synced!') }
@@ -482,7 +482,7 @@ function Viewer() {
 
         <div className="mt-6">
 <p className="text-xs text-slate-600 mb-3 uppercase tracking-widest font-semibold">
-  ⚡ {selectedComponents.length} Components · {20}+ AI Tools — click any to expand
+  ⚡ {selectedComponents.length} Components · {20}+ AI Tools  -  click any to expand
 </p>
 
           
@@ -510,7 +510,7 @@ function Viewer() {
               {/* Today */}
               <div className="flex-1 min-w-64">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xs font-bold text-indigo-400 uppercase tracking-wide">📅 Today — Day {currentDay.day}</span>
+                  <span className="text-xs font-bold text-indigo-400 uppercase tracking-wide">📅 Today  -  Day {currentDay.day}</span>
                   <span className="text-xs text-slate-600">{doneDays}/{totalDays} days done</span>
                 </div>
                 <p className="text-white font-bold">{currentDay.title}</p>
@@ -570,7 +570,7 @@ function Viewer() {
             <div style={{flex:1,minWidth:0}}>
               <span style={{fontSize:'11px',fontWeight:700,padding:'2px 8px',borderRadius:'999px',background:'rgba(88,28,135,0.5)',color:'#c084fc',border:'1px solid #7c3aed'}}>✓ ProtoEnclose Applicable</span>
               <p style={{color:'white',fontWeight:700,fontSize:'14px',marginTop:'4px'}}>{encloseReason}</p>
-              <p style={{color:'#94a3b8',fontSize:'12px',marginTop:'2px'}}>See the final manufactured product view — enclosure, display, internal layout</p>
+              <p style={{color:'#94a3b8',fontSize:'12px',marginTop:'2px'}}>See the final manufactured product view  -  enclosure, display, internal layout</p>
             </div>
             <button
               onClick={function() {
@@ -819,7 +819,7 @@ function Viewer() {
 
         <div className="mt-6">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-semibold text-slate-400">Components — click for details or datasheet</h3>
+            <h3 className="text-sm font-semibold text-slate-400">Components  -  click for details or datasheet</h3>
             {bomExported && <span className="text-xs text-emerald-400">✅ BOM Downloaded!</span>}
           </div>
           {selectedComponents.length > 0 && (() => {
