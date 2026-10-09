@@ -285,6 +285,9 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 }
 
 function Viewer() {
+  const [componentPositions, setComponentPositions] = useState({})
+  const [selectedComp, setSelectedComp] = useState(null)
+  const [lockedComps, setLockedComps] = useState({})
   const navigate = useNavigate()
 
 
