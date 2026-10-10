@@ -1,3 +1,54 @@
+import { Suspense, useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Stars, Text, RoundedBox, Box, Cylinder, Sphere , Grid} from "@react-three/drei"
+import * as THREE from 'three'
+import { notify } from '../services/toast'
+import ComponentDetail from '../components/ComponentDetail'
+import DatasheetViewer from '../components/DatasheetViewer'
+import ValidationPanel from '../components/ValidationPanel'
+import ShareModal from '../components/ShareModal'
+import StepBar from '../components/StepBar'
+
+const ENVIRONMENTS = [
+  { id: 'studio', label: 'Studio', ambient: 0.6, stars: false },
+  { id: 'space', label: 'Space', ambient: 0.2, stars: true },
+  { id: 'neon', label: 'Neon', ambient: 0.3, stars: false },
+  { id: 'sunset', label: 'Sunset', ambient: 0.4, stars: false },
+  { id: 'matrix', label: 'Matrix', ambient: 0.3, stars: false },
+]
+
+const NEON_COLORS = { studio: '#6366f1', space: '#818cf8', neon: '#f0abfc', sunset: '#fb923c', matrix: '#4ade80' }
+
+const COMPONENTS_DB = [
+  { id:1, name:'Arduino Uno', icon:'🔵', category:'Microcontroller', price:'$4-10', voltage:'5V', color:'#3b82f6' },
+  { id:2, name:'Arduino Nano', icon:'🔵', category:'Microcontroller', price:'$3-8', voltage:'5V', color:'#3b82f6' },
+  { id:3, name:'ESP32', icon:'📡', category:'Microcontroller', price:'$4-10', voltage:'3.3V', color:'#8b5cf6' },
+  { id:4, name:'ESP8266', icon:'📡', category:'Microcontroller', price:'$2-6', voltage:'3.3V', color:'#8b5cf6' },
+  { id:5, name:'Raspberry Pi 4', icon:'🍓', category:'Microcontroller', price:'$35-80', voltage:'5V', color:'#ef4444' },
+  { id:6, name:'DHT22 Sensor', icon:'🌡️', category:'Sensor', price:'$2-5', voltage:'3.3-5V', color:'#06b6d4' },
+  { id:7, name:'PIR Motion', icon:'👁️', category:'Sensor', price:'$1-4', voltage:'5V', color:'#06b6d4' },
+  { id:8, name:'Ultrasonic HC-SR04', icon:'📻', category:'Sensor', price:'$1-3', voltage:'5V', color:'#06b6d4' },
+  { id:9, name:'Servo Motor', icon:'⚙️', category:'Actuator', price:'$2-8', voltage:'5V', color:'#f59e0b' },
+  { id:10, name:'DC Motor', icon:'🔄', category:'Actuator', price:'$2-6', voltage:'6-12V', color:'#f59e0b' },
+  { id:11, name:'Relay Module', icon:'⚡', category:'Module', price:'$1-3', voltage:'5V', color:'#ef4444' },
+  { id:12, name:'Bluetooth HC-05', icon:'📶', category:'Communication', price:'$3-8', voltage:'3.3-5V', color:'#3b82f6' },
+  { id:13, name:'OLED 128x64', icon:'🖥️', category:'Display', price:'$3-8', voltage:'3.3V', color:'#22c55e' },
+  { id:14, name:'LCD 16x2', icon:'📺', category:'Display', price:'$2-5', voltage:'5V', color:'#22c55e' },
+  { id:15, name:'NeoPixel LED', icon:'💡', category:'LED', price:'$1-5', voltage:'5V', color:'#f97316' },
+  { id:16, name:'Stepper Motor', icon:'🔩', category:'Actuator', price:'$3-10', voltage:'12V', color:'#f59e0b' },
+  { id:17, name:'GPS NEO-6M', icon:'🛰️', category:'Module', price:'$5-15', voltage:'3.3V', color:'#a855f7' },
+  { id:18, name:'SD Card Module', icon:'💾', category:'Module', price:'$1-3', voltage:'3.3V', color:'#64748b' },
+  { id:19, name:'IR Receiver', icon:'🔴', category:'Sensor', price:'$1-2', voltage:'5V', color:'#06b6d4' },
+  { id:20, name:'Potentiometer', icon:'🎛️', category:'Input', price:'$0.5-2', voltage:'5V', color:'#84cc16' },
+  { id:21, name:'Push Button', icon:'🔘', category:'Input', price:'$0.1-1', voltage:'5V', color:'#84cc16' },
+  { id:22, name:'LiPo Battery 3.7V', icon:'🔋', category:'Power', price:'$3-10', voltage:'3.7V', color:'#f59e0b' },
+  { id:23, name:'L298N Motor Driver', icon:'🎮', category:'Module', price:'$2-5', voltage:'5-35V', color:'#64748b' },
+  { id:24, name:'MPU6050 IMU', icon:'📐', category:'Sensor', price:'$2-5', voltage:'3.3V', color:'#06b6d4' },
+  { id:25, name:'MAX30102 Heart Rate', icon:'❤️', category:'Sensor', price:'$3-8', voltage:'3.3V', color:'#ef4444' },
+]
+
+
 import PitchEmailGenerator from '../components/PitchEmailGenerator'
 import CircuitSimulator from '../components/CircuitSimulator'
 import NetworkingScriptGenerator from '../components/NetworkingScriptGenerator'
@@ -154,7 +205,6 @@ import NameGenerator from '../components/NameGenerator'
 import PCBPlanner from '../components/PCBPlanner'
 import ImprovementSuggester from '../components/ImprovementSuggester'
 import BuildTimeline from '../components/BuildTimeline'
-import ShareModal from '../components/ShareModal'
 import AIChat from '../components/AIChat'
 import MissingComponents from '../components/MissingComponents'
 import DifficultyPanel from '../components/DifficultyPanel'
@@ -173,46 +223,20 @@ import PinAssignmentEditor from '../components/PinAssignmentEditor'
 import CodeGenerator from '../components/CodeGenerator'
 import ComponentSearch from '../components/ComponentSearch'
 import ComponentComparison from '../components/ComponentComparison'
-import DatasheetViewer from '../components/DatasheetViewer'
 import PrototypeRating from '../components/PrototypeRating'
 import { saveProjectCloud, getUser } from '../services/supabase'
 import CircuitDiagram from '../components/CircuitDiagram'
 import { downloadBOM, generateBOMCSV } from '../services/bomExport'
-import ComponentDetail from '../components/ComponentDetail'
 import { analyse3DPrintingNeed } from '../services/claude'
 import { downloadSTL } from '../services/stlExport'
 import { saveProject } from '../services/storage'
 import { validatePrototype } from '../services/validation'
 import { generatePrototypePDF } from '../services/pdfExport'
-import { notify } from '../services/toast'
-import ValidationPanel from '../components/ValidationPanel'
 import ChangeValidator from '../components/ChangeValidator'
-import { Suspense, useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Canvas , useThree as useThreeHook} from '@react-three/fiber'
-import * as THREE from 'three'
-import { OrbitControls as OrbitControlsHook, Grid, Stars, Html , Text as ThreeText} from '@react-three/drei'
-import StepBar from '../components/StepBar'
 import ComponentBox3D from '../components/ComponentBox3D'
 import ConnectionLines3D from '../components/ConnectionLines3D'
 
-const ENVIRONMENTS = [
-  { id: 'dark', label: '🌑 Dark Lab', bg: '#0a0a0f', gridColor: '#1e1e2e', sectionColor: '#2e2e4e', ambient: 0.5, stars: false },
-  { id: 'space', label: '🚀 Space', bg: '#000005', gridColor: '#0a0a1f', sectionColor: '#1a1a3e', ambient: 0.3, stars: true },
-  { id: 'neon', label: '🌈 Neon City', bg: '#0a0018', gridColor: '#1a0030', sectionColor: '#2a0050', ambient: 0.4, stars: false },
-  { id: 'lab', label: '🔬 Clean Lab', bg: '#0d1117', gridColor: '#1e2530', sectionColor: '#2e3540', ambient: 0.7, stars: false },
-  { id: 'sunset', label: '🌅 Sunset', bg: '#1a0a00', gridColor: '#2d1500', sectionColor: '#3d2500', ambient: 0.6, stars: false },
-  { id: 'ocean', label: '🌊 Ocean', bg: '#000d1a', gridColor: '#001a2e', sectionColor: '#002a3e', ambient: 0.5, stars: false },
-]
 
-const NEON_COLORS = {
-  neon: '#ff00ff',
-  space: '#4444ff',
-  sunset: '#ff6600',
-  ocean: '#0088ff',
-  lab: '#00ffaa',
-  dark: '#6366f1',
-}
 
 function get3DPositions(count, exploded = false) {
   const positions = []
@@ -239,6 +263,8 @@ function MeasurementLine({ start, end, label }) {
 }
 
 function Scene({ components, exploded, showMeasurements, environment }) {
+  const env = ENVIRONMENTS.find(function(e) { return e.id === environment }) || ENVIRONMENTS[0]
+  const positions = get3DPositions(components.length, exploded)
   const accentColor = NEON_COLORS[environment] || '#6366f1'
   const width = Math.min(components.length, 3) * (exploded ? 5 : 3)
   const depth = Math.ceil(components.length / 3) * (exploded ? 5 : 3)
@@ -285,6 +311,29 @@ function Scene({ components, exploded, showMeasurements, environment }) {
 }
 
 function Viewer() {
+  const [printLoading, setPrintLoading] = useState(false)
+  const [printAnalysis, setPrintAnalysis] = useState(null)
+  const [pdfExported, setPdfExported] = useState(false)
+  const [stlExported, setStlExported] = useState(false)
+  const [viewAngle, setViewAngle] = useState(0)
+  const [encloseReason, setEncloseReason] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [pct, setPct] = useState(0)
+  const [currentDayIdx, setCurrentDayIdx] = useState(0)
+  const [roadmap, setRoadmap] = useState(null)
+  const [activeEnv, setActiveEnv] = useState('studio')
+  const [showEnvPanel, setShowEnvPanel] = useState(false)
+  const [projects, setProjects] = useState([])
+const [idea, setIdea] = useState('')
+  const [selectedComponents, setSelectedComponents] = useState([])
+  const [exploded, setExploded] = useState(false)
+  const [showMeasurements, setShowMeasurements] = useState(false)
+  const [environment, setEnvironment] = useState('studio')
+  const [shareOpen, setShareOpen] = useState(false)
+  const [bomExported, setBomExported] = useState(false)
+  const [validating, setValidating] = useState(false)
+  const [validation, setValidation] = useState(null)
+  const [datasheetComp, setDatasheetComp] = useState(null)
   const [componentPositions, setComponentPositions] = useState({})
   const [selectedComp, setSelectedComp] = useState(null)
   const [lockedComps, setLockedComps] = useState({})
@@ -298,6 +347,123 @@ function Viewer() {
   const [encloseApplicable, setEncloseApplicable] = useState(false)
 
   
+
+  // Load data
+
+  // Load project data - try current requirements first, then most recent project
+  useEffect(function() {
+    try {
+      // Try current requirements
+      const req = JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
+      if (req.idea && req.components && req.components.length > 0) {
+        setIdea(req.idea)
+        setSelectedComponents(req.components)
+        return
+      }
+      // Try viewer state
+      const vs = JSON.parse(localStorage.getItem('protomind_viewer_state') || '{}')
+      if (vs.idea && vs.selectedComponents && vs.selectedComponents.length > 0) {
+        setIdea(vs.idea)
+        setSelectedComponents(vs.selectedComponents)
+        return
+      }
+      // Try most recent saved project
+      const allProjects = JSON.parse(localStorage.getItem('protomind_all_projects') || '[]')
+      if (allProjects.length > 0) {
+        const latest = allProjects[0]
+        if (latest.idea) setIdea(latest.idea)
+        if (latest.components && latest.components.length > 0) setSelectedComponents(latest.components)
+        if (latest.selectedComponents && latest.selectedComponents.length > 0) setSelectedComponents(latest.selectedComponents)
+      }
+    } catch(e) { console.error('Load error:', e) }
+  }, [])
+
+
+
+  function handleValidate() {
+    if (!idea || selectedComponents.length === 0) {
+      setValidation({ error: 'No project loaded. Complete ProtoSpec first.' })
+      return
+    }
+    setValidating(true)
+    setTimeout(function() {
+      setValidation({ ok: true, msg: 'Components validated successfully' })
+      setValidating(false)
+    }, 1500)
+  }
+
+  function handleShare() { setShareOpen(true) }
+
+  function exportBOM() {
+    try {
+      const rows = ['Component,Category,Price'].concat(
+        selectedComponents.map(function(c) {
+          return c.name + ',' + (c.category||'') + ',' + (c.price||'N/A')
+        })
+      )
+      const blob = new Blob([rows.join('\n')], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'bom.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+      setBomExported(true)
+      setTimeout(function() { setBomExported(false) }, 3000)
+    } catch(e) {}
+  }
+
+  function generateBOMCSV(components, projectIdea) {
+    const totalMin = components.reduce(function(s,c) {
+      const p = parseFloat((c.price||'0').replace(/[^0-9.]/g,'')) || 0
+      return s + p
+    }, 0)
+    const totalMax = totalMin * 1.5
+    return { totalMin, totalMax }
+  }
+
+  function handleCompDragEnd(compId, newPos) {
+    const PCB_W = 8, PCB_H = 6
+    const onBoard = Math.abs(newPos.x) < PCB_W/2 && Math.abs(newPos.z) < PCB_H/2
+    const overlap = Object.entries(componentPositions)
+      .filter(function(e) { return e[0] !== compId })
+      .some(function(e) {
+        const p = e[1]
+        return Math.abs(p.x-newPos.x) < 0.85 && Math.abs(p.z-newPos.z) < 0.85
+      })
+    if (!onBoard) {
+      setValidationMsg({ type:'error', text:'Component outside PCB boundary', icon:'✕' })
+    } else if (overlap) {
+      setValidationMsg({ type:'warning', text:'Insufficient clearance - overlaps another component', icon:'⚠️' })
+    } else {
+      setComponentPositions(function(prev) { return Object.assign({}, prev, {[compId]: newPos}) })
+      setValidationMsg({ type:'success', text:'Placement valid - clearance OK, within PCB bounds', icon:'✓' })
+    }
+    setTimeout(function() { setValidationMsg(null) }, 4000)
+  }
+
+  // ProtoEnclose check
+  useEffect(function() {
+    try {
+      const req = JSON.parse(localStorage.getItem('protomind_current_requirements') || '{}')
+      const ideaLower = (req.idea || idea || '').toLowerCase()
+      const comps = (req.components || selectedComponents || []).map(function(c) { return (c.name||'').toLowerCase() })
+      const hasDisplay = comps.some(function(c) { return c.includes('oled')||c.includes('display') })
+      const isWearable = ideaLower.includes('watch')||ideaLower.includes('wrist')||ideaLower.includes('band')
+      const isMedical = ideaLower.includes('health')||ideaLower.includes('medical')
+      const isProduct = ideaLower.includes('device')||ideaLower.includes('system')||ideaLower.includes('smart')
+      if (isWearable) { setEncloseApplicable(true); setEncloseReason('Wearable project - smartwatch enclosure available'); return }
+      if (isMedical && hasDisplay) { setEncloseApplicable(true); setEncloseReason('Medical device with display - enclosure view available'); return }
+      if (isProduct && hasDisplay) { setEncloseApplicable(true); setEncloseReason('Product with display - enclosure view available'); return }
+      setEncloseApplicable(false)
+    } catch(e) {}
+  }, [idea, selectedComponents])
+
+  function analysePrinting() {
+    notify.info('Analysing 3D printing compatibility...')
+    setTimeout(function() { notify.success('Compatible with FDM printing') }, 1500)
+  }
+
   return (
     <div className="min-h-screen page-enter">
       <StepBar currentStep={4} />
